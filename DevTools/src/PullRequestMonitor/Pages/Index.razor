@@ -1,0 +1,246 @@
+﻿@page "/"
+
+@using Microsoft.AspNetCore.WebUtilities
+@using AutomationToolkit.AzDevOps.Model.PullRequest
+@using AutomationToolkit.AzDevOps
+@using System.Text.RegularExpressions
+@using PullRequestsMonitor.UI.Shared.Components.PullRequests
+@using Microsoft.Extensions.Configuration
+@using PullRequestsMonitor.UI.Model
+
+@inject NavigationManager navManager
+@inject IJSRuntime JSRuntime
+
+@if (_teams != null && _repositories != null && _branches != null)
+{
+    <div class="card">
+        <div class="card-content">
+            <div class="row">
+                <div class="input-field col s2">
+                    <b>Teams</b>
+                    <select @onchange="ChooseTeam" @ref="ddlTeam">
+                        <option value="Team" disabled selected>Choose Team</option>
+                        @foreach (var team in _teams)
+                        {
+                            <option value="@team">@team</option>
+                        }
+                    </select>
+                </div>
+                <div class="input-field col s2">
+                    <b>Repositories</b>
+                    <select @onchange="ChooseRepository" @ref="ddlRepository">
+                        <option value="Repository" disabled selected>Choose Repository</option>
+                        @foreach (var repository in _repositories)
+                        {
+                            <option value="@repository">@repository</option>
+                        }
+                    </select>
+                </div>
+                <div class="input-field col s2">
+                    <b>Branches</b>
+                    <select @onchange="ChooseBranch" @ref="ddlBranch">
+                        <option value="Branch" disabled selected>Choose Branch</option>
+                        @foreach (var branch in _branches)
+                        {
+                            <option value="@branch">@branch</option>
+                        }
+                    </select>
+                </div>
+                <div class="input-field col s2">
+                    <a class="waves-effect waves-light btn" @onclick="ResetFilters">Reset</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (_pendingPullRequestsFiltered != null && _pendingPullRequestsAll.Count > 0)
+{
+    <div class="card">
+        <div class="card-content">
+            <MudTable FixedHeader="true" RowsPerPage="100" Items="_pendingPullRequestsFiltered" Dense="@dense" Hover="@hover" Filter="new Func<PullRequest,bool>(FilterFunc)" @bind-SelectedItem="@selected_item" SortLabel="Sort By">
+                <ToolBarContent>
+                    <MudTextField @bind-Value="@search_string" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <ColGroup>
+                    <col style="width:100px;"/>
+                    <col style="width:10%;" />
+                    <col style="width:100px;" />
+                    <col style="width:10%;" />
+                    <col style="width:100px;" />
+                    <col style="width:80%;" />
+                </ColGroup>
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortBy="new Func<PullRequest, object>(x=>x.PullRequestId)">ID</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<PullRequest, object>(x=>x.Reviewers.First())">Status</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<PullRequest, object>(x=>x.Team)">Team</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<PullRequest, object>(x=>x.Repository.Name)">Repository</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<PullRequest, object>(x=>x.TargetRefName)">Target</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<PullRequest, object>(x=>x.Title)">Title</MudTableSortLabel></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="ID"><a href="@_configuration["AzDevOps:BaseUrl"]/@context.Repository.Project.Name/_git/@context.Repository.Name/pullrequest/@context.PullRequestId" target="_blank">@context.PullRequestId</a></MudTd>
+                    <MudTd DataLabel="Reviewers"> <PullRequestStatusComponent Reviewers="@context.Reviewers"></PullRequestStatusComponent></MudTd>
+                    <MudTd DataLabel="Team">@context.Team</MudTd>
+                    <MudTd DataLabel="Repository">@context.Repository.Name</MudTd>
+                    <MudTd DataLabel="Target">@context.TargetRefName</MudTd>
+                    <MudTd DataLabel="Title">@context.Title</MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+            </MudTable>
+        </div>
+    </div>
+  
+}
+else
+{
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+}
+
+
+@code {
+    IConfiguration _configuration;
+
+    private ElementReference ddlTeam;
+    private ElementReference ddlRepository;
+    private ElementReference ddlBranch;
+
+    AzDevOpsRepository _azDevOpsRepository;
+
+    string _selectedTeam;
+    string _selectedRepository;
+    string _selectedBranch;
+
+    List<string> _teams;
+    List<string> _repositories;
+    List<string> _branches;
+
+    private List<PullRequest> _pendingPullRequestsFiltered = new List<PullRequest>();
+    private List<PullRequest> _pendingPullRequestsAll = new List<PullRequest>();
+
+    //MudBlazor
+    bool dense = false;
+    bool hover = true;
+    bool fixed_header = false;
+    string search_string = "";
+    PullRequest selected_item = null;
+    HashSet<PullRequest> selected_items = new HashSet<PullRequest>();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var uri = navManager.ToAbsoluteUri(navManager.Uri);
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("Team", out var param))
+        {
+            //_Team = param.First();
+        }
+    }
+
+    protected void ChooseTeam(ChangeEventArgs e)
+    {
+
+        _selectedTeam = e.Value.ToString();
+        UpdateFilters();
+    }
+
+    protected void ChooseRepository(ChangeEventArgs e)
+    {
+        _selectedRepository = e.Value.ToString();
+        UpdateFilters();
+    }
+
+    protected void ChooseBranch(ChangeEventArgs e)
+    {
+        _selectedBranch = e.Value.ToString();
+        UpdateFilters();
+    }
+
+    protected void UpdateFilters()
+    {
+        _pendingPullRequestsFiltered = _pendingPullRequestsAll;
+
+        if (!_selectedTeam.Equals("Team"))
+        {
+            _pendingPullRequestsFiltered = _pendingPullRequestsFiltered.Where(pr => pr.Team.Equals(_selectedTeam)).ToList();
+        }
+
+        if (!_selectedRepository.Equals("Repository"))
+        {
+            _pendingPullRequestsFiltered = _pendingPullRequestsFiltered.Where(pr => pr.Repository.Name.Equals(_selectedRepository)).ToList();
+        }
+
+        if (!_selectedBranch.Equals("Branch"))
+        {
+            _pendingPullRequestsFiltered = _pendingPullRequestsFiltered.Where(pr => pr.TargetRefName.Equals(_selectedBranch)).ToList();
+        }
+    }
+
+    protected void ResetFilters()
+    {
+        _selectedTeam = "Team";
+        _selectedRepository = "Repository";
+        _selectedBranch = "Branch";
+        search_string = string.Empty;
+        _pendingPullRequestsFiltered = _pendingPullRequestsAll;
+        RefreshDropDownLists();
+    }
+
+    private async Task RefreshDropDownLists()
+    {
+        _teams = new List<string>();
+        _repositories = new List<string>();
+        _branches = new List<string>();
+
+        _teams = _pendingPullRequestsAll.Select(pr => pr.Team).Distinct().ToList();
+        _repositories = _pendingPullRequestsAll.Select(pr => pr.Repository.Name).Distinct().ToList();
+        _branches = _pendingPullRequestsAll.Select(pr => pr.TargetRefName).Distinct().ToList();
+
+        await JSRuntime.InvokeAsync<string>("ResetDropDownList", ddlTeam);
+        await JSRuntime.InvokeAsync<string>("ResetDropDownList", ddlRepository);
+        await JSRuntime.InvokeAsync<string>("ResetDropDownList", ddlBranch);
+
+        StateHasChanged();
+    }
+
+    bool FilterFunc(PullRequest element)
+    {
+        if (string.IsNullOrWhiteSpace(search_string))
+            return true;
+        if (element.Title.Contains(search_string, StringComparison.InvariantCultureIgnoreCase))
+            return true;
+        return false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _configuration = new ConfigurationBuilder()
+                                        //.SetBasePath(outputPath)
+                                        .AddJsonFile("appsettings.json", optional: true)
+                                        .AddUserSecrets("cf9af699-d3c2-4090-8231-fd3a1cb45a5f")
+                                        .AddEnvironmentVariables()
+                                        .Build();
+
+            _azDevOpsRepository = new AzDevOpsRepository(_configuration["AzDevOps:Url"], _configuration["AzDevOps:Key"], AutomationToolkit.Common.Http.AuthenticationType.DefaultCredentials);
+
+            var pullRequests = await _azDevOpsRepository.GetPullRequestsAsync(false, 1000);
+
+            pullRequests.ForEach(pr => _pendingPullRequestsAll.Add(Mapper.Map(pr)));
+
+            ResetFilters();
+
+            StateHasChanged();
+        }
+
+        //foreach (var pr in _pendingPullRequestsFiltered)
+        //{
+        //    pr.Threads = await _azDevOpsRepository.GetPullRequestThreadsAsync(pr.Repository.Id, pr.PullRequestId);
+        //    pr.Threads = pr.Threads.Where(t => t.Comments.Count(c => c.CommentType.Equals("text")) > 0).ToList();
+        //    pr.Threads = pr.Threads.Where(t => t.Status.Equals("active")).ToList();
+        //}
+    }
+}

@@ -1,0 +1,77 @@
+﻿<incident>
+	<id>20623348</id>
+	<incidentDate>2021-06-18T19:17:39</incidentDate>
+	<clientid>8</clientid>
+	<clientcode>BMW</clientcode>
+	<vin>XXXXXXXXXX7H98189</vin>
+	<rego>SMILE5</rego>
+	<description>Incident 20623348 Created for Soila Ring Company name N/A</description>
+	<longitude>153.056509</longitude>
+	<latitude>-27.485635</latitude>
+	<incidentcountry>AUS</incidentcountry>
+	<numberTaxiTrips>0</numberTaxiTrips>
+	<numberTrainBusTrips>0</numberTrainBusTrips>
+	<numberFlights>0</numberFlights>
+	<numberNightsHotel>0</numberNightsHotel>
+	<repatriationReuniting>false</repatriationReuniting>
+	<customerEligibility>BY_RSA_PROGRAM</customerEligibility>
+	<customerPayCase>false</customerPayCase>
+	<goodwillGranted>false</goodwillGranted>
+	<details>
+		<detail>
+			<entitytype>INCIDENT MASTER</entitytype>
+			<entityid>20623348</entityid>
+			<providerid/>
+			<providername/>
+			<description>Incident Event Recorded</description>
+			<numdaysdelay>0</numdaysdelay>
+			<attributes/>
+		</detail>
+		<detail>
+			<entitytype>COST ITEM</entitytype>
+			<entityid>21018310</entityid>
+			<providerid>271786</providerid>
+			<providername>THE READY TOWING GROUP</providername>
+			<description>Benefit Bmw Car Breakdown Towing assigned to customer</description>
+			<numdaysdelay>2</numdaysdelay>
+			<attributes>
+				<attribute name="TowKilometers">2</attribute>
+			</attributes>
+		</detail>
+		<detail>
+			<entitytype>COST ITEM</entitytype>
+			<entityid>21018312</entityid>
+			<providerid>271786</providerid>
+			<providername>THE READY TOWING GROUP</providername>
+			<description>Benefit Bmw Car Breakdown Towing assigned to customer</description>
+			<numdaysdelay>2</numdaysdelay>
+			<attributes>
+				<attribute name="TowKilometers">3</attribute>
+			</attributes>
+		</detail>
+		<detail>
+			<entitytype>COST ITEM</entitytype>
+			<entityid>21018647</entityid>
+			<providerid>5509</providerid>
+			<providername>HERTZ ADELAIDE AIRPORT</providername>
+			<description>Benefit Breakdown Rental Vehicle assigned to customer</description>
+			<numdaysdelay>2</numdaysdelay>
+			<attributes>
+				<attribute name="vehiclecategory">CAT1</attribute>
+				<attribute name="reason">Reason is 1</attribute>
+				<attribute name="manufacturer">MANU1</attribute>
+				<attribute name="model">ABC1</attribute>
+				<attribute name="numdays">1</attribute>
+			</attributes>
+		</detail>
+		<detail>
+			<entitytype>INCIDENT MASTER</entitytype>
+			<entityid>20623348</entityid>
+			<providerid/>
+			<providername/>
+			<description>Incident Event Recorded</description>
+			<numdaysdelay>0</numdaysdelay>
+			<attributes/>
+		</detail>
+	</details>
+</incident>

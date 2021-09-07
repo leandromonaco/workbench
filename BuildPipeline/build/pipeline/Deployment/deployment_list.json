@@ -1,0 +1,6 @@
+{
+  "applications": [
+    "BuildPipelineTest.WebApp.NetCore31.csproj",
+    "BuildPipelineTest.WebApp.NetFramework48.csproj"
+  ] 
+}

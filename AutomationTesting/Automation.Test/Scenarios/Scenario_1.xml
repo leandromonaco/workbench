@@ -1,0 +1,10 @@
+﻿<Steps>
+  <Step type="Navigation" value="https://google.com" wait="120"/>
+  <Step searchBy="id"     key="lst-ib" type="Textbox" value="Selenium Test" wait="120"/>
+  <Step searchBy="id"     key="lst-ib" type="Submit"  wait="120" />
+  <Loop DurationInMinutes="10">
+    <Step type="Navigation" value="https://google.com" wait="120"/>
+    <Step searchBy="id"     key="lst-ib" type="Textbox" value="{RandomValue}" wait="120"/>
+    <Step searchBy="id"     key="lst-ib" type="Submit"  wait="120" />
+  </Loop>
+</Steps>

@@ -1,0 +1,229 @@
+﻿@page "/developer"
+
+@using TeamAlignment.Core.Model.Database
+@using Microsoft.AspNetCore.WebUtilities
+@using TeamAlignment.Core.Common.Extensions
+@inject TeamAlignment.Repositories.DatabaseRepository DatabaseRepository
+@inject NavigationManager navManager
+
+<h3>Developer</h3>
+<!--https://docs.microsoft.com/en-us/dotnet/architecture/blazor-for-web-forms-developers/components-->
+
+@if (_developer == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="card">
+        <div class="card-content">
+            <h5>Basic Info</h5>
+            <div class="row">
+                <div class="input-field col m6 s12">
+                    <input id="first_name01" type="text" @bind-value="@_developer.Name">
+                    <label class="active">Full Name</label>
+                </div>
+                <div class="input-field col m6 s12">
+                    <div class="select-wrapper">
+                        <select tabindex="-1" class="select2" @bind="@_developer.Specialization.Id">
+                            <option value="" disabled="" selected="">Choose Specialization</option>
+                            @foreach (var specialization in _specializations)
+                            {
+                                <option value="@specialization.Id">@specialization.Description</option>
+                            }
+                        </select>
+                    </div>
+                    <label>Specialization</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col m6 s12">
+                    <input id="email5" type="email" @bind-value="@_developer.Email">
+                    <label class="active">Email</label>
+                </div>
+                <div class="input-field col m6 s12">
+                    <input id="user_id" type="text" @bind-value="@_developer.LoginUser">
+                    <label class="active">User ID</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s2">
+                    <a class="waves-effect waves-light btn" @onclick="SaveEmployee">Save</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card">
+        <div class="card-content">
+            <h5>Team Changes</h5>
+            <div class="row">
+                <div class="input-field col s2">
+                    <select @onchange="ChooseTeam">
+                        <option value="" disabled selected>Choose Team</option>
+                        @foreach (var team in _teams)
+                        {
+                            <option value="@team.Id">@team.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="input-field col s2">
+                    <input placeholder="2019-01-01" id="date-from" type="text" class="datepicker" @bind="@_dateFrom">
+                    <label for="date-from" class="active">From</label>
+                </div>
+                <div class="input-field col s2">
+                    <a class="waves-effect waves-light btn" @onclick="AddTeam">Add</a>
+                </div>
+            </div>
+            <table id="users-list-datatable" class="table">
+                <thead>
+                    <tr>
+                        <th class="sorting">Team</th>
+                        <th class="sorting">From</th>
+                        <th class="sorting">To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var teamChange in _developer.TeamChanges)
+                    {
+                        <tr>
+                            <td>@teamChange.Team.Name</td>
+                            <td>@teamChange.FirstDay</td>
+                            @if (teamChange.LastDay == null)
+                            {
+                                <td><input placeholder="2019-01-01" id="date-to" type="text" class="datepicker" @bind="@_dateTo"></td>
+                                <td><a class="waves-effect waves-light btn" @onclick="()=> LeaveTeam(teamChange.Id)">Leave</a></td>
+                            }
+                            else
+                            {
+                                <td>@teamChange.LastDay</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-content">
+            <h5>Time Off</h5>
+            <div class="row">
+                <div class="input-field col s2">
+                    <select @onchange="ChooseTimeOffCategory">
+                        <option value="" disabled selected>Choose Time Off Category</option>
+                        @foreach (var timeOffCategory in _timeOffCategories)
+                        {
+                            <option value="@timeOffCategory.Id">@timeOffCategory.Description</option>
+                        }
+                    </select>
+                </div>
+                <div class="input-field col s2">
+                    <input placeholder="2019-01-01" id="date-from2" type="text" class="datepicker" @bind="@_dateFrom">
+                    <label for="date-from" class="active">From</label>
+                </div>
+                <div class="input-field col s2">
+                    <input placeholder="2019-01-01" id="date-to2" type="text" class="datepicker" @bind="@_dateTo">
+                    <label for="date-to" class="active">To</label>
+                </div>
+
+                <a class="waves-effect waves-light btn" @onclick="AddTimeOff">Add</a>
+            </div>
+
+            <table class="responsive-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>From</th>
+                        <th>To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var timeOff in _developer.Leaves)
+                    {
+                        <tr>
+                            <td>@timeOff.Category.Description</td>
+                            <td>@timeOff.StartDate.ToString("d MMM yyyy")</td>
+                            <td>@timeOff.EndDate.ToString("d MMM yyyy")</td>
+                            <td><a class="waves-effect waves-light btn" @onclick="()=> DeleteTimeOff(timeOff.Id)">Delete</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+    private string _developerId;
+    private Guid _teamId;
+    private Employee _developer;
+    private byte _timeOffCategoryId;
+    private List<Specialization> _specializations;
+    private List<Team> _teams;
+    private DateTime _dateFrom = DateTime.Now.Date;
+    private DateTime _dateTo = DateTime.Now.Date;
+    private List<LeaveType> _timeOffCategories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = navManager.ToAbsoluteUri(navManager.Uri);
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var param))
+        {
+            _developerId = param.First();
+        }
+
+        _teams = await DatabaseRepository.GetTeamsAsync();
+        _specializations = await DatabaseRepository.GetSpecializationsAsync();
+        _timeOffCategories = DatabaseRepository.GetTimeOffCategories();
+
+        if (!string.IsNullOrEmpty(_developerId))
+        {
+            _developer = await DatabaseRepository.GetEmployee(Guid.Parse(_developerId));
+        }
+    }
+
+    protected void ChooseTeam(ChangeEventArgs e)
+    {
+        _teamId = Guid.Parse(e.Value.ToString());
+    }
+
+    protected async Task AddTeam()
+    {
+        var teamChange = new TeamChange();
+        teamChange.TeamId = _teamId;
+        teamChange.TeamMemberId = Guid.Parse(_developerId);
+        teamChange.FirstDay = _dateFrom;
+        teamChange.LastDay = null;
+        await DatabaseRepository.SaveTeamChangeAsync(teamChange);
+        _developer = await DatabaseRepository.GetEmployee(Guid.Parse(_developerId));
+    }
+
+    protected async Task AddTimeOff()
+    {
+        await DatabaseRepository.SaveTimeOffAsync(Guid.Parse(_developerId), _timeOffCategoryId, _dateFrom, _dateTo);
+        _developer = await DatabaseRepository.GetEmployee(Guid.Parse(_developerId));
+    }
+
+    protected void ChooseTimeOffCategory(ChangeEventArgs e)
+    {
+        _timeOffCategoryId = byte.Parse(e.Value.ToString());
+    }
+
+    protected async Task DeleteTimeOff(Guid id)
+    {
+        await DatabaseRepository.DeleteTimeOffAsync(id);
+        _developer = await DatabaseRepository.GetEmployee(Guid.Parse(_developerId));
+    }
+
+    protected async Task LeaveTeam(Guid teamChangeId)
+    {
+        await DatabaseRepository.UpdateTeamAllocation(teamChangeId, _dateTo);
+        _developer = await DatabaseRepository.GetEmployee(Guid.Parse(_developerId));
+    }
+
+    protected async Task SaveEmployee()
+    {
+        await DatabaseRepository.SaveEmployee(_developer);
+    }
+}

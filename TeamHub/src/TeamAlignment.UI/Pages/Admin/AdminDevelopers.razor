@@ -1,0 +1,75 @@
+﻿@page "/developers"
+
+@using TeamAlignment.Core.Model.Database
+@using TeamAlignment.Core.Common.Extensions
+@using Microsoft.AspNetCore.WebUtilities
+@inject TeamAlignment.Repositories.DatabaseRepository DatabaseRepository
+@inject NavigationManager navManager
+
+<h3>Developers</h3>
+<!--https://docs.microsoft.com/en-us/dotnet/architecture/blazor-for-web-forms-developers/components-->
+
+@if (_allDevelopers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="users-list-table">
+        <div class="card">
+            <div class="card-content">
+                <!-- datatable start -->
+                <div class="responsive-table">
+                    <table id="users-list-datatable" class="table">
+                        <thead>
+                            <tr>
+                                <th class="sorting">Name</th>
+                                <th class="sorting">Specialization</th>
+                                <th>edit</th>
+                                <th>view</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dev in _allDevelopers)
+                            {
+                            <tr>
+                                <td>@dev.Name</td>
+                                <td>@dev.Specialization.Description</td>
+                                <td><a href="developer?id=@dev.Id"><i class="material-icons">edit</i></a></td>
+                                <td><a href="developer?id=@dev.Id"><i class="material-icons">remove_red_eye</i></a></td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- datatable ends -->
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private string _teamName;
+    private List<Employee> _allDevelopers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = navManager.ToAbsoluteUri(navManager.Uri);
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("team", out var param))
+        {
+            _teamName = param.First();
+        }
+
+        if (_teamName==null)
+        {
+            _allDevelopers = await DatabaseRepository.GetDevelopers();
+        }
+        else
+        {
+            var team = await DatabaseRepository.GetTeamAsync(_teamName);
+            _allDevelopers = team.GetDevelopers();
+        }
+
+    }
+}

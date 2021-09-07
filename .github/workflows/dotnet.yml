@@ -1,0 +1,22 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: PowerShell script
+      # You may pin to the exact commit or the version.
+      # uses: Amadevus/pwsh-script@1f1751bbf3d1a92127bfc6c32403283625880cbf
+      uses: Amadevus/pwsh-script@v2.0.1
+      with:
+        # PowerShell script to execute in Actions-hydrated context
+        script: ./IntegrationConnectors/build/build.ps1 --root IntegrationConnectors/build -NugetUrl "https://api.nuget.org/v3/index.json" -NugetApiKey ${{ secrets.NUGET_API_KEY }}

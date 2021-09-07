@@ -1,0 +1,48 @@
+﻿@using BlazorComponents.ChartJs.Model
+@using BlazorComponents.ChartJs
+@inject IJSRuntime JSRuntime
+
+@if(Datasets!=null && Labels!=null)
+{ 
+    <canvas id="@string.Join("BarChart", this.Id)" width="800" height="400"></canvas>
+}
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public ChartType Type { get; set; }
+
+    [Parameter]
+    public bool IsStacked { get; set; }
+
+    [Parameter]
+    public List<ChartDataset> Datasets { get; set; }
+
+    [Parameter]
+    public List<string> Labels { get; set; }
+
+    private Chart _myChart = new Chart();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (Datasets != null && Labels != null)
+            {
+                _myChart.Id = string.Join("BarChart", Id);
+                _myChart.Type = Type;
+                _myChart.IsStacked = IsStacked;
+                _myChart.Labels = Labels;
+
+                _myChart.Datasets = new List<ChartDataset>();
+                _myChart.Datasets.AddRange(Datasets);
+
+                ChartJsBlazorJSInterop js = new ChartJsBlazorJSInterop(JSRuntime);
+                await js.DisplayBarChart(_myChart);
+            }
+        }
+    }
+}

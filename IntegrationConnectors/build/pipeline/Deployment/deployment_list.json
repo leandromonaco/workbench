@@ -1,0 +1,17 @@
+{
+  "applications": [
+    "IntegrationConnectors.Exchange.csproj",
+    "IntegrationConnectors.EuropeanCentralBank.csproj",
+    "IntegrationConnectors.Confluence.csproj",
+    "IntegrationConnectors.Common.csproj",
+    "IntegrationConnectors.AzDevOps.csproj",
+    "IntegrationConnectors.VersionOne.csproj",
+    "IntegrationConnectors.Twilio.csproj",
+    "IntegrationConnectors.SonaType.csproj",
+    "IntegrationConnectors.SendGrid.csproj",
+    "IntegrationConnectors.Proget.csproj",
+    "IntegrationConnectors.Pocket.csproj",
+    "IntegrationConnectors.Octopus.csproj",
+    "IntegrationConnectors.Fortify.csproj"
+  ] 
+}

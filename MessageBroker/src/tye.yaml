@@ -1,0 +1,29 @@
+# tye application configuration file
+# read all about it at https://github.com/dotnet/tye
+#
+# when you've given us a try, we'd love to know what you think:
+#    https://aka.ms/AA7q20u
+#
+name: nservicebus
+
+services:
+
+- name: nservicebus-receiver
+  project: NServiceBus.Receiver/NServiceBus.Receiver.csproj
+
+- name: nservicebus-api
+  project: NServiceBus.API/NServiceBus.API.csproj
+
+- name: nservicebus-database
+  image: mcr.microsoft.com/mssql/server:2019-latest
+  bindings:
+  - connectionString: Data Source=host.docker.internal,1433;Initial Catalog=NServiceBusDB;Persist Security Info=True;User ID=sa;Password=${env:SA_PASSWORD}
+    port: 1433
+  env:
+  - name: SA_PASSWORD
+    value: NS3rv1c3Bus
+  - name: ACCEPT_EULA
+    value: Y
+  volumes:
+  - name: nservicebus-storage
+    target: /var/opt/mssql

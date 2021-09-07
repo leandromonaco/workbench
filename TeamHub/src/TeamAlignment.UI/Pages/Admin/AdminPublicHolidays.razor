@@ -1,0 +1,84 @@
+﻿@page "/publicholidays"
+
+@using TeamAlignment.Core.Model.Database
+@inject TeamAlignment.Repositories.DatabaseRepository DatabaseRepository
+
+<div class="card">
+    <div class="card-content">
+        <h5>Public Holidays</h5>
+        <div class="row">
+            <div class="input-field col s2">
+                <select @onchange="ChooseLocation">
+                    <option value="" disabled selected>Choose Location</option>
+                    @foreach (var location in _locations)
+                    {
+                        <option value="@location.Id">@location.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="input-field col s2">
+                <input placeholder="2019-01-01" id="milestone-date" type="text" class="datepicker" @bind="@_publicHolidayDate">
+                <label for="milestone-date" class="active">Date</label>
+            </div>
+            <div class="input-field col s2">
+                <input placeholder="Production Deployment" id="milestone-description" type="text" @bind="@_publicHolidayDescription">
+                <label for="milestone-description" class="active">Description</label>
+            </div>
+            <div class="input-field col s2">
+                <a class="waves-effect waves-light btn" @onclick="AddPublicHoliday">Add</a>
+            </div>
+        </div>
+        <table class="responsive-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var publicHoliday in _publicholidays)
+                {
+                    <tr>
+                        <td>@publicHoliday.Location.Name</td>
+                        <td>@publicHoliday.PublicHoliday.Date.ToString("D")</td>
+                        <td>@publicHoliday.PublicHoliday.Description</td>
+                        <td><a class="waves-effect waves-light btn" @onclick="()=> DeletePublicHoliday(publicHoliday.PublicHolidayId)">Delete</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    private IEnumerable<PublicHolidayLocation> _publicholidays;
+    private IEnumerable<Location> _locations;
+    private DateTime _publicHolidayDate;
+    private string _publicHolidayDescription;
+    private Guid _locationId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _publicholidays = await DatabaseRepository.GetPublicHolidays();
+        _locations = await DatabaseRepository.GetLocations();
+    }
+
+    protected void ChooseLocation(ChangeEventArgs e)
+    {
+        _locationId = Guid.Parse(e.Value.ToString());
+    }
+    
+    protected async Task AddPublicHoliday()
+    {
+        await DatabaseRepository.SavePublicHolidayAsync(_locationId, _publicHolidayDate, _publicHolidayDescription);
+        _publicholidays = await DatabaseRepository.GetPublicHolidays();
+        this.StateHasChanged();
+    }
+
+    protected async Task DeletePublicHoliday(Guid id)
+    {
+        await DatabaseRepository.DeletePublicHolidayAsync(id);
+        _publicholidays = await DatabaseRepository.GetPublicHolidays();
+        this.StateHasChanged();
+    }
+}

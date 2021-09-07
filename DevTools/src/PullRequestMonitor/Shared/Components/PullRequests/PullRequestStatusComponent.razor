@@ -1,0 +1,34 @@
+﻿@using AutomationToolkit.AzDevOps.Model.PullRequest
+
+@if (Reviewers.Count() > 0)
+{
+    @if (Reviewers.Where(r => r.Vote.Equals(-10)).Count() > 0)
+    {
+        <span class="badge pill red">Rejected</span>
+    }
+    else if (Reviewers.Where(r => r.Vote.Equals(-5)).Count() > 0)
+    {
+        <span class="badge pill orange">Waiting for Author</span>
+    }
+    else if (Reviewers.Count(r => (r.Vote.Equals(10) ||
+                                   r.Vote.Equals(5)) &&
+                                   r.IsRequired) == Reviewers.Where(r => r.IsRequired).Count())
+    {
+        <span class="badge pill green">Ready for Completion</span>
+    }
+    else
+    {
+        <span class="badge pill red">Pending</span>
+    }
+}
+
+@code {
+
+    [Parameter]
+    public List<AzDevOpsPullRequestReviewer> Reviewers { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+}

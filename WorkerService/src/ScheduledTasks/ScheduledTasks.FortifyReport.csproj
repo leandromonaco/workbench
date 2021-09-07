@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>64e32b73-d726-4114-8d8e-21cbd1b1497b</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="ReportHelper.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IntegrationConnectors.Fortify" Version="5.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

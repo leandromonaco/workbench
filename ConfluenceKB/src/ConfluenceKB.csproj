@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>cc850d98-20e6-4d48-ac6c-40b7611f4c5b</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IntegrationConnectors.Confluence" Version="5.0.13" />
+  </ItemGroup>
+
+</Project>

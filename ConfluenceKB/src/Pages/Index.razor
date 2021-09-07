@@ -1,0 +1,71 @@
+﻿@page "/"
+
+@using IntegrationConnectors.Confluence.Model
+@using Microsoft.AspNetCore.WebUtilities
+@inject IntegrationConnectors.Confluence.ConfluenceConnector ConfluenceConnector
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration 
+@inject NavigationManager navManager
+
+<h3>Confluence Page Search</h3>
+
+
+@if (_confluencePageSearchResult == null)
+{
+    <p>No Results</p>
+}
+else
+{
+    <table class="responsive-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Last Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var confluencePage in _confluencePageSearchResult)
+            {
+                <tr>
+                    <td><a href="@string.Concat(Configuration["Confluence:BaseUrl"], confluencePage.Links.WebUi)">@confluencePage.Id</a> - @confluencePage.Title</td>
+                    <td>@confluencePage.History.LastUpdated.When.ToString("d MMM yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+
+    private List<ConfluencePageSearchResult> _confluencePageSearchResult;
+
+    private string _username;
+    private string _page;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = navManager.ToAbsoluteUri(navManager.Uri);
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("username", out var param3))
+        {
+            _username = param3.First();
+        }
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var param4))
+        {
+            _page = param4.First();
+        }
+
+        if (_username != null)
+        {
+            _confluencePageSearchResult = await ConfluenceConnector.SearchContentByContributor(_username);
+        }
+
+        if (_page != null)
+        {
+            _confluencePageSearchResult = await ConfluenceConnector.SearchContentByParentId(_page);
+        }
+    }
+
+
+}

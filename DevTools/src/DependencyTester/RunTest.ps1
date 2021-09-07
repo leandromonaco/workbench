@@ -1,0 +1,1 @@
+Invoke-Expression ".\DependencyTester.exe --hostname 'google.com'"

@@ -1,0 +1,63 @@
+﻿@page "/"
+@using BlazorComponents.ChartJs
+@using BlazorComponents.ChartJs.Model
+
+Welcome to the demo page
+
+<ChartComponent Id="Test1" Type="ChartType.BarHorizontal" IsStacked="true" Labels="_labels" Datasets="_datasets"></ChartComponent>
+<ChartComponent Id="Test2" Type="ChartType.BarVertical" IsStacked="false" Labels="_labels" Datasets="_datasets"></ChartComponent>
+<ChartComponent Id="Test3" Type="ChartType.Line" IsStacked="true" Labels="_labels" Datasets="_datasets"></ChartComponent>
+<ChartComponent Id="Test4" Type="ChartType.Line" IsStacked="false" Labels="_labels" Datasets="_datasets"></ChartComponent>
+<ChartComponent Id="Test5" Type="ChartType.Pie" Labels="_labels" Datasets="_datasets2"></ChartComponent>
+<ChartComponent Id="Test6" Type="ChartType.Doughnut" Labels="_labels" Datasets="_datasets2"></ChartComponent>
+
+@code {
+
+    List<string> _labels;
+    List<ChartDataset> _datasets;
+    List<ChartDataset> _datasets2;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _labels = new List<string>() { "label1", "label2", "label3", "label4", "label5", "label6", "label7" };
+            _datasets = new List<ChartDataset>();
+
+            var dataset = new ChartDataset();
+            dataset.Label = "Test";
+            dataset.Data = new List<double>() { 1, 2, 3, 4, 5, 6, 7 };
+            dataset.BackgroundColor = new List<string>();
+            dataset.Data.ForEach(d => dataset.BackgroundColor.Add(ColorHelper.GetColor(ColorCode.Red, 0.7)));
+            dataset.BorderColor = ColorHelper.GetColor(ColorCode.Red, 1);
+            dataset.BorderWidth = 1;
+
+            _datasets.Add(dataset);
+
+            var dataset2 = new ChartDataset();
+            dataset2.Label = "Test";
+            dataset2.Data = new List<double>() { 7, 6, 5, 4, 3, 2, 1 };
+            dataset2.BackgroundColor = new List<string>();
+            dataset2.Data.ForEach(d => dataset2.BackgroundColor.Add(ColorHelper.GetColor(ColorCode.Blue, 0.7)));
+            dataset2.BorderColor = ColorHelper.GetColor(ColorCode.Blue, 1);
+            dataset2.BorderWidth = 1;
+
+            _datasets.Add(dataset2);
+
+
+            _datasets2 = new List<ChartDataset>();
+
+            var dataset3 = new ChartDataset();
+            dataset3.Label = "Test";
+            dataset3.Data = new List<double>() { 1, 2, 3, 4, 5, 6, 7 };
+            dataset3.BackgroundColor = new List<string>() { ColorHelper.GetColor(ColorCode.Red, 1), ColorHelper.GetColor(ColorCode.Blue, 1), ColorHelper.GetColor(ColorCode.Green, 1), ColorHelper.GetColor(ColorCode.Yellow, 1), ColorHelper.GetColor(ColorCode.Orange, 1), ColorHelper.GetColor(ColorCode.Grey, 1), "white" };
+            dataset3.BorderColor = ColorHelper.GetColor(ColorCode.Red, 1);
+            dataset3.BorderWidth = 0;
+
+            _datasets2.Add(dataset3);
+
+            StateHasChanged();
+        }
+    }
+
+}

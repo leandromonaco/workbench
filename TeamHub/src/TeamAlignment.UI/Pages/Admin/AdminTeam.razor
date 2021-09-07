@@ -1,0 +1,184 @@
+﻿@page "/team"
+
+@using TeamAlignment.Core.Common.Extensions
+@using TeamAlignment.Core.Model.Comparers
+@using TeamAlignment.Core.Model.Database
+@using TeamAlignment.Core.Common.Extensions
+@using Microsoft.AspNetCore.WebUtilities
+@inject TeamAlignment.Repositories.DatabaseRepository DatabaseRepository
+@inject NavigationManager navManager
+@inject IJSRuntime JSRuntime
+<!--https://docs.microsoft.com/en-us/dotnet/architecture/blazor-for-web-forms-developers/components-->
+
+@if (_developers == null || _timeOffCategories == null || _timeOffs == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="card">
+        <div class="card-content">
+            <h5>Time Off</h5>
+            <div class="row">
+                <div class="input-field col s2">
+                    <select @onchange="ChooseDeveloper">
+                        <option value="" disabled selected>Choose Team Member</option>
+                        @foreach (var developer in _developers)
+                        {
+                            <option value="@developer.Id">@developer.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="input-field col s2">
+                    <select @onchange="ChooseTimeOffCategory">
+                        <option value="" disabled selected>Choose Time Off Category</option>
+                        @foreach (var timeOffCategory in _timeOffCategories)
+                        {
+                            <option value="@timeOffCategory.Id">@timeOffCategory.Description</option>
+                        }
+                    </select>
+                </div>
+                <div class="input-field col s2">
+                    <input placeholder="2019-01-01" id="datefrom2" type="text" class="datepicker" @bind="@_dateFrom">
+                    <label for="date-from" class="active">From</label>
+                </div>
+                <div class="input-field col s2">
+                    <input placeholder="2019-01-01" id="dateto2" type="text" class="datepicker" @bind="@_dateTo">
+                    <label for="date-to" class="active">To</label>
+                </div>
+
+                <a class="waves-effect waves-light btn" @onclick="AddTimeOff">Add</a>
+            </div>
+
+            <table class="responsive-table">
+                <thead>
+                    <tr>
+                        <th>Developer</th>
+                        <th>Category</th>
+                        <th>From</th>
+                        <th>To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var timeOff in _timeOffs)
+                    {
+                        <tr>
+                            <td>@timeOff.TeamMember.Name</td>
+                            <td>@timeOff.Category.Description</td>
+                            <td>@timeOff.StartDate.ToString("d MMM yyyy")</td>
+                            <td>@timeOff.EndDate.ToString("d MMM yyyy")</td>
+                            <td><a class="waves-effect waves-light btn" @onclick="()=> DeleteTimeOff(timeOff.Id)">Delete</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            <h5>Milestones</h5>
+            <div class="row">
+                <div class="input-field col s2">
+                    <input placeholder="2019-01-01" id="milestoneDate" type="text" class="datepicker" @bind="@_milestoneDate">
+                    <label for="milestone-date" class="active">Date</label>
+                </div>
+                <div class="input-field col s2">
+                    <input placeholder="Production Deployment" id="milestone-description" type="text" @bind="@_milestoneDescription">
+                    <label for="milestone-description" class="active">Description</label>
+                </div>
+                <div class="input-field col s2">
+                    <a class="waves-effect waves-light btn" @onclick="AddMilestone">Add</a>
+                </div>
+            </div>
+            <table class="responsive-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var milestone in @_team.Milestones)
+                    {
+                        <tr>
+                            <td>@milestone.Date</td>
+                            <td>@milestone.Description</td>
+                            <td><a class="waves-effect waves-light btn" @onclick="()=> DeleteMilestone(milestone.Id)">Delete</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+
+    private Team _team;
+    private List<Employee> _developers;
+    private string _teamName;
+    private Guid _developerId;
+    private byte _timeOffCategoryId;
+    private DateTime _milestoneDate = DateTime.Now.Date;
+    private string _milestoneDescription;
+    private DateTime _dateFrom = DateTime.Now.Date;
+    private DateTime _dateTo = DateTime.Now.Date;
+    private List<Leave> _timeOffs;
+    private List<LeaveType> _timeOffCategories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = navManager.ToAbsoluteUri(navManager.Uri);
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("name", out var param))
+        {
+            _teamName = param.First();
+        }
+
+        _team = await DatabaseRepository.GetTeamAsync(_teamName);
+        _timeOffCategories = DatabaseRepository.GetTimeOffCategories();
+        _developers = _team.GetDevelopers();
+        _timeOffs = await DatabaseRepository.GetTeamTimeOffAsync(_team);
+    }
+
+    protected void ChooseDeveloper(ChangeEventArgs e)
+    {
+        _developerId = Guid.Parse(e.Value.ToString());
+    }
+
+    protected void ChooseTimeOffCategory(ChangeEventArgs e)
+    {
+        _timeOffCategoryId = byte.Parse(e.Value.ToString());
+    }
+
+    protected async Task AddTimeOff()
+    {
+        await DatabaseRepository.SaveTimeOffAsync(_developerId, _timeOffCategoryId, _dateFrom, _dateTo);
+        _timeOffs = await DatabaseRepository.GetTeamTimeOffAsync(_team);
+    }
+
+    protected async Task DeleteTimeOff(Guid id)
+    {
+        await DatabaseRepository.DeleteTimeOffAsync(id);
+        _timeOffs = await DatabaseRepository.GetTeamTimeOffAsync(_team);
+    }
+
+    protected async Task AddMilestone()
+    {
+        await DatabaseRepository.SaveMilestoneAsync(_team.Id, _milestoneDate, _milestoneDescription);
+        _team = await DatabaseRepository.GetTeamAsync(_teamName);
+    }
+
+    protected async Task DeleteMilestone(Guid id)
+    {
+        await DatabaseRepository.DeleteMilestoneAsync(id);
+        _team = await DatabaseRepository.GetTeamAsync(_teamName);
+        this.StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeAsync<object>("DatePickerSetup");
+    }
+}

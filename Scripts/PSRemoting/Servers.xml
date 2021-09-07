@@ -1,0 +1,11 @@
+<ServerGroups>
+  <ServerGroup name="GROUP_A">
+    <Servers>
+      <Server name="SERVER1.domain.com"/>
+	  <Server name="SERVER2.domain.com"/>
+	  <Server name="SERVER3.domain.com"/>
+	  <Server name="SERVER4.domain.com"/>
+	  <Server name="SERVER5.domain.com"/>
+    </Servers>
+  </ServerGroup>
+</ServerGroups>

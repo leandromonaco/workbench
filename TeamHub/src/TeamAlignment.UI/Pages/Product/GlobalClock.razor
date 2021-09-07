@@ -1,0 +1,52 @@
+﻿@page "/clock"
+
+@using TeamAlignment.Core.Common.Extensions
+@using TeamAlignment.Core.Model.Database
+@using Microsoft.AspNetCore.WebUtilities
+@using TeamAlignment.Core.Model.Presentation
+@inject TeamAlignment.Repositories.DatabaseRepository DatabaseRepository
+@inject NavigationManager navManager
+
+<h3>Teams</h3>
+@if (_teamClocks.Count > 0)
+{
+    @foreach (var teamClock in _teamClocks)
+    {
+        <p>@teamClock.TeamName : @teamClock.LocalTime.ToString("ddd dd MMM | H:mm")</p>
+    }
+}
+
+
+@code {
+
+    private string _productName;
+    private List<TeamClock> _teamClocks = new List<TeamClock>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = navManager.ToAbsoluteUri(navManager.Uri);
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("product", out var param))
+        {
+            _productName = param.First();
+        }
+
+        if (_productName == null)
+        {
+            _productName = "VB Next";
+        }
+
+        var now = DateTime.UtcNow;
+        var teams = (await DatabaseRepository.GetProductAsync(_productName)).GetTeams();
+        foreach (var team in teams)
+        {
+            var teamClock = new TeamClock();
+            teamClock.TeamName = team.Name;
+            teamClock.LocalTime = now.AdjustUTCTimeZone(team.Location.TimeZone.Name);
+            _teamClocks.Add(teamClock);
+        }
+
+        _teamClocks = _teamClocks.OrderBy(c => c.LocalTime).ToList();
+
+    }
+}

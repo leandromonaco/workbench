@@ -1,0 +1,116 @@
+﻿@page "/survey"
+
+@using  TeamAlignment.Repositories
+@using TeamAlignment.Core.Common.Extensions
+@using TeamAlignment.Core.Model.Database
+@using Microsoft.AspNetCore.WebUtilities
+@inject TeamAlignment.Repositories.DatabaseRepository DatabaseRepository
+@inject NavigationManager navManager
+
+@if (_questionnaire == null || _employee == null || _period == null)
+{
+    <p><em>Invalid Survey</em></p>
+}
+else
+{
+    if (_isAnswered)
+    {
+        <p><em>Your Survey for this period has been answered. Thank you</em></p>
+    }
+    else
+    {
+        @foreach (var questionnaireSection in _questionnaire.QuestionnaireSections)
+        {
+            <h4>@questionnaireSection.Description</h4>
+            <div class="row">
+                <div class="col s8">
+                    <div class="card">
+                        <div class="card-content">
+                            @foreach (var question in questionnaireSection.QuestionnaireQuestions)
+                            {
+                                <h4 class="card-title mb-0">@question.Description</h4>
+                                <p>
+                                    @for (int i = 0; i <= 10; i++)
+                                    {
+                                        var score = i;
+                                        <label>
+                                            <input type="radio" name="@string.Concat("rdo",question.Id.ToString())" value="@i" @onclick="(e => SetScore(question, score))" />
+                                            <span>@i</span>
+                                        </label>
+                                    }
+                                    <div class="input-field">
+                                        <input id="@string.Concat("txt",question.Id.ToString())" type="text">
+                                        <label for="@string.Concat("txt",question.Id.ToString())" class="">If score is lower than 7, please provide a brief explanation</label>
+                                    </div>
+                                </p>
+                            }
+                        </div>
+                    </div>
+                    <a class="waves-effect waves-light btn" @onclick="SubmitAnswers">Submit</a>
+                </div>
+            </div>
+        }
+    }
+}
+
+
+@code {
+
+    private QuestionnairePeriod _period;
+    private Employee _employee;
+    private Questionnaire _questionnaire;
+    private Guid _surveyId;
+    private Guid _employeeId;
+    private Guid _periodId;
+    private bool _isAnswered;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = navManager.ToAbsoluteUri(navManager.Uri);
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var param))
+        {
+            if (!Guid.TryParse(param.First(), out _surveyId))
+            {
+                _surveyId = new Guid();
+            }
+        }
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("e", out var param1))
+        {
+            if (!Guid.TryParse(param1.First(), out _employeeId))
+            {
+                _employeeId = new Guid();
+            }
+        }
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("p", out var param2))
+        {
+            if (!Guid.TryParse(param2.First(), out _periodId))
+            {
+                _periodId = new Guid();
+            }
+        }
+
+        _questionnaire = await DatabaseRepository.GetQuestionnaire(_surveyId);
+        _employee = await DatabaseRepository.GetEmployee(_employeeId);
+        _period = await DatabaseRepository.GetPeriod(_periodId);
+
+        _isAnswered = await DatabaseRepository.IsQuestionnaireAnswered(_questionnaire, _employee, _period);
+    }
+
+    protected void SetScore(QuestionnaireQuestion question, int score)
+    {
+        question.Score = score;
+    }
+
+    protected async Task SubmitAnswers()
+    {
+        _questionnaire.QuestionnairePeriod = _period;
+        var result = await DatabaseRepository.SaveQuestionnaireAnswers(_questionnaire, _employee, _period);
+        if (result == true)
+        {
+            _isAnswered = true;
+        }
+    }
+}
