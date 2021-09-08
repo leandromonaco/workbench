@@ -36,5 +36,9 @@ namespace InfrastructureTester
         public string RestUser { get; set; }
         [Option("restPassword", Required = false, HelpText = "restPassword")]
         public string RestPassword { get; set; }
+        [Option("proxy", Required = false, HelpText = "http://proxy-name:8080")]
+        public string Proxy { get; set; }
+        [Option("ignoreSslErrors", Required = false, HelpText = "ignoreSslErrors")]
+        public bool ignoreSslErrors { get; set; }
     }
 }

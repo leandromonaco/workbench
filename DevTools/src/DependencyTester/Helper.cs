@@ -15,6 +15,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Linq;
 using Serilog.Debugging;
 using System.Text;
+using System.Net.Security;
 
 namespace InfrastructureTester
 {
@@ -59,10 +60,40 @@ namespace InfrastructureTester
 
         }
 
-        internal static void CheckRestService(string restUrl, string restVerb, string restUser, string restPassword)
+        internal static void CheckRestService(string restUrl, string restVerb, string restUser, string restPassword, string proxy, bool ignoreSslErrors)
         {
             HttpResponseMessage result = null;
-            var httpClient = new HttpClient(new HttpClientHandler());
+
+            var httpClientHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
+                                                                        {
+
+                                                                            var certificate = new X509Certificate2(cert.GetRawCertData());
+                                                                            Console.WriteLine($"sslPolicyErrors {sslPolicyErrors.ToString()} | Subject {cert.Subject} | NotAfter {certificate.NotAfter} | NotBefore {certificate.NotBefore} | Issuer {certificate.Issuer}");
+                                                                            if (ignoreSslErrors)
+                                                                            {
+                                                                                return true;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                if (sslPolicyErrors == SslPolicyErrors.None)
+                                                                                {
+                                                                                    return true;   //Is valid
+                                                                            }
+                                                                                return false;
+                                                                            }
+                                                                        }
+            };
+
+            
+            if (!string.IsNullOrEmpty(proxy))
+            {
+                httpClientHandler.Proxy = new WebProxy(proxy);
+            }
+
+            var httpClient = new HttpClient(httpClientHandler);
+
             var key = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{restUser}:{restPassword}"));
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Basic {key}");
 
@@ -79,8 +110,9 @@ namespace InfrastructureTester
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"REST Service: {restUrl} Failed");
+                Console.WriteLine($"REST Service: {restUrl} Failed with Status Code {result.StatusCode} ({result.ReasonPhrase})");
             }
+            Console.WriteLine($"REST Response: {result.Content.ReadAsStringAsync().Result}");
         }
 
         public static void CheckSeqLogging(string seqLoggingUrl, string seqLoggingApiKey)

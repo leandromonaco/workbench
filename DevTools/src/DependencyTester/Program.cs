@@ -19,6 +19,8 @@ string restUrl = string.Empty;
 string restVerb = string.Empty;
 string restUser = string.Empty;
 string restPassword = string.Empty;
+string proxy = string.Empty;
+bool ignoreSslErrors = false;
 
 
 Parser.Default.ParseArguments<Options>(args)
@@ -39,11 +41,13 @@ Parser.Default.ParseArguments<Options>(args)
            restVerb = o.RestVerb;
            restUser = o.RestUser;
            restPassword = o.RestPassword;
+           proxy = o.Proxy;
+           ignoreSslErrors = o.ignoreSslErrors;
        });
 
 if (!string.IsNullOrEmpty(restUrl) && !string.IsNullOrEmpty(restVerb))
 {
-    Helper.CheckRestService(restUrl, restVerb, restUser, restPassword);
+    Helper.CheckRestService(restUrl, restVerb, restUser, restPassword, proxy, ignoreSslErrors);
 }
 
 if (!string.IsNullOrEmpty(seqUrl) && !string.IsNullOrEmpty(seqApiKey))
