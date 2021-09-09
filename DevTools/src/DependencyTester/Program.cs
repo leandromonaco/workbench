@@ -1,5 +1,5 @@
 ﻿using CommandLine;
-using InfrastructureTester;
+using DependencyTester;
 using System;
 using System.Security.Principal;
 

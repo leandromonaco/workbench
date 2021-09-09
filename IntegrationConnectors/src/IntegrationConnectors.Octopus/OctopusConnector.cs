@@ -22,11 +22,25 @@ namespace IntegrationConnectors.Octopus
             return envs.Items;
         }
 
+        public async Task<OctopusEnvironment> GetEnvironmentAsync(string environmentId)
+        {
+            var response = await GetAsync($"{_url}/{_spaceId}/environments/{environmentId}");
+            var environment = JsonSerializer.Deserialize<OctopusEnvironment>(response, _jsonSerializerOptions);
+            return environment;
+        }
+
         public async Task<List<OctopusMachine>> GetMachinesAsync(string environmentId)
         {
             var response = await GetAsync($"{_url}/{_spaceId}/environments/{environmentId}/machines");
             var machines = JsonSerializer.Deserialize<OctopusMachineResponse>(response, _jsonSerializerOptions);
             return machines.Items;
+        }
+
+        public async Task<OctopusMachine> GetMachineAsync(string machineId)
+        {
+            var response = await GetAsync($"{_url}/{_spaceId}/machines/{machineId}");
+            var machine = JsonSerializer.Deserialize<OctopusMachine>(response, _jsonSerializerOptions);
+            return machine;
         }
 
         public async Task<List<OctopusDeployment>> GetDeploymentsAsync(string machineId)

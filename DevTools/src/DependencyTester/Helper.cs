@@ -17,7 +17,7 @@ using Serilog.Debugging;
 using System.Text;
 using System.Net.Security;
 
-namespace InfrastructureTester
+namespace DependencyTester
 {
     class Helper
     {

@@ -1,13 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace IntegrationConnectors.Octopus.Model
 {
     public class OctopusScope
     {
-        public List<string> Environment { get; set; }
-        public List<string> Machine { get; set; }
-        public List<string> Action { get; set; }
-        public List<string> Role { get; set; }
-        public List<string> Channel { get; set; }
+        [JsonPropertyName("Environment")]
+        public List<string> Environments { get; set; }
+        [JsonPropertyName("Machine")]
+        public List<string> Machines { get; set; }
+        [JsonPropertyName("Action")]
+        public List<string> Actions { get; set; }
+        [JsonPropertyName("Role")]
+        public List<string> Roles { get; set; }
+        [JsonPropertyName("Channel")]
+        public List<string> Channels { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace InfrastructureTester
+namespace DependencyTester
 {
     public class Options
     {
