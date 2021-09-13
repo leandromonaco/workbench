@@ -133,6 +133,16 @@ switch (display)
         var certificates = await _octopusRepository.GetCertificatesAsync();
         jsonDisplay = System.Text.Json.JsonSerializer.Serialize(certificates, new JsonSerializerOptions() { WriteIndented = true }); ;
         break;
+    case "projects":
+        output = $"{space}_projects.json";
+        var projects = await _octopusRepository.GetProjectsAsync();
+        jsonDisplay = System.Text.Json.JsonSerializer.Serialize(projects, new JsonSerializerOptions() { WriteIndented = true }); ;
+        break;
+    case "variablesets":
+        output = $"{space}_variablesets.json";
+        var variablesets = await _octopusRepository.GetVariableSetsAsync();
+        jsonDisplay = System.Text.Json.JsonSerializer.Serialize(variablesets, new JsonSerializerOptions() { WriteIndented = true }); ;
+        break;
     default:
         Console.WriteLine("Error: See Display Options using --help");
         break;
