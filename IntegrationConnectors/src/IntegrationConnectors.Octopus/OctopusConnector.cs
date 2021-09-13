@@ -88,5 +88,12 @@ namespace IntegrationConnectors.Octopus
         {
             await PutAsync($"{_url}/{_spaceId}/deploymentprocesses/{targetDeploymentProcessId}", jsonContent);
         }
+
+        public async Task<OctopusCertificates> GetCertificatesAsync()
+        {
+            var response = await GetAsync($"{_url}/{_spaceId}/certificates?take=100");
+            var certificates = JsonSerializer.Deserialize<OctopusCertificates>(response);
+            return certificates;
+        }
     }
 }

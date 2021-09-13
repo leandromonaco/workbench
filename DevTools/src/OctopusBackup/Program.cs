@@ -97,6 +97,7 @@ switch (display)
             }
         }
 
+        //Helper.ExportExcel(variablesOutput);
         jsonDisplay = System.Text.Json.JsonSerializer.Serialize(variablesOutput, new JsonSerializerOptions() { WriteIndented = true }); ;
         break;
     case "environments":
@@ -126,6 +127,11 @@ switch (display)
         }
 
         jsonDisplay = System.Text.Json.JsonSerializer.Serialize(machinesDetails, new JsonSerializerOptions() { WriteIndented = true }); ;
+        break;
+    case "certificates":
+        output = $"{space}_certificates.json";
+        var certificates = await _octopusRepository.GetCertificatesAsync();
+        jsonDisplay = System.Text.Json.JsonSerializer.Serialize(certificates, new JsonSerializerOptions() { WriteIndented = true }); ;
         break;
     default:
         Console.WriteLine("Error: See Display Options using --help");
