@@ -11,6 +11,7 @@ namespace IntegrationConnectors.Octopus.Model
         public string HealthStatus { get; set; }
         public string OperatingSystem { get; set; }
         public List<string> Roles { get; set; }
+        public List<string> EnvironmentIds { get; set; }
         public OctopusDeployment LastDeployment { get; set; }
     }
 }

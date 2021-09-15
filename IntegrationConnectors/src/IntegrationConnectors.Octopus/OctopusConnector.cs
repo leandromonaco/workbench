@@ -1,6 +1,7 @@
 ﻿using IntegrationConnectors.Common;
 using IntegrationConnectors.Octopus.Model;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -15,11 +16,11 @@ namespace IntegrationConnectors.Octopus
             _spaceId = spaceId;
         }
 
-        public async Task<List<OctopusEnvironment>> GetEnvironmentsAsync()
+        public async Task<OctopusEnvironments> GetEnvironmentsAsync()
         {
-            var response = await GetAsync($"{_url}/{_spaceId}/environments?skip=0&take=2147483647");
-            var envs = JsonSerializer.Deserialize<OctopusEnvironmentResponse>(response, _jsonSerializerOptions);
-            return envs.Items;
+            var response = await GetAsync($"{_url}/{_spaceId}/environments?take=200000");
+            var envs = JsonSerializer.Deserialize<OctopusEnvironments>(response, _jsonSerializerOptions);
+            return envs;
         }
 
         public async Task<OctopusEnvironment> GetEnvironmentAsync(string environmentId)
@@ -29,11 +30,11 @@ namespace IntegrationConnectors.Octopus
             return environment;
         }
 
-        public async Task<List<OctopusMachine>> GetMachinesAsync(string environmentId)
+        public async Task<OctopusMachines> GetMachinesAsync(string environmentId)
         {
             var response = await GetAsync($"{_url}/{_spaceId}/environments/{environmentId}/machines");
-            var machines = JsonSerializer.Deserialize<OctopusMachineResponse>(response, _jsonSerializerOptions);
-            return machines.Items;
+            var machines = JsonSerializer.Deserialize<OctopusMachines>(response, _jsonSerializerOptions);
+            return machines;
         }
 
         public async Task<OctopusMachine> GetMachineAsync(string machineId)
@@ -43,18 +44,32 @@ namespace IntegrationConnectors.Octopus
             return machine;
         }
 
+        public async Task<OctopusMachines> GetMachinesAsync()
+        {
+            var response = await GetAsync($"{_url}/{_spaceId}/machines?take=200000");
+            var machine = JsonSerializer.Deserialize<OctopusMachines>(response, _jsonSerializerOptions);
+            return machine;
+        }
+
         public async Task<List<OctopusDeployment>> GetDeploymentsAsync(string machineId)
         {
             var response = await GetAsync($"{_url}/{_spaceId}/machines/{machineId}/tasks");
-            var deployments = JsonSerializer.Deserialize<OctopusDeploymentResponse>(response, _jsonSerializerOptions);
+            var deployments = JsonSerializer.Deserialize<OctopusDeployments>(response, _jsonSerializerOptions);
             return deployments.Items;
+        }
+
+        public async Task<OctopusProjectGroups> GetProjectGroupsAsync()
+        {
+            var response = await GetAsync($"{_url}/{_spaceId}/projectgroups?take=200000");
+            var projects = JsonSerializer.Deserialize<OctopusProjectGroups>(response, _jsonSerializerOptions);
+            return projects;
         }
 
         public async Task<OctopusProjects> GetProjectsAsync()
         {
-            var response = await GetAsync($"{_url}/{_spaceId}/projects?take=1000");
-            var proj = JsonSerializer.Deserialize<OctopusProjects>(response, _jsonSerializerOptions);
-            return proj;
+            var response = await GetAsync($"{_url}/{_spaceId}/projects?take=200000");
+            var projects = JsonSerializer.Deserialize<OctopusProjects>(response, _jsonSerializerOptions);
+            return projects;
         }
 
         public async Task<OctopusProject> GetProjectAsync(string project)
@@ -64,11 +79,22 @@ namespace IntegrationConnectors.Octopus
             return proj;
         }
 
-        public async Task<OctopusVariableSets> GetVariableSetsAsync()
+        public async Task<OctopusVariableSets> GetLibraryVariableSetsAsync()
         {
-            var response = await GetAsync($"{_url}/{_spaceId}/LibraryVariableSets?take=1000");
+            var response = await GetAsync($"{_url}/{_spaceId}/LibraryVariableSets?take=200000");
             var octopusVariableSet = JsonSerializer.Deserialize<OctopusVariableSets>(response, _jsonSerializerOptions);
-            octopusVariableSet.Items.ForEach(vs => vs.Variables = GetVariableSetAsync(vs.VariableSetId).Result.Variables);
+            foreach (var item in octopusVariableSet.Items)
+            {
+                item.Variables = (await GetVariableSetAsync(item.VariableSetId)).Variables;
+            }
+            return octopusVariableSet;
+        }
+
+        public async Task<OctopusVariableSet> GetLibraryVariableSetAsync(string id)
+        {
+            var response = await GetAsync($"{_url}/{_spaceId}/LibraryVariableSets/{id}");
+            var octopusVariableSet = JsonSerializer.Deserialize<OctopusVariableSet>(response, _jsonSerializerOptions);
+            octopusVariableSet.Variables = (await GetVariableSetAsync(octopusVariableSet.VariableSetId)).Variables;
             return octopusVariableSet;
         }
 
@@ -76,21 +102,8 @@ namespace IntegrationConnectors.Octopus
         {
             var response = await GetAsync($"{_url}/{_spaceId}/variables/{variableSetId}");
             var octopusVariableSet = JsonSerializer.Deserialize<OctopusVariableSet>(response, _jsonSerializerOptions);
+            octopusVariableSet.Variables = octopusVariableSet.Variables.OrderBy(v => v.Name).ToList();
             return octopusVariableSet;
-        }
-
-        public async Task<List<OctopusVariableSet>> GetVariableSetsAsync(List<string> variableSetIds)
-        {
-            var octopusVariableSets = new List<OctopusVariableSet>();
-            foreach (var variableSetId in variableSetIds)
-            {
-                //Spaces-1/variables/
-                var response = await GetAsync($"{_url}/{_spaceId}/variables/{variableSetId}");
-                var octopusVariableSet = JsonSerializer.Deserialize<OctopusVariableSet>(response, _jsonSerializerOptions);
-                octopusVariableSets.Add(octopusVariableSet);
-            }
-
-            return octopusVariableSets;
         }
 
         public async Task<string> GetDeploymentProcessAsync(string deploymentProcessId)
@@ -106,7 +119,7 @@ namespace IntegrationConnectors.Octopus
 
         public async Task<OctopusCertificates> GetCertificatesAsync()
         {
-            var response = await GetAsync($"{_url}/{_spaceId}/certificates?take=1000");
+            var response = await GetAsync($"{_url}/{_spaceId}/certificates?take=200000");
             var certificates = JsonSerializer.Deserialize<OctopusCertificates>(response);
             return certificates;
         }

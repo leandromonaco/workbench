@@ -11,13 +11,7 @@ namespace OctopusBackup
         public string ApiKey { get; set; }
 
         [Option("space", Required = true, HelpText = "Spaces-1")]
-        public string Space { get; set; }
-      
-        [Option("display", Required = true, HelpText = "variables | process | environments | machines")]
-        public string Display { get; set; }
-
-        [Option("project", Required = false, HelpText = "project-name")]
-        public string Project { get; set; }
+        public string Space { get; set; }  
 
     }
 }

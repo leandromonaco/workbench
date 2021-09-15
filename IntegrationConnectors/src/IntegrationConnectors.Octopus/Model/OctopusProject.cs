@@ -9,6 +9,7 @@ namespace IntegrationConnectors.Octopus.Model
         public string DeploymentProcessId { get; set; }
         public List<OctopusPackage> Packages { get; set; }
         public List<string> IncludedLibraryVariableSetIds { get; set; }
+        public string ProjectGroupId { get; set; }
         public string VariableSetId { get; set; }
     }
 }
