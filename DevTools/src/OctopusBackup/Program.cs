@@ -54,8 +54,8 @@ File.WriteAllText(outputFile, jsonDisplay);
 foreach (var project in octopusProjects)
 {
     var projectGroupDirectoryName = octopusProjectGroups.Where(pg => pg.Id.Equals(project.ProjectGroupId)).FirstOrDefault().Name;
-    var projectGroupDirectory = Directory.CreateDirectory($"{space} {projectGroupDirectoryName}");
-    output = $"{space} {project.Name}.json";
+    var projectGroupDirectory = Directory.CreateDirectory($"{space}\\{projectGroupDirectoryName}");
+    output = $"{project.Name}.json";
     var projectBackup = new OctopusProjectBackup();
     //Backup Project Process
     
