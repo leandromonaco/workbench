@@ -23,10 +23,12 @@ the future application design, development and deployment, and move consistently
 
 Area | Guideline
 ------------ | -------------
+Versioning | See [Semantic Versioning](https://semver.org/)
 Branching | See [GitHub Flow](https://guides.github.com/introduction/flow/)
 Code Review | See [Guidelines](https://google.github.io/eng-practices/review/)
 Changelog | See [Guidelines](https://keepachangelog.com/en/1.0.0/)
 Clean Architecture | See [Guidelines](https://github.com/jasontaylordev/CleanArchitecture)
+Scrum | See [Scrum Guide](https://scrumguides.org/scrum-guide.html)
 
 ## Conventions
 - [C# Coding Conventions](https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions)
