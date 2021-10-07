@@ -22,6 +22,10 @@ string restPassword = string.Empty;
 string proxy = string.Empty;
 bool ignoreSslErrors = false;
 
+string smtpHost = string.Empty;
+int smtpPort = 25;
+string emailRecipient = string.Empty;
+
 
 Parser.Default.ParseArguments<Options>(args)
        .WithParsed(o =>
@@ -42,8 +46,17 @@ Parser.Default.ParseArguments<Options>(args)
            restUser = o.RestUser;
            restPassword = o.RestPassword;
            proxy = o.Proxy;
+           smtpHost = o.SmtpHost;
+           smtpPort = o.SmtpPort;
+           emailRecipient = o.EmailRecipient;
            ignoreSslErrors = o.ignoreSslErrors;
        });
+
+if (!string.IsNullOrEmpty(smtpHost) && !string.IsNullOrEmpty(emailRecipient))
+{
+    Helper.SendTestEmail(smtpHost, smtpPort, emailRecipient);
+}
+
 
 if (!string.IsNullOrEmpty(restUrl) && !string.IsNullOrEmpty(restVerb))
 {

@@ -16,6 +16,7 @@ using System.Linq;
 using Serilog.Debugging;
 using System.Text;
 using System.Net.Security;
+using System.Net.Mail;
 
 namespace DependencyTester
 {
@@ -115,6 +116,36 @@ namespace DependencyTester
             Console.WriteLine($"REST Response: {result.Content.ReadAsStringAsync().Result}");
         }
 
+        public static void SendTestEmail(string smtpHost, int smtpPort, string emailRecipient)
+        {
+           
+            try
+            {
+                var message = new MailMessage
+                {
+                    Subject = "Connectivity Test",
+                    From = new MailAddress("conntest@conntest.com")
+                };
+                message.To.Add(new MailAddress(emailRecipient));
+
+                var client = new SmtpClient(smtpHost)
+                {
+                    Port = smtpPort
+                };
+
+                client.Send(message);
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"{smtpHost} Connection OK");
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{smtpHost} Connection Failed");
+                Console.WriteLine($"{ex.Message} - {ex.StackTrace}");
+            }
+        }
+
         public static void CheckSeqLogging(string seqLoggingUrl, string seqLoggingApiKey)
         {
             try
@@ -127,10 +158,11 @@ namespace DependencyTester
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"{seqLoggingUrl} Connection OK");
             }
-            catch
+            catch(Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{seqLoggingUrl} Connection Failed");
+                Console.WriteLine($"{ex.Message} - {ex.StackTrace}");
             }
         }
 
