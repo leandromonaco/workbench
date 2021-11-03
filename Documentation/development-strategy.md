@@ -27,6 +27,7 @@ Versioning | See [Semantic Versioning](https://semver.org/)
 Branching | See [GitHub Flow](https://guides.github.com/introduction/flow/)
 Code Review | See [Guidelines](https://google.github.io/eng-practices/review/)
 Changelog | See [Guidelines](https://keepachangelog.com/en/1.0.0/)
+OWASP | See [.NET Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/DotNet_Security_Cheat_Sheet.html)
 Clean Architecture | See [Guidelines](https://github.com/jasontaylordev/CleanArchitecture)
 Scrum | See [Scrum Guide](https://scrumguides.org/scrum-guide.html)
 
