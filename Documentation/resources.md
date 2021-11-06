@@ -1,6 +1,14 @@
-# Culture
+# People & Culture
 * [GitLab](https://about.gitlab.com/company/culture/all-remote/)
 * [Octopus Deploy](https://handbook.octopus.com/)
+* [Agile Manifesto](https://agilemanifesto.org/)
+* [Principles behind the Agile Manifesto](https://agilemanifesto.org/principles.html)
+
+# Documentation
+## .NET
+* [.NET fundamentals](https://docs.microsoft.com/en-us/dotnet/fundamentals/)
+* [.NET application architecture guide](https://docs.microsoft.com/en-us/dotnet/architecture/)
+* [DevOps Resource Center](https://docs.microsoft.com/en-us/devops)
 
 # Training
 * [Mastering Markdown](https://guides.github.com/features/mastering-markdown)
