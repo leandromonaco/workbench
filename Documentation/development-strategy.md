@@ -30,6 +30,7 @@ Changelog | See [Guidelines](https://keepachangelog.com/en/1.0.0/)
 OWASP | See [.NET Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/DotNet_Security_Cheat_Sheet.html)
 Clean Architecture | See [Guidelines](https://github.com/jasontaylordev/CleanArchitecture)
 Scrum | See [Scrum Guide](https://scrumguides.org/scrum-guide.html)
+Technical Writing | See [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/welcome/)
 
 ## Conventions
 - [C# Coding Conventions](https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions)
