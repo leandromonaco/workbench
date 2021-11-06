@@ -50,4 +50,5 @@ Logging | - [Serilog](https://serilog.net/) <br> - [SEQ](https://datalust.co/seq
 Worker Service  | - [Quartz.NET](https://www.quartz-scheduler.net/)
 Versioning | - [Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning) <br> - [ASP.NET API Versioning](https://github.com/dotnet/aspnet-api-versioning)
 Build | - [Nuke](https://nuke.build/)
+SMTP Testing | - [Papercut](https://github.com/ChangemakerStudios/Papercut-SMTP)
 
