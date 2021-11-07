@@ -1,12 +1,16 @@
 # Software Developer Goals
 
 ## Table of contents
-- [Team Collaboration](#team-collaboration)
+- [Deliver Results](#deliver-results)
 - [Lifelong Learning](#lifelong-learning)
-- [Technical Excellence](#technical-excellence)
-- [Entrepreneurship](#entrepreneurship)
+- [Team Collaboration](#team-collaboration)
+- [Continuous Improvements](#continous-improvements)
 - [Knowledge Sharing](#knowledge-sharing)
- 
+
+## Deliver Results
+Take the lead
+Project delivery
+
 ## Team Collaboration
 
 ### Remote-First Cultures
@@ -20,6 +24,9 @@
 ### Reviews
 * [Code Reviews](https://google.github.io/eng-practices/review)
 
+## Continous Improvements
+Focus on Code Quality, Automation, Tools and Processes.
+
 ## Lifelong Learning
 ### Conferences
 * [GitHub](https://www.githubuniverse.com/)
@@ -32,12 +39,6 @@
 
 ### DevOps
 * [DevOps Resource Center](https://docs.microsoft.com/en-us/devops)
-
-## Technical Excellence
-TBA
-
-## Entrepreneurship
-TBA
 
 ## Knowledge Sharing
 ### Helping others
