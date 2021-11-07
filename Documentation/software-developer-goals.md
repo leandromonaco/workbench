@@ -1,15 +1,16 @@
 # Software Developer Goals
 
 ## Table of contents
-- [Deliver Results](#deliver-results)
+- [Project Delivery](#project-delivery)
 - [Lifelong Learning](#lifelong-learning)
 - [Team Collaboration](#team-collaboration)
 - [Continuous Improvements](#continous-improvements)
 - [Knowledge Sharing](#knowledge-sharing)
 
-## Deliver Results
-* Take the lead
-* Project delivery
+## Project Delivery
+* Leadership
+* Ownership
+* Support
 
 ## Team Collaboration
 
