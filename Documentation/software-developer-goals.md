@@ -8,8 +8,8 @@
 - [Knowledge Sharing](#knowledge-sharing)
 
 ## Deliver Results
-Take the lead
-Project delivery
+* Take the lead
+* Project delivery
 
 ## Team Collaboration
 
@@ -25,7 +25,13 @@ Project delivery
 * [Code Reviews](https://google.github.io/eng-practices/review)
 
 ## Continous Improvements
-Focus on Code Quality, Automation, Tools and Processes.
+* Code Quality
+* Automation
+* Tools 
+* Processes
+
+#### Resources
+* [Value Stream Mapping](https://www.atlassian.com/continuous-delivery/principles/value-stream-mapping)
 
 ## Lifelong Learning
 ### Conferences
