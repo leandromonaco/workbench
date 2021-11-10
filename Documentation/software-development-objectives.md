@@ -1,42 +1,31 @@
-# Software Developer Goals
-
-
-
-## Table of contents
-- [Remote Culture](#remote-culture)
+# Objectives
 - [Project Delivery](#project-delivery)
 - [Lifelong Learning](#lifelong-learning)
 - [Team Collaboration](#team-collaboration)
 - [Continuous Improvement](#continous-improvement)
 - [Knowledge Sharing](#knowledge-sharing)
 
-## Objectives
-### Project Delivery
+# Project Delivery
 *insert description* (e.g. Taking the lead, own the delivery, provide support)
 
-### Remote Culture
-*insert description*
-
-#### Resources
-* [GitLab](https://about.gitlab.com/company/culture/all-remote/)
-* [Octopus Deploy](https://handbook.octopus.com/)
-
-### Team Collaboration
+# Team Collaboration
 *insert description*
 
 #### Resources
 * [Agile Manifesto](https://agilemanifesto.org/)
 * [Principles behind the Agile Manifesto](https://agilemanifesto.org/principles.html)
 * [Code Reviews](https://google.github.io/eng-practices/review)
+* [Gitlab Remote Culture](https://about.gitlab.com/company/culture/all-remote/)
+* [Octopus Deploy Handbook](https://handbook.octopus.com/)
 
-### Continous Improvement
+# Continous Improvement
 *insert description* (e.g. Code Quality, Automation, Tools, Processes, etc)
 
 #### Resources
 * [Value Stream Mapping](https://www.atlassian.com/continuous-delivery/principles/value-stream-mapping)
 * [Code-With Engineering Playbook](https://microsoft.github.io/code-with-engineering-playbook/)
 
-### Lifelong Learning
+# Lifelong Learning
 
 *insert description*
 
@@ -48,7 +37,7 @@
 * [.NET application architecture guide](https://docs.microsoft.com/en-us/dotnet/architecture/)
 * [DevOps Resource Center](https://docs.microsoft.com/en-us/devops)
 
-### Knowledge Sharing
+# Knowledge Sharing
 *insert description*
 
 #### Resources
