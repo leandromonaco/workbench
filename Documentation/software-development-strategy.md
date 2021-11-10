@@ -23,14 +23,11 @@ the future application design, development and deployment, and move consistently
 
 Area | Guideline
 ------------ | -------------
-Versioning | See [Semantic Versioning](https://semver.org/)
-Branching | See [GitHub Flow](https://guides.github.com/introduction/flow/)
-Code Review | See [Guidelines](https://google.github.io/eng-practices/review/)
-Changelog | See [Guidelines](https://keepachangelog.com/en/1.0.0/)
-OWASP | See [.NET Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/DotNet_Security_Cheat_Sheet.html)
-Clean Architecture | See [Guidelines](https://github.com/jasontaylordev/CleanArchitecture)
-Scrum | See [Scrum Guide](https://scrumguides.org/scrum-guide.html)
-Technical Writing | See [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/welcome/)
+Change Management | - [GitHub Flow](https://guides.github.com/introduction/flow/) <br> - [Semantic Versioning](https://semver.org/) <br> - [Code Review Guidelines](https://google.github.io/eng-practices/review/) <br> - [Changelog Guidelines](https://keepachangelog.com/en/1.0.0/)
+Security | - [OWASP Top 10 - 2021](https://owasp.org/Top10/) <br> - [.NET Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/DotNet_Security_Cheat_Sheet.html)
+Architecture | - [Clean Architecture Guidelines](https://github.com/jasontaylordev/CleanArchitecture) <br> - [The Twelve-Factor App](https://12factor.net/)
+Process | - [Scrum Guide](https://scrumguides.org/scrum-guide.html)
+Documentation | - [Technical Writing Style Guide](https://docs.microsoft.com/en-us/style-guide/welcome/)
 
 ## Conventions
 - [C# Coding Conventions](https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions)
@@ -45,7 +42,7 @@ Technical Writing | See [Microsoft Style Guide](https://docs.microsoft.com/en-us
 
 Area | Packages
 ------------ | -------------
-Testing | - [Specflow](https://specflow.org/tools/specflow/) <br> - [xUnit](https://xunit.net/) <br> - [nSubstitute](https://nsubstitute.github.io/) <br> - [Fluent Assertions](https://fluentassertions.com/) <br> - [Fluent Validations](https://fluentvalidation.net/) <br> - [AutoFixture](https://autofixture.github.io/) <br> - [BenchmarkDotNet](https://benchmarkdotnet.org/) <br> - [Coverlet](https://dotnetfoundation.org/projects/coverlet)
+Testing | - [Specflow](https://specflow.org/tools/specflow/) - [xUnit](https://xunit.net/) <br> - [nSubstitute](https://nsubstitute.github.io/) <br> - [Fluent Assertions](https://fluentassertions.com/) <br> - [Fluent Validations](https://fluentvalidation.net/) <br> - [AutoFixture](https://autofixture.github.io/) <br> - [BenchmarkDotNet](https://benchmarkdotnet.org/) <br> - [Coverlet](https://dotnetfoundation.org/projects/coverlet)
 Logging | - [Serilog](https://serilog.net/) <br> - [SEQ](https://datalust.co/seq)
 Worker Service  | - [Quartz.NET](https://www.quartz-scheduler.net/)
 Versioning | - [Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning) <br> - [ASP.NET API Versioning](https://github.com/dotnet/aspnet-api-versioning)
