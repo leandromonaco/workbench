@@ -27,26 +27,49 @@
 
 # Lifelong Learning
 
-*insert description*
+Focus on **career and professional development**.
 
-#### Resources
+### Resources
+
+
+
+#### Conferences
 * [GitHub Universe](https://www.githubuniverse.com/)
 * [.NET Conf](https://www.dotnetconf.net/)
 * [Redis Conf](https://redis.com/redisconf/)
+
+####  Resources for Software Developers
 * [.NET fundamentals](https://docs.microsoft.com/en-us/dotnet/fundamentals/)
+* [Manifesto for Software Craftsmanship](https://manifesto.softwarecraftsmanship.org/#/en/reading)
+* [Why SOLID principles are still the foundation for modern software architecture](https://stackoverflow.blog/2021/11/01/why-solid-principles-are-still-the-foundation-for-modern-software-architecture/)
+
+####  Resources for Solutions Architect
 * [.NET application architecture guide](https://docs.microsoft.com/en-us/dotnet/architecture/)
+* [Designing Distributed Systems](https://azure.microsoft.com/en-us/resources/designing-distributed-systems/)
+* [The 12-Factor App](https://12factor.net/)
+
+#### Resources for DevOps Engineer
 * [DevOps Resource Center](https://docs.microsoft.com/en-us/devops)
+
 
 # Knowledge Sharing
 *insert description*
 
-#### Resources
-* [GitHub Discussions](https://docs.github.com/en/discussions)
+### Resources
+
+#### Forums
 * [How do I ask a good question?](https://stackoverflow.com/help/how-to-ask)
+* [GitHub Discussions](https://docs.github.com/en/discussions)
 * [Microsoft Q&As](https://docs.microsoft.com/en-us/answers/products/dotnet)
 * [.NET Tech Community Forums](https://techcommunity.microsoft.com/t5/net/ct-p/dotnet)
+
+#### Technical Writing
 * [Mastering Markdown](https://guides.github.com/features/mastering-markdown)
 * [Technical Writing Courses](https://developers.google.com/tech-writing)
+* [How writing can advance your career as a developer](https://stackoverflow.blog/2021/08/09/how-writing-can-advance-your-career-as-a-developer/)
+
+#### Tools
 * [PlantUML](https://plantuml.com/)
 * [Archi](https://www.archimatetool.com/)
+
 
