@@ -1,20 +1,28 @@
 # Objectives
-- [Project Delivery](#project-delivery)
-- [Lifelong Learning](#lifelong-learning)
-- [Team Collaboration](#team-collaboration)
+- [Delivery](#delivery)
+- [Collaboration](#collaboration)
 - [Continuous Improvement](#continous-improvement)
+- [Learning](#learning)
 - [Knowledge Sharing](#knowledge-sharing)
 
-# Project Delivery
+# Delivery
 *insert description* (e.g. Taking the lead, own the delivery, provide support)
 
-# Team Collaboration
+#### Resources
+
+* [Scrum Guide](https://scrumguides.org/scrum-guide.html)
+* [Kanban Guide](https://kanbanguides.org/html-kanban-guide/)
+* [Kanban Guide for Scrum Teams](https://www.scrum.org/resources/kanban-guide-scrum-teams)
+* [DevOps Resource Center](https://docs.microsoft.com/en-us/devops)
+
+# Collaboration
 *insert description*
 
 #### Resources
 * [Agile Manifesto](https://agilemanifesto.org/)
 * [Principles behind the Agile Manifesto](https://agilemanifesto.org/principles.html)
 * [Code Reviews](https://google.github.io/eng-practices/review)
+* [The engineering manager's guide to the code review process](https://www.pluralsight.com/blog/tutorials/code-review)
 * [Gitlab Remote Culture](https://about.gitlab.com/company/culture/all-remote/)
 * [Octopus Deploy Handbook](https://handbook.octopus.com/)
 
@@ -25,31 +33,26 @@
 * [Value Stream Mapping](https://www.atlassian.com/continuous-delivery/principles/value-stream-mapping)
 * [Code-With Engineering Playbook](https://microsoft.github.io/code-with-engineering-playbook/)
 
-# Lifelong Learning
+# Learning
 
 Focus on **career and professional development**.
 
 ### Resources
-
-
 
 #### Conferences
 * [GitHub Universe](https://www.githubuniverse.com/)
 * [.NET Conf](https://www.dotnetconf.net/)
 * [Redis Conf](https://redis.com/redisconf/)
 
-####  Resources for Software Developers
+####  Resources
 * [.NET fundamentals](https://docs.microsoft.com/en-us/dotnet/fundamentals/)
 * [Manifesto for Software Craftsmanship](https://manifesto.softwarecraftsmanship.org/#/en/reading)
 * [Why SOLID principles are still the foundation for modern software architecture](https://stackoverflow.blog/2021/11/01/why-solid-principles-are-still-the-foundation-for-modern-software-architecture/)
-
-####  Resources for Solutions Architect
 * [.NET application architecture guide](https://docs.microsoft.com/en-us/dotnet/architecture/)
 * [Designing Distributed Systems](https://azure.microsoft.com/en-us/resources/designing-distributed-systems/)
 * [The 12-Factor App](https://12factor.net/)
 
-#### Resources for DevOps Engineer
-* [DevOps Resource Center](https://docs.microsoft.com/en-us/devops)
+
 
 
 # Knowledge Sharing
