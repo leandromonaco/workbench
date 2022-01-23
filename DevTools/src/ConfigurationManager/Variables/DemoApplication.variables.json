@@ -1,0 +1,84 @@
+{
+  "Environments": [
+    {
+      "Name": "Development",
+      "Variables": [
+        {
+          "Name": "ConnectionString",
+          "Value": "Development ConnectionString",
+          "Description": "This is the connection string to connect to ABC database"
+        },
+        {
+          "Name": "JwtKey",
+          "IsSecret": true,
+          "Description": "Json Web Token Key"
+        },
+        {
+          "Name": "JwtIssuer",
+          "Value": "Development JwtIssuer",
+          "Description": "Json Web Token Isuer"
+        }
+      ]
+    },
+    {
+      "Name": "Test",
+      "Variables": [
+        {
+          "Name": "ConnectionString",
+          "Value": "Test ConnectionString",
+          "Description": "This is the connection string to connect to ABC database"
+        },
+        {
+          "Name": "JwtKey",
+          "IsSecret": true,
+          "Description": "Json Web Token Key"
+        },
+        {
+          "Name": "JwtIssuer",
+          "Value": "Test JwtIssuer",
+          "Description": "Json Web Token Isuer"
+        }
+      ]
+    },
+    {
+      "Name": "Staging",
+      "Variables": [
+        {
+          "Name": "ConnectionString",
+          "Value": "Staging ConnectionString",
+          "Description": "This is the connection string to connect to ABC database"
+        },
+        {
+          "Name": "JwtKey",
+          "IsSecret": true,
+          "Description": "Json Web Token Key"
+        },
+        {
+          "Name": "JwtIssuer",
+          "Value": "Staging JwtIssuer",
+          "Description": "Json Web Token Isuer"
+        }
+      ]
+    },
+    {
+      "Name": "Production",
+      "Variables": [
+        {
+          "Name": "ConnectionString",
+          "Value": "Production ConnectionString",
+          "Description": "This is the connection string to connect to ABC database"
+        },
+        {
+          "Name": "JwtKey",
+          "IsSecret": true,
+          "Description": "Json Web Token Key"
+        },
+        {
+          "Name": "JwtIssuer",
+          "Value": "Production JwtIssuer",
+          "Description": "Json Web Token Isuer"
+        }
+      ]
+    }
+  ]
+}
