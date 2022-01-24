@@ -1,7 +1,7 @@
 {
   "Variables": [
     {
-      "Name": "ConnectionString",
+      "Name": "Z_VariableName",
       "Description": "This is the connection string to connect to ABC database",
       "Values": [
         {
@@ -23,12 +23,12 @@
       ]
     },
     {
-      "Name": "JwtKey",
+      "Name": "N_VariableName",
       "IsSecret": true,
       "Description": "Json Web Token Key"
     },
     {
-      "Name": "JwtIssuer",
+      "Name": "A_VariableName",
       "Description": "Json Web Token Issuer",
       "Values": [
         {
