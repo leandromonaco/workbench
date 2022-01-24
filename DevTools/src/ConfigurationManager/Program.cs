@@ -33,13 +33,11 @@ namespace ConfigurationManager
 
             DeploymentConfiguration config = JsonSerializer.Deserialize<DeploymentConfiguration>(deploymentVariablesFileContent);
 
-            var environmentVariables = config.Environments.Where(e => e.Name.Equals(environment)).FirstOrDefault();
-
-            foreach (var variable in environmentVariables.Variables)
+            foreach (var variable in config.Variables)
             {
                 if (!variable.IsSecret)
                 {
-                    configurationFileContent = configurationFileContent.Replace($"#{{{variable.Name}}}", variable.Value);
+                    configurationFileContent = configurationFileContent.Replace($"#{{{variable.Name}}}", variable.Values.FirstOrDefault(e => e.Name.Equals(environment)).Value);
                 }
                 else
                 {

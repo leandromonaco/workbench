@@ -9,6 +9,6 @@ namespace ConfigurationManager.Model
     public class Environment
     {
         public string Name { get; set; }
-        public List<Variable> Variables { get; set; }
+        public string Value { get; set; }
     }
 }

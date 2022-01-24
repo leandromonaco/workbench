@@ -8,6 +8,6 @@ namespace ConfigurationManager.Model
 {
     public class DeploymentConfiguration
     {
-        public List<Environment> Environments { get; set; }
+        public List<Variable> Variables { get; set; }
     }
 }

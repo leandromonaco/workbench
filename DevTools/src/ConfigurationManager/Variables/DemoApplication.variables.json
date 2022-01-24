@@ -1,82 +1,51 @@
 {
-  "Environments": [
+  "Variables": [
     {
-      "Name": "Development",
-      "Variables": [
+      "Name": "ConnectionString",
+      "Description": "This is the connection string to connect to ABC database",
+      "Values": [
         {
-          "Name": "ConnectionString",
-          "Value": "Development ConnectionString",
-          "Description": "This is the connection string to connect to ABC database"
+          "Name": "DEV",
+          "Value": "Development ConnectionString"
         },
         {
-          "Name": "JwtKey",
-          "IsSecret": true,
-          "Description": "Json Web Token Key"
+          "Name": "TST",
+          "Value": "Test ConnectionString"
         },
         {
-          "Name": "JwtIssuer",
-          "Value": "Development JwtIssuer",
-          "Description": "Json Web Token Isuer"
+          "Name": "UAT",
+          "Value": "Staging ConnectionString"
+        },
+        {
+          "Name": "PROD",
+          "Value": "Production ConnectionString"
         }
       ]
     },
     {
-      "Name": "Test",
-      "Variables": [
-        {
-          "Name": "ConnectionString",
-          "Value": "Test ConnectionString",
-          "Description": "This is the connection string to connect to ABC database"
-        },
-        {
-          "Name": "JwtKey",
-          "IsSecret": true,
-          "Description": "Json Web Token Key"
-        },
-        {
-          "Name": "JwtIssuer",
-          "Value": "Test JwtIssuer",
-          "Description": "Json Web Token Isuer"
-        }
-      ]
+      "Name": "JwtKey",
+      "IsSecret": true,
+      "Description": "Json Web Token Key"
     },
     {
-      "Name": "Staging",
-      "Variables": [
+      "Name": "JwtIssuer",
+      "Description": "Json Web Token Isuer",
+      "Values": [
         {
-          "Name": "ConnectionString",
-          "Value": "Staging ConnectionString",
-          "Description": "This is the connection string to connect to ABC database"
+          "Name": "DEV",
+          "Value": "Development JwtIssuer"
         },
         {
-          "Name": "JwtKey",
-          "IsSecret": true,
-          "Description": "Json Web Token Key"
+          "Name": "TST",
+          "Value": "Test JwtIssuer"
         },
         {
-          "Name": "JwtIssuer",
-          "Value": "Staging JwtIssuer",
-          "Description": "Json Web Token Isuer"
-        }
-      ]
-    },
-    {
-      "Name": "Production",
-      "Variables": [
-        {
-          "Name": "ConnectionString",
-          "Value": "Production ConnectionString",
-          "Description": "This is the connection string to connect to ABC database"
+          "Name": "UAT",
+          "Value": "Staging JwtIssuer"
         },
         {
-          "Name": "JwtKey",
-          "IsSecret": true,
-          "Description": "Json Web Token Key"
-        },
-        {
-          "Name": "JwtIssuer",
-          "Value": "Production JwtIssuer",
-          "Description": "Json Web Token Isuer"
+          "Name": "PROD",
+          "Value": "Production JwtIssuer"
         }
       ]
     }
