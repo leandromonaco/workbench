@@ -10,6 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ConfigurationManager.Model\ConfigurationManager.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="TestFiles\appsettings.Release.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
