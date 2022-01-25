@@ -1,0 +1,53 @@
+{
+  "Variables": [
+    {
+      "Name": "Z_VariableName",
+      "Description": "This is the connection string to connect to ABC database",
+      "Values": [
+        {
+          "Name": "DEV",
+          "Value": "Development ConnectionString"
+        },
+        {
+          "Name": "TST",
+          "Value": "Test ConnectionString"
+        },
+        {
+          "Name": "UAT",
+          "Value": "Staging ConnectionString"
+        },
+        {
+          "Name": "PROD",
+          "Value": "Production ConnectionString"
+        }
+      ]
+    },
+    {
+      "Name": "N_VariableName",
+      "IsSecret": true,
+      "Description": "Json Web Token Key"
+    },
+    {
+      "Name": "A_VariableName",
+      "Description": "Json Web Token Issuer",
+      "Values": [
+        {
+          "Name": "DEV",
+          "Value": "Development JwtIssuer"
+        },
+        {
+          "Name": "TST",
+          "Value": "Test JwtIssuer"
+        },
+        {
+          "Name": "UAT",
+          "Value": "Staging JwtIssuer"
+        },
+        {
+          "Name": "PROD",
+          "Value": "Production JwtIssuer"
+        }
+      ]
+    }
+  ]
+}
