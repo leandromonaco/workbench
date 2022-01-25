@@ -84,9 +84,30 @@ namespace IntegrationConnectors.Common
             return await result.Content.ReadAsStringAsync();
         }
 
+        /// <summary>
+        /// Used for REST Services
+        /// </summary>
+        /// <param name="requestUri"></param>
+        /// <param name="jsonContent"></param>
+        /// <returns></returns>
         public async Task<string> PostAsync(string requestUri, string jsonContent)
         {
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            var result = await _httpClient.PostAsync(requestUri, content);
+            return await result.Content.ReadAsStringAsync();
+        }
+
+        /// <summary>
+        /// Used for WCF Services
+        /// </summary>
+        /// <param name="requestUri"></param>
+        /// <param name="xmlContent"></param>
+        /// <param name="soapAction"></param>
+        /// <returns></returns>
+        public async Task<string> PostAsync(string requestUri, string xmlContent, string soapAction)
+        {
+            var content = new StringContent(xmlContent, Encoding.UTF8, "text/xml");
+            _httpClient.DefaultRequestHeaders.Add("SOAPAction", soapAction);
             var result = await _httpClient.PostAsync(requestUri, content);
             return await result.Content.ReadAsStringAsync();
         }

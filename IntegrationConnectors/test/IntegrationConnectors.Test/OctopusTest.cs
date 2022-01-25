@@ -26,58 +26,30 @@ namespace IntegrationConnectors.Test
             _octopusRepository = new OctopusConnector(_configuration["Octopus:Url"], _configuration["Octopus:Key"], _configuration["Octopus:SpaceId"], AuthenticationType.Octopus);
         }
 
-        [Fact]
-        async Task GetLastDeployment()
-        {
-            var environments = await _octopusRepository.GetEnvironmentsAsync();
-            foreach (var environment in environments)
-            {
-                environment.Machines = await _octopusRepository.GetMachinesAsync(environment.Id);
-                foreach (var machine in environment.Machines)
-                {
-                    machine.Deployments = await _octopusRepository.GetDeploymentsAsync(machine.Id);
-                    var machineLastDeployment = machine.Deployments.OrderByDescending(d => d.CompletedTime).FirstOrDefault()?.CompletedTime;
-                    if (machineLastDeployment > environment.LastDeploymentDate)
-                    {
-                        environment.LastDeploymentDate = machineLastDeployment.Value;
-                    }
-                }
+        //[Fact]
+        //async Task GetLastDeployment()
+        //{
+        //    var environments = await _octopusRepository.GetEnvironmentsAsync();
+        //    foreach (var environment in environments.Items)
+        //    {
+        //        environment.Machines = await _octopusRepository.GetMachinesAsync(environment.Id);
+        //        foreach (var machine in environment.Machines)
+        //        {
+        //            machine.Deployments = await _octopusRepository.GetDeploymentsAsync(machine.Id);
+        //            var machineLastDeployment = machine.Deployments.OrderByDescending(d => d.CompletedTime).FirstOrDefault()?.CompletedTime;
+        //            if (machineLastDeployment > environment.LastDeploymentDate)
+        //            {
+        //                environment.LastDeploymentDate = machineLastDeployment.Value;
+        //            }
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
         [Fact]
         async Task GetVariables()
         {
-            var octopusProject = await _octopusRepository.GetProjectAsync(_configuration["Octopus:TestProject"]);
-
-            var variableSets = octopusProject.IncludedLibraryVariableSetIds;
-            var projectVariableSetId = octopusProject.VariableSetId;
-
-            var allVariableSetsRoutes = new List<string>();
-
-            allVariableSetsRoutes.Add(projectVariableSetId);
-
-            foreach (var variableSet in variableSets)
-            {
-                allVariableSetsRoutes.Add($"variableset-{variableSet}");
-            }
-
-            //Remove Duplicates
-            allVariableSetsRoutes = allVariableSetsRoutes.Distinct().ToList();
-
-            var octopusVariableSets = _octopusRepository.GetVariableSetsAsync(allVariableSetsRoutes).Result;
-            foreach (var set in octopusVariableSets)
-            {
-                if (set.Type.Equals(OctopusVariableSetType.Project))
-                {
-                    set.Name = _octopusRepository.GetProjectAsync(set.OwnerId).Result.Name;
-                }
-                else
-                {
-                    set.Name = _octopusRepository.GetVariableSetAsync(set.OwnerId).Result.Name;
-                }
-            }
+            var octopusLibraryVariableSets = (await _octopusRepository.GetLibraryVariableSetsAsync()).Items;
         }
 
         [Fact]
