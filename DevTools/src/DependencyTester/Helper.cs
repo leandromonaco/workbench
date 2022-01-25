@@ -1,21 +1,23 @@
-﻿using System;
-using Microsoft.Win32.SafeHandles;
-using System.Runtime.InteropServices;
-using System.IO;
-using System.Security.Permissions;
-using System.Security;
+﻿using Microsoft.Win32.SafeHandles;
 using Oracle.ManagedDataAccess.Client;
 using Serilog;
-using System.Data.SqlClient;
-using System.Net.Http;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
-using System.Net;
-using System.Security.Cryptography.X509Certificates;
-using System.Linq;
 using Serilog.Debugging;
-using System.Text;
+using System;
+using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Mail;
+using System.Net.NetworkInformation;
 using System.Net.Security;
+using System.Net.Sockets;
+using System.Runtime.InteropServices;
+using System.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Permissions;
+using System.Text;
 
 namespace DependencyTester
 {
@@ -60,7 +62,7 @@ namespace DependencyTester
 
         }
 
-        internal static void CheckRestService(string restUrl, string restVerb, string restUser, string restPassword, string proxy, bool ignoreSslErrors)
+        internal static void CheckRestService(string restUrl, string restVerb, string restUser, string restPassword, string proxyUri, string proxyUser, string proxyPassword, bool ignoreSslErrors)
         {
             HttpResponseMessage result = null;
 
@@ -87,15 +89,19 @@ namespace DependencyTester
             };
 
             
-            if (!string.IsNullOrEmpty(proxy))
+            if (!string.IsNullOrEmpty(proxyUri))
             {
-                httpClientHandler.Proxy = new WebProxy(proxy);
+                 //Set credentials
+                ICredentials credentials = new NetworkCredential(proxyUser, proxyPassword);
+                httpClientHandler.Proxy = new WebProxy(proxyUri, true, null, credentials);
             }
 
             var httpClient = new HttpClient(httpClientHandler);
 
             var key = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{restUser}:{restPassword}"));
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Basic {key}");
+            httpClient.DefaultRequestHeaders.Accept
+                          .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
 
             if (restVerb.Equals("GET"))
             {
@@ -115,22 +121,55 @@ namespace DependencyTester
             Console.WriteLine($"REST Response: {result.Content.ReadAsStringAsync().Result}");
         }
 
+        public static void SendTestEmail(string smtpHost, int smtpPort, string emailRecipient)
+        {
+           
+            try
+            {
+                var message = new MailMessage
+                {
+                    Subject = "Connectivity Test",
+                    From = new MailAddress("conntest@conntest.com")
+                };
+                message.To.Add(new MailAddress(emailRecipient));
+
+                var client = new SmtpClient(smtpHost)
+                {
+                    Port = smtpPort
+                };
+
+                client.Send(message);
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"{smtpHost} Connection OK");
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{smtpHost} Connection Failed");
+                Console.WriteLine($"{ex.Message} - {ex.StackTrace}");
+            }
+        }
+
         public static void CheckSeqLogging(string seqLoggingUrl, string seqLoggingApiKey)
         {
             try
             {
+                SelfLog.Enable(Console.Error);
                 Log.Logger = new LoggerConfiguration()
                                             .WriteTo.Seq(serverUrl: seqLoggingUrl, apiKey: seqLoggingApiKey).CreateLogger();
-                SelfLog.Enable(m => throw new Exception());
+                
+                //SelfLog.Enable(m => throw new Exception());
                 Log.Information("This is a connectivity test");
                 Log.CloseAndFlush();
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"{seqLoggingUrl} Connection OK");
             }
-            catch
+            catch(Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{seqLoggingUrl} Connection Failed");
+                Console.WriteLine($"{ex.Message} - {ex.StackTrace}");
             }
         }
 

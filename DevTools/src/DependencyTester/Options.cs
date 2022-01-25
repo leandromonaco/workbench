@@ -36,8 +36,22 @@ namespace DependencyTester
         public string RestUser { get; set; }
         [Option("restPassword", Required = false, HelpText = "restPassword")]
         public string RestPassword { get; set; }
-        [Option("proxy", Required = false, HelpText = "http://proxy-name:8080")]
-        public string Proxy { get; set; }
+        [Option("proxyUri", Required = false, HelpText = "http://proxy-name:8080")]
+        public string ProxyUri { get; set; }
+        [Option("proxyUser", Required = false, HelpText = "Proxy User")]
+        public string ProxyUser { get; set; }
+        [Option("proxyPassword", Required = false, HelpText = "Proxy Password")]
+        public string ProxyPassword { get; set; }
+
+        [Option("SmtpHost", Required = false, HelpText = "SmtpHost")]
+
+        public string SmtpHost { get; set; }
+        [Option("SmtpPort", Required = false, HelpText = "SmtpPort")]
+
+        public int SmtpPort { get; set; }
+        [Option("EmailRecipient", Required = false, HelpText = "EmailRecipient")]
+
+        public string EmailRecipient { get; set; }
         [Option("ignoreSslErrors", Required = false, HelpText = "ignoreSslErrors")]
         public bool ignoreSslErrors { get; set; }
     }
