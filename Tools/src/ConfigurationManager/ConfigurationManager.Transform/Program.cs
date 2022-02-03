@@ -1,4 +1,6 @@
-﻿using CommandLine;
+﻿using Azure.Identity;
+using Azure.Security.KeyVault.Keys;
+using CommandLine;
 using ConfigurationManager.Model;
 using System;
 using System.IO;
@@ -42,6 +44,13 @@ namespace ConfigurationManager
                 else
                 {
                     //Get value from vault
+                    //https://github.com/Azure/azure-sdk-for-net/blob/Azure.Security.KeyVault.Keys_4.2.0/sdk/keyvault/Azure.Security.KeyVault.Keys/README.md
+                    var client = new KeyClient(vaultUri: new Uri("https://configuration-secrets.vault.azure.net/"), credential: new DefaultAzureCredential());
+                    // Create a new key using the key client.
+                    KeyVaultKey key = client.CreateKey("key-name", KeyType.Rsa);
+
+                    // Retrieve a key using the key client.
+                    key = client.GetKey("key-name");
                 }
             }
 
