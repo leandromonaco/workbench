@@ -1,4 +1,4 @@
-﻿namespace JiraReport
+﻿namespace JiraReporting.Model
 {
     public class IssueType
     {

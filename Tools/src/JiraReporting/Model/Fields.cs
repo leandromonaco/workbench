@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using JiraReporting.Model;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace JiraReport
+namespace JiraReporting.Model
 {
     public class Fields
     {
@@ -20,5 +21,7 @@ namespace JiraReport
         [JsonPropertyName("customfield_10281")]
         public Points Points { get; set; }
 
+        [JsonPropertyName("customfield_10283")]
+        public RaidType RaidType { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace JiraReport
+namespace JiraReporting
 {
     public class Options
     {
