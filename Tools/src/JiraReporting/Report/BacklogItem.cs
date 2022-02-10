@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace JiraReport
+namespace JiraReporting.Report
 {
-    internal class BacklogReportRow
+    internal class BacklogItem
     {
-        public BacklogReportRow()
+        public BacklogItem()
         {
         }
 

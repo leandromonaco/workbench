@@ -4,19 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace JiraReport
+namespace JiraReporting.Report
 {
     class Helper
     {
 
-        public static void ExportExcel(List<BacklogReportRow> backlogReportRows)
+        public static void ExportExcel(List<BacklogItem> backlogItems, List<BacklogItem> newBacklogItems, string outputFile)
         {
-            var outputFile = Path.Combine(Directory.GetCurrentDirectory(), "JiraData.xlsx");
             using (var fs = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
             {
                 IWorkbook workbook;
                 workbook = new XSSFWorkbook();
-                ISheet excelSheet = workbook.CreateSheet("Variables");
+                ISheet excelSheet = workbook.CreateSheet("Backlog");
 
                 IRow row = excelSheet.CreateRow(0);
                 row.CreateCell(0).SetCellValue("Date");
@@ -33,19 +32,19 @@ namespace JiraReport
                 var rowCount = 1;
 
 
-                foreach (var backlogReportRow in backlogReportRows)
+                foreach (var backlogItem in backlogItems)
                 {
                     row = excelSheet.CreateRow(rowCount);
-                    row.CreateCell(0).SetCellValue(backlogReportRow.Date);
-                    row.CreateCell(1).SetCellValue(backlogReportRow.Epic);
-                    row.CreateCell(2).SetCellValue(backlogReportRow.JiraId);
-                    row.CreateCell(3).SetCellValue(backlogReportRow.JiraDescription);
-                    row.CreateCell(4).SetCellValue(backlogReportRow.IssueType);
-                    row.CreateCell(5).SetCellValue(backlogReportRow.Severity);
-                    row.CreateCell(6).SetCellValue(backlogReportRow.Status);
-                    row.CreateCell(7).SetCellValue(backlogReportRow.Sprint);
-                    row.CreateCell(8).SetCellValue(Convert.ToDouble(backlogReportRow.Points));
-                    row.CreateCell(9).SetCellValue(backlogReportRow.AssignedTo);
+                    row.CreateCell(0).SetCellValue(backlogItem.Date);
+                    row.CreateCell(1).SetCellValue(backlogItem.Epic);
+                    row.CreateCell(2).SetCellValue(backlogItem.JiraId);
+                    row.CreateCell(3).SetCellValue(backlogItem.JiraDescription);
+                    row.CreateCell(4).SetCellValue(backlogItem.IssueType);
+                    row.CreateCell(5).SetCellValue(backlogItem.Severity);
+                    row.CreateCell(6).SetCellValue(backlogItem.Status);
+                    row.CreateCell(7).SetCellValue(backlogItem.Sprint);
+                    row.CreateCell(8).SetCellValue(Convert.ToDouble(backlogItem.Points));
+                    row.CreateCell(9).SetCellValue(backlogItem.AssignedTo);
                     rowCount++;
                 }
 

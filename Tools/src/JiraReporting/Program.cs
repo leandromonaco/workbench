@@ -1,6 +1,9 @@
-﻿using Ardalis.GuardClauses;
-using CommandLine;
+﻿using CommandLine;
+using Hangfire;
+using Hangfire.MemoryStorage;
 using IntegrationConnectors.Common;
+using JiraReporting.Model;
+using JiraReporting.Report;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,27 +12,29 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace JiraReport
+namespace JiraReporting
 {
     class Program
     {
         static void Main(string[] args)
         {
-            string jiraEndpoint = string.Empty;
-            string jiraProject = string.Empty;
-            string jiraUsername = string.Empty;
-            string jiraAuthenticationToken = string.Empty;
-            string powerBiDatasetEndpoint = string.Empty;
+            GlobalConfiguration.Configuration.UseMemoryStorage();
 
             Parser.Default.ParseArguments<Options>(args)
                .WithParsed(o =>
                {
-                   jiraEndpoint = Guard.Against.NullOrEmpty(o.JiraEndpoint, nameof(o.JiraEndpoint));
-                   jiraProject = Guard.Against.NullOrEmpty(o.JiraProject, nameof(o.JiraProject));
-                   jiraUsername = Guard.Against.NullOrEmpty(o.JiraUsername, nameof(o.JiraUsername));
-                   jiraAuthenticationToken = Guard.Against.NullOrEmpty(o.JiraAuthenticationToken, nameof(o.JiraAuthenticationToken));
-                   powerBiDatasetEndpoint = Guard.Against.NullOrEmpty(o.PowerBiDatasetEndpoint, nameof(o.PowerBiDatasetEndpoint));
+                   RecurringJob.AddOrUpdate("JiraReportJob",
+                                           () => ExecuteJob(o.JiraEndpoint, o.JiraProject, o.JiraUsername, o.JiraAuthenticationToken, o.PowerBiDatasetEndpoint),
+                                           Cron.Minutely);
                });
+
+            using var server = new BackgroundJobServer();
+            Console.ReadLine();
+        }
+
+        public static void ExecuteJob(string jiraEndpoint, string jiraProject, string jiraUsername, string jiraAuthenticationToken, string powerBiDatasetEndpoint)
+        {
+            Console.WriteLine($"Jira Report started {DateTime.Now}");
 
             var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{jiraUsername}:{jiraAuthenticationToken}"));
 
@@ -42,7 +47,7 @@ namespace JiraReport
                 MaxDepth = 0
             };
 
-            var report = new List<BacklogReportRow>();
+            var backlogItems = new List<BacklogItem>();
 
             var increment = 100;
             var startAt = 0;
@@ -61,32 +66,36 @@ namespace JiraReport
 
                 startAt += increment;
                 finishAt = jqlQueryResult.Total - 1;
-                
+
                 foreach (var issue in jqlQueryResult.Issues)
                 {
-                    var row = new BacklogReportRow
+                    var row = new BacklogItem
                     {
                         Date = DateTime.Now.Date,
                         JiraId = issue.Key,
                         Sprint = issue.Fields.Sprints?.OrderByDescending(s => s.StartDate).FirstOrDefault().Name,
                         JiraDescription = issue.Fields.Summary,
                         Epic = issue.Fields.Parent?.Fields.Summary,
-                        IssueType = issue.Fields.IssueType.Name,
+                        IssueType = issue.Fields.IssueType.Name != "RAID" ? issue.Fields.IssueType.Name : $"{issue.Fields.IssueType.Name} - {issue.Fields.RaidType?.Value}",
                         Severity = issue.Fields.Severity?.Value,
                         Status = issue.Fields.Status.Name,
                         Points = issue.Fields.Points?.Value,
                         AssignedTo = issue.Fields.Assignee == null ? "Unassigned" : issue.Fields.Assignee.DisplayName
                     };
 
-                    report.Add(row);
+                    backlogItems.Add(row);
                 }
             }
 
-            Helper.ExportExcel(report);
+            var outputFile = $"{Environment.CurrentDirectory}\\report_{DateTime.Now.Date.ToString("yyyy-MM-dd")}";
 
-            File.WriteAllText($"{Environment.CurrentDirectory}\\report_{DateTime.Now.Date.ToString("yyyy-MM-dd")}.json", JsonSerializer.Serialize(report));
+            Helper.ExportExcel(backlogItems, null, $"{outputFile}.xlsx");
 
-            var result = httpConnector.PostAsync(powerBiDatasetEndpoint, JsonSerializer.Serialize(report)).Result;
+            File.WriteAllText($"{outputFile}.json", JsonSerializer.Serialize(backlogItems));
+
+            var result = httpConnector.PostAsync(powerBiDatasetEndpoint, JsonSerializer.Serialize(backlogItems)).Result;
+
+            Console.WriteLine($"Jira Report stopped {DateTime.Now}");
         }
     }
 }
