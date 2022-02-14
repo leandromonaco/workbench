@@ -23,9 +23,10 @@ namespace JiraReporting
             Parser.Default.ParseArguments<Options>(args)
                .WithParsed(o =>
                {
-                   RecurringJob.AddOrUpdate("JiraReportJob",
-                                           () => ExecuteJob(o.JiraEndpoint, o.JiraProject, o.JiraUsername, o.JiraAuthenticationToken, o.PowerBiDatasetEndpoint),
-                                           Cron.Minutely);
+                   ExecuteJob(o.JiraEndpoint, o.JiraProject, o.JiraUsername, o.JiraAuthenticationToken, o.PowerBiDatasetEndpoint);
+                   //RecurringJob.AddOrUpdate("JiraReportJob",
+                   //                        () => ExecuteJob(o.JiraEndpoint, o.JiraProject, o.JiraUsername, o.JiraAuthenticationToken, o.PowerBiDatasetEndpoint),
+                   //                        Cron.Hourly);
                });
 
             using var server = new BackgroundJobServer();
@@ -36,18 +37,36 @@ namespace JiraReporting
         {
             Console.WriteLine($"Jira Report started {DateTime.Now}");
 
+            var dateFormat = "yyyy-MM-dd";
+
             var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{jiraUsername}:{jiraAuthenticationToken}"));
 
             HttpConnector httpConnector = new("", credentials, AuthenticationType.Basic);
 
-            var _jsonSerializerOptions = new JsonSerializerOptions()
+            var jsonSerializerOptions = new JsonSerializerOptions()
             {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 PropertyNameCaseInsensitive = true,
-                MaxDepth = 0
+                //MaxDepth = 1
             };
 
-            var backlogItems = new List<BacklogItem>();
+
+            //Checkpoint Backlog
+            List<BacklogItem> checkpointBacklog = null;
+            var checkpointDate = DateTime.Now.AddDays(-7).ToString(dateFormat);
+            var checkpointFile = $"{Environment.CurrentDirectory}\\report_{checkpointDate}.json";
+
+            if (File.Exists(checkpointFile))
+            {
+                string checkpointBacklogJson = File.ReadAllText(checkpointFile);
+                checkpointBacklog = JsonSerializer.Deserialize<List<BacklogItem>>(checkpointBacklogJson, jsonSerializerOptions);
+            }
+           
+
+
+            //Latest Backlog
+
+            var latestBacklog = new List<BacklogItem>();
 
             var increment = 100;
             var startAt = 0;
@@ -62,7 +81,7 @@ namespace JiraReporting
                             }}";
 
                 var response = httpConnector.PostAsync($"{jiraEndpoint}/rest/api/2/search", query).Result;
-                var jqlQueryResult = JsonSerializer.Deserialize<JqlQueryResult>(response, _jsonSerializerOptions);
+                var jqlQueryResult = JsonSerializer.Deserialize<JqlQueryResult>(response, jsonSerializerOptions);
 
                 startAt += increment;
                 finishAt = jqlQueryResult.Total - 1;
@@ -72,10 +91,11 @@ namespace JiraReporting
                     var row = new BacklogItem
                     {
                         Date = DateTime.Now.Date,
-                        JiraId = issue.Key,
                         Sprint = issue.Fields.Sprints?.OrderByDescending(s => s.StartDate).FirstOrDefault().Name,
-                        JiraDescription = issue.Fields.Summary,
-                        Epic = issue.Fields.Parent?.Fields.Summary,
+                        IssueId = issue.Key,
+                        IssueTitle = issue.Fields.Summary,
+                        EpicId = issue.Fields.Parent?.Key,
+                        EpicTitle = issue.Fields.Parent?.Fields.Summary,
                         IssueType = issue.Fields.IssueType.Name != "RAID" ? issue.Fields.IssueType.Name : $"{issue.Fields.IssueType.Name} - {issue.Fields.RaidType?.Value}",
                         Severity = issue.Fields.Severity?.Value,
                         Status = issue.Fields.Status.Name,
@@ -83,17 +103,32 @@ namespace JiraReporting
                         AssignedTo = issue.Fields.Assignee == null ? "Unassigned" : issue.Fields.Assignee.DisplayName
                     };
 
-                    backlogItems.Add(row);
+                    latestBacklog.Add(row);
                 }
             }
 
-            var outputFile = $"{Environment.CurrentDirectory}\\report_{DateTime.Now.Date.ToString("yyyy-MM-dd")}";
+            //if (checkpointBacklog!=null)
+            //{
+            //    var newItems = latestBacklog.Where(pbi => !checkpointBacklog.Exists(cpbi => cpbi.IssueId.Equals(pbi.IssueId))).ToList();
+            //    var newStories = newItems.Where(i => i.IssueType.Equals("Story")).ToList();
+            //    var newBugs = newItems.Where(i => i.IssueType.Equals("Bug")).ToList();
+            //    var newRaids = newItems.Where(i => i.IssueType.Contains("RAID")).ToList();
 
-            Helper.ExportExcel(backlogItems, null, $"{outputFile}.xlsx");
+            //    var changedItems = latestBacklog.Where(pbi => checkpointBacklog.Exists(cpbi => cpbi.IssueId.Equals(pbi.IssueId)) &&
+            //                                                  checkpointBacklog.Count(cpbi => !cpbi.Status.Equals(pbi.Status)) > 0).ToList();
+            //    var changedStories = changedItems.Where(i => i.IssueType.Equals("Story")).ToList();
+            //    var changedBugs = changedItems.Where(i => i.IssueType.Equals("Bug")).ToList();
+            //    var changedRaids = changedItems.Where(i => i.IssueType.Contains("RAID")).ToList();
+            //}
+          
 
-            File.WriteAllText($"{outputFile}.json", JsonSerializer.Serialize(backlogItems));
+            var outputFile = $"{Environment.CurrentDirectory}\\report_{DateTime.Now.Date.ToString(dateFormat)}";
 
-            var result = httpConnector.PostAsync(powerBiDatasetEndpoint, JsonSerializer.Serialize(backlogItems)).Result;
+            Helper.ExportExcel(latestBacklog, null, $"{outputFile}.xlsx", jiraEndpoint);
+
+            File.WriteAllText($"{outputFile}.json", JsonSerializer.Serialize(latestBacklog));
+
+            var result = httpConnector.PostAsync(powerBiDatasetEndpoint, JsonSerializer.Serialize(latestBacklog)).Result;
 
             Console.WriteLine($"Jira Report stopped {DateTime.Now}");
         }
