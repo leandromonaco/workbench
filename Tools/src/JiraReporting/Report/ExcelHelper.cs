@@ -1,6 +1,7 @@
 ﻿using NPOI.HSSF.UserModel;
 using NPOI.HSSF.Util;
 using NPOI.SS.UserModel;
+using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,10 @@ using System.IO;
 
 namespace JiraReporting.Report
 {
-    class Helper
+    public class ExcelHelper
     {
 
-        public static void ExportExcel(List<BacklogItem> backlogItems, List<BacklogItem> newBacklogItems, string outputFile, string jiraUrl)
+        public static void Export(List<BacklogItem> backlogItems, List<BacklogItem> newBacklogItems, string outputFile, string jiraUrl)
         {
             using (var fs = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
             {
@@ -47,8 +48,10 @@ namespace JiraReporting.Report
                     row.CreateCell(0).SetCellValue(backlogItem.Date);
                     row.CreateCell(1).SetCellValue(backlogItem.Sprint);
 
-                    var link = new XSSFHyperlink(HyperlinkType.Url);
-                    link.Address = $"https://{jiraUrl}/browse/{backlogItem.EpicId}";
+                    var link = new XSSFHyperlink(HyperlinkType.Url)
+                    {
+                        Address = $"{jiraUrl}/browse/{backlogItem.EpicId}"
+                    };
                     var epicIdCell = row.CreateCell(2);
                     epicIdCell.SetCellValue(backlogItem.EpicId);
                     epicIdCell.Hyperlink = link;
@@ -56,8 +59,10 @@ namespace JiraReporting.Report
 
                     row.CreateCell(3).SetCellValue(backlogItem.EpicTitle);
 
-                    link = new XSSFHyperlink(HyperlinkType.Url);
-                    link.Address = $"https://{jiraUrl}/browse/{backlogItem.IssueId}";
+                    link = new XSSFHyperlink(HyperlinkType.Url)
+                    {
+                        Address = $"{jiraUrl}/browse/{backlogItem.IssueId}"
+                    };
                     var issueIdCell = row.CreateCell(4);
                     issueIdCell.SetCellValue(backlogItem.IssueId);
                     issueIdCell.Hyperlink = link;
@@ -71,6 +76,18 @@ namespace JiraReporting.Report
                     row.CreateCell(10).SetCellValue(backlogItem.AssignedTo);
                     rowCount++;
                 }
+
+                //Column width auto-size
+                int numberOfColumns = excelSheet.GetRow(0).PhysicalNumberOfCells;
+                for (int i = 1; i <= numberOfColumns; i++)
+                {
+                    excelSheet.AutoSizeColumn(i);
+                    GC.Collect(); // Add this line
+                }
+
+                //Create filters
+                excelSheet.SetAutoFilter(new CellRangeAddress(0, 0, 0, numberOfColumns));
+                excelSheet.CreateFreezePane(0, 1);
 
                 workbook.Write(fs);
 
