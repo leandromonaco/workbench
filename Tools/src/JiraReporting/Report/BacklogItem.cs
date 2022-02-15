@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace JiraReporting.Report
 {
-    internal class BacklogItem
+    public class BacklogItem
     {
         public BacklogItem()
         {

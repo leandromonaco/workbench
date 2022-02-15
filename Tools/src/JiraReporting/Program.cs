@@ -88,6 +88,12 @@ namespace JiraReporting
 
                 foreach (var issue in jqlQueryResult.Issues)
                 {
+                    var issueType = issue.Fields.IssueType.Name;
+                    if (issueType.Equals("RAID") && !string.IsNullOrEmpty(issue.Fields.RaidType?.Value))
+                    {
+                        issueType = issue.Fields.RaidType?.Value;
+                    }
+
                     var row = new BacklogItem
                     {
                         Date = DateTime.Now.Date,
@@ -96,7 +102,7 @@ namespace JiraReporting
                         IssueTitle = issue.Fields.Summary,
                         EpicId = issue.Fields.Parent?.Key,
                         EpicTitle = issue.Fields.Parent?.Fields.Summary,
-                        IssueType = issue.Fields.IssueType.Name != "RAID" ? issue.Fields.IssueType.Name : $"{issue.Fields.IssueType.Name} - {issue.Fields.RaidType?.Value}",
+                        IssueType = issueType,
                         Severity = issue.Fields.Severity?.Value,
                         Status = issue.Fields.Status.Name,
                         Points = issue.Fields.Points?.Value,
@@ -124,7 +130,7 @@ namespace JiraReporting
 
             var outputFile = $"{Environment.CurrentDirectory}\\report_{DateTime.Now.Date.ToString(dateFormat)}";
 
-            Helper.ExportExcel(latestBacklog, null, $"{outputFile}.xlsx", jiraEndpoint);
+            ExcelHelper.Export(latestBacklog, null, $"{outputFile}.xlsx", jiraEndpoint);
 
             File.WriteAllText($"{outputFile}.json", JsonSerializer.Serialize(latestBacklog));
 
