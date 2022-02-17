@@ -61,8 +61,6 @@ namespace JiraReporting
                 string checkpointBacklogJson = File.ReadAllText(checkpointFile);
                 checkpointBacklog = JsonSerializer.Deserialize<List<BacklogItem>>(checkpointBacklogJson, jsonSerializerOptions);
             }
-           
-
 
             //Latest Backlog
 
@@ -113,24 +111,35 @@ namespace JiraReporting
                 }
             }
 
-            //if (checkpointBacklog!=null)
-            //{
-            //    var newItems = latestBacklog.Where(pbi => !checkpointBacklog.Exists(cpbi => cpbi.IssueId.Equals(pbi.IssueId))).ToList();
-            //    var newStories = newItems.Where(i => i.IssueType.Equals("Story")).ToList();
-            //    var newBugs = newItems.Where(i => i.IssueType.Equals("Bug")).ToList();
-            //    var newRaids = newItems.Where(i => i.IssueType.Contains("RAID")).ToList();
+            List<BacklogItem> changedStories = new();
+            List<BacklogItem> changedBugs = new();
+            List<BacklogItem> changedRaids = new();
 
-            //    var changedItems = latestBacklog.Where(pbi => checkpointBacklog.Exists(cpbi => cpbi.IssueId.Equals(pbi.IssueId)) &&
-            //                                                  checkpointBacklog.Count(cpbi => !cpbi.Status.Equals(pbi.Status)) > 0).ToList();
-            //    var changedStories = changedItems.Where(i => i.IssueType.Equals("Story")).ToList();
-            //    var changedBugs = changedItems.Where(i => i.IssueType.Equals("Bug")).ToList();
-            //    var changedRaids = changedItems.Where(i => i.IssueType.Contains("RAID")).ToList();
-            //}
-          
+            if (checkpointBacklog != null)
+            {
+                var newItems = latestBacklog.Where(pbi => !checkpointBacklog.Exists(cpbi => cpbi.IssueId.Equals(pbi.IssueId))).ToList();
+                var newStories = newItems.Where(i => i.IssueType.Equals("Story")).ToList();
+                var newBugs = newItems.Where(i => i.IssueType.Equals("Bug")).ToList();
+                var newRaids = newItems.Where(i => i.IssueType.Contains("RAID")).ToList();
+
+                var changedItems = latestBacklog.Where(pbi => checkpointBacklog.Exists(cpbi => cpbi.IssueId.Equals(pbi.IssueId)) &&
+                                                              checkpointBacklog.Count(cpbi => !cpbi.Status.Equals(pbi.Status)) > 0).ToList();
+                changedStories = changedItems.Where(i => i.IssueType.Equals("Story")).ToList();
+                changedBugs = changedItems.Where(i => i.IssueType.Equals("Bug")).ToList();
+                changedRaids = changedItems.Where(i => i.IssueType.Contains("RAID") || 
+                                                       i.IssueType.Contains("Dependency") || 
+                                                       i.IssueType.Contains("Impediment") || 
+                                                       i.IssueType.Contains("Risk") || 
+                                                       i.IssueType.Contains("Assumption")).ToList();
+            }
+
 
             var outputFile = $"{Environment.CurrentDirectory}\\report_{DateTime.Now.Date.ToString(dateFormat)}";
 
             ExcelHelper.Export(latestBacklog, null, $"{outputFile}.xlsx", jiraEndpoint);
+            ExcelHelper.Export(changedStories, null, $"ChangedStories.xlsx", jiraEndpoint);
+            ExcelHelper.Export(changedBugs, null, $"ChangedBugs.xlsx", jiraEndpoint);
+            ExcelHelper.Export(changedRaids, null, $"ChangedRaids.xlsx", jiraEndpoint);
 
             File.WriteAllText($"{outputFile}.json", JsonSerializer.Serialize(latestBacklog));
 
