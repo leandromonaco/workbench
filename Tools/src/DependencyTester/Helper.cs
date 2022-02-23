@@ -108,10 +108,16 @@ namespace DependencyTester
             httpClient.DefaultRequestHeaders.Accept
                           .Add(new MediaTypeWithQualityHeaderValue("application/json")); //ACCEPT header
 
+            if (restVerb.Equals("GET"))
+            {
+                result = httpClient.GetAsync(restUrl).Result;
+            }
+
             if (result != null && result.StatusCode.Equals(HttpStatusCode.OK))
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"REST Service: {restUrl} OK");
+                Console.WriteLine($"REST Response: {result.Content.ReadAsStringAsync().Result}");
             }
             else
             {
@@ -119,11 +125,7 @@ namespace DependencyTester
                 Console.WriteLine($"REST Service: {restUrl} Failed with Status Code {result.StatusCode} ({result.ReasonPhrase})");
             }
 
-            if (restVerb.Equals("GET"))
-            {
-                result = httpClient.GetAsync(restUrl).Result;
-                Console.WriteLine($"REST Response: {result.Content.ReadAsStringAsync().Result}");
-            }
+         
         }
 
         public static void SendTestEmail(string smtpHost, int smtpPort, string emailRecipient)
