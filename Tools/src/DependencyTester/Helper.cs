@@ -88,7 +88,7 @@ namespace DependencyTester
                                                                         }
             };
 
-            
+            //Use proxy when proxyUri is supplied
             if (!string.IsNullOrEmpty(proxyUri))
             {
                  //Set credentials
@@ -98,15 +98,15 @@ namespace DependencyTester
 
             var httpClient = new HttpClient(httpClientHandler);
 
-            var key = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{restUser}:{restPassword}"));
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Basic {key}");
-            httpClient.DefaultRequestHeaders.Accept
-                          .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
-
-            if (restVerb.Equals("GET"))
+            //Use authentication when restUser and restPassword are supplied
+            if (!string.IsNullOrEmpty(restUser) && !string.IsNullOrEmpty(restPassword))
             {
-                result = httpClient.GetAsync(restUrl).Result;
+                var key = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{restUser}:{restPassword}"));
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Basic {key}");
             }
+            
+            httpClient.DefaultRequestHeaders.Accept
+                          .Add(new MediaTypeWithQualityHeaderValue("application/json")); //ACCEPT header
 
             if (result != null && result.StatusCode.Equals(HttpStatusCode.OK))
             {
@@ -118,7 +118,12 @@ namespace DependencyTester
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"REST Service: {restUrl} Failed with Status Code {result.StatusCode} ({result.ReasonPhrase})");
             }
-            Console.WriteLine($"REST Response: {result.Content.ReadAsStringAsync().Result}");
+
+            if (restVerb.Equals("GET"))
+            {
+                result = httpClient.GetAsync(restUrl).Result;
+                Console.WriteLine($"REST Response: {result.Content.ReadAsStringAsync().Result}");
+            }
         }
 
         public static void SendTestEmail(string smtpHost, int smtpPort, string emailRecipient)
