@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NetworkCapture": {
+      "commandName": "Project",
+      "commandLineArgs": "--Endpoint \"atlassian.net\""
+    }
+  }
+}
