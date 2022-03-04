@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CommandLine;
+using JiraReporting;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using Titanium.Web.Proxy;
@@ -10,8 +12,18 @@ namespace NetworkCapture
 {
     class Program
     {
+        static string _endpointFilter;
+
         static void Main(string[] args)
         {
+
+            Parser.Default.ParseArguments<Options>(args)
+              .WithParsed(o =>
+              {
+                  _endpointFilter = o.Endpoint;
+               });
+
+
             var proxyServer = new ProxyServer();
 
             // locally trust root certificate used by this proxy 
@@ -36,7 +48,7 @@ namespace NetworkCapture
             };
 
             // Fired when a CONNECT request is received
-            explicitEndPoint.BeforeTunnelConnectRequest += OnBeforeTunnelConnectRequest;
+            //explicitEndPoint.BeforeTunnelConnectRequest += OnBeforeTunnelConnectRequest;
 
             // An explicit endpoint is where the client knows about the existence of a proxy
             // So client sends request in a proxy friendly manner
@@ -70,7 +82,7 @@ namespace NetworkCapture
             Console.Read();
 
             // Unsubscribe & Quit
-            explicitEndPoint.BeforeTunnelConnectRequest -= OnBeforeTunnelConnectRequest;
+            //explicitEndPoint.BeforeTunnelConnectRequest -= OnBeforeTunnelConnectRequest;
             proxyServer.BeforeRequest -= OnRequest;
             proxyServer.BeforeResponse -= OnResponse;
             proxyServer.ServerCertificateValidationCallback -= OnCertificateValidation;
@@ -80,86 +92,65 @@ namespace NetworkCapture
 
         }
 
-        private static async Task OnBeforeTunnelConnectRequest(object sender, TunnelConnectSessionEventArgs e)
-        {
-            string hostname = e.HttpClient.Request.RequestUri.Host;
+        //private static async Task OnBeforeTunnelConnectRequest(object sender, TunnelConnectSessionEventArgs e)
+        //{
+        //    string hostname = e.HttpClient.Request.RequestUri.Host;
 
-            if (hostname.Contains("dropbox.com"))
-            {
-                // Exclude Https addresses you don't want to proxy
-                // Useful for clients that use certificate pinning
-                // for example dropbox.com
-                e.DecryptSsl = false;
-            }
-        }
+        //    if (hostname.Contains("dropbox.com"))
+        //    {
+        //        // Exclude Https addresses you don't want to proxy
+        //        // Useful for clients that use certificate pinning
+        //        // for example dropbox.com
+        //        e.DecryptSsl = false;
+        //    }
+        //}
 
         public static async Task OnRequest(object sender, SessionEventArgs e)
         {
-            Console.WriteLine($"Request: {e.HttpClient.Request.Url}");
-
             // read request headers
             var requestHeaders = e.HttpClient.Request.Headers;
 
             var method = e.HttpClient.Request.Method.ToUpper();
-            if ((method == "POST" || method == "PUT" || method == "PATCH"))
+
+            // Get/Set request body bytes
+            byte[] bodyBytes = await e.GetRequestBody();
+            e.SetRequestBody(bodyBytes);
+
+            // Get/Set request body as string
+            string bodyString = await e.GetRequestBodyAsString();
+            e.SetRequestBodyString(bodyString);
+
+            if (e.HttpClient.Request.Url.Contains(_endpointFilter))
             {
-                // Get/Set request body bytes
-                byte[] bodyBytes = await e.GetRequestBody();
-                e.SetRequestBody(bodyBytes);
-
-                // Get/Set request body as string
-                string bodyString = await e.GetRequestBodyAsString();
-                e.SetRequestBodyString(bodyString);
-
-                // store request 
-                // so that you can find it from response handler 
-                e.UserData = e.HttpClient.Request;
+                Console.WriteLine($"Request URL: {e.HttpClient.Request.Url}");
+                Console.WriteLine($"Request Method: {method}");
+                Console.WriteLine($"Request Body: {bodyString}");
             }
+            
 
-            //// To cancel a request with a custom HTML content
-            //// Filter URL
-            //if (e.HttpClient.Request.RequestUri.AbsoluteUri.Contains("google.com"))
-            //{
-            //    e.Ok("<!DOCTYPE html>" +
-            //        "<html><body><h1>" +
-            //        "Website Blocked" +
-            //        "</h1>" +
-            //        "<p>Blocked by titanium web proxy.</p>" +
-            //        "</body>" +
-            //        "</html>");
-            //}
-
-            //// Redirect example
-            //if (e.HttpClient.Request.RequestUri.AbsoluteUri.Contains("wikipedia.org"))
-            //{
-            //    e.Redirect("https://www.paypal.com");
-            //}
+            // store request 
+            // so that you can find it from response handler 
+            e.UserData = e.HttpClient.Request;
         }
 
         // Modify response
         public static async Task OnResponse(object sender, SessionEventArgs e)
         {
-            // read response headers
-            var responseHeaders = e.HttpClient.Response.Headers;
-
-            //if (!e.ProxySession.Request.Host.Equals("medeczane.sgk.gov.tr")) return;
-            if (e.HttpClient.Request.Method == "GET" || e.HttpClient.Request.Method == "POST")
+            if (e.HttpClient.Request.Url.Contains(_endpointFilter) &&
+                e.HttpClient.Response.ContentType != null &&
+                e.HttpClient.Response.ContentType.Contains("application/json"))
             {
-                if (e.HttpClient.Response.StatusCode == 200)
-                {
-                    if (e.HttpClient.Response.ContentType != null && e.HttpClient.Response.ContentType.Trim().ToLower().Contains("text/html"))
-                    {
-                        byte[] bodyBytes = await e.GetResponseBody();
-                        e.SetResponseBody(bodyBytes);
+                byte[] bodyBytes = await e.GetResponseBody();
+                e.SetResponseBody(bodyBytes);
 
-                        string body = await e.GetResponseBodyAsString();
-                        e.SetResponseBodyString(body);
-                        Console.WriteLine($"Response: {body}");
-                    }
-                }
+                string bodyString = await e.GetResponseBodyAsString();
+                e.SetResponseBodyString(bodyString);
+
+                Console.WriteLine($"Response StatusCode: {e.HttpClient.Response.StatusCode}");
+                Console.WriteLine($"Response ContentType: {e.HttpClient.Response.ContentType}");
+                Console.WriteLine($"Response Body: {bodyString}");
             }
 
-           
 
             if (e.UserData != null)
             {
