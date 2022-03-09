@@ -54,5 +54,7 @@ namespace DependencyTester
         public string EmailRecipient { get; set; }
         [Option("ignoreSslErrors", Required = false, HelpText = "ignoreSslErrors")]
         public bool ignoreSslErrors { get; set; }
+        [Option("tlsVersion", Required = false, HelpText = "tlsVersion")]
+        public string TlsVersion { get; set; }
     }
 }
