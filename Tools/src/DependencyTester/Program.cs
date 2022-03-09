@@ -23,6 +23,7 @@ string proxyUri = string.Empty;
 string proxyUser = string.Empty;
 string proxyPassword = string.Empty;
 bool ignoreSslErrors = false;
+string tlsVersion = string.Empty; 
 
 string smtpHost = string.Empty;
 int smtpPort = 25;
@@ -54,6 +55,7 @@ Parser.Default.ParseArguments<Options>(args)
            smtpPort = o.SmtpPort;
            emailRecipient = o.EmailRecipient;
            ignoreSslErrors = o.ignoreSslErrors;
+           tlsVersion = o.TlsVersion;
        });
 
 if (!string.IsNullOrEmpty(smtpHost) && !string.IsNullOrEmpty(emailRecipient))
@@ -64,7 +66,7 @@ if (!string.IsNullOrEmpty(smtpHost) && !string.IsNullOrEmpty(emailRecipient))
 
 if (!string.IsNullOrEmpty(restUrl) && !string.IsNullOrEmpty(restVerb))
 {
-    Helper.CheckRestService(restUrl, restVerb, restUser, restPassword, proxyUri, proxyUser, proxyPassword, ignoreSslErrors);
+    Helper.CheckRestService(restUrl, restVerb, restUser, restPassword, proxyUri, proxyUser, proxyPassword, ignoreSslErrors, tlsVersion);
 }
 
 if (!string.IsNullOrEmpty(seqUrl) && !string.IsNullOrEmpty(seqApiKey))

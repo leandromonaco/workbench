@@ -62,7 +62,7 @@ namespace DependencyTester
 
         }
 
-        internal static void CheckRestService(string restUrl, string restVerb, string restUser, string restPassword, string proxyUri, string proxyUser, string proxyPassword, bool ignoreSslErrors)
+        internal static void CheckRestService(string restUrl, string restVerb, string restUser, string restPassword, string proxyUri, string proxyUser, string proxyPassword, bool ignoreSslErrors, string tlsVersion)
         {
             HttpResponseMessage result = null;
 
@@ -97,6 +97,22 @@ namespace DependencyTester
             }
 
             var httpClient = new HttpClient(httpClientHandler);
+
+            switch (tlsVersion)
+            {
+                case "Tls11":
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11;
+                    break;
+                case "Tls12":
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    break;
+                case "Tls13":
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
+                    break;
+                default:
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    break;
+            }
 
             //Use authentication when restUser and restPassword are supplied
             if (!string.IsNullOrEmpty(restUser) && !string.IsNullOrEmpty(restPassword))
