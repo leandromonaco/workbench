@@ -56,5 +56,7 @@ namespace DependencyTester
         public bool ignoreSslErrors { get; set; }
         [Option("tlsVersion", Required = false, HelpText = "tlsVersion")]
         public string TlsVersion { get; set; }
+        [Option("clientCertificate", Required = false, HelpText = "clientCertificate")]
+        public string ClientCertificate { get; set; }
     }
 }
