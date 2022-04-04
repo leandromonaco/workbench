@@ -62,7 +62,7 @@ namespace DependencyTester
 
         }
 
-        internal static void CheckRestService(string restUrl, string restVerb, string restUser, string restPassword, string proxyUri, string proxyUser, string proxyPassword, bool ignoreSslErrors, string tlsVersion)
+        internal static void CheckRestService(string restUrl, string restVerb, string restUser, string restPassword, string proxyUri, string proxyUser, string proxyPassword, bool ignoreSslErrors, string tlsVersion, string clientCertificate)
         {
             HttpResponseMessage result = null;
 
@@ -96,21 +96,26 @@ namespace DependencyTester
                 httpClientHandler.Proxy = new WebProxy(proxyUri, true, null, credentials);
             }
 
+            if (!string.IsNullOrEmpty(clientCertificate))
+            {
+                httpClientHandler.ClientCertificates.Add(new X509Certificate2(clientCertificate));
+            }
+
             var httpClient = new HttpClient(httpClientHandler);
 
             switch (tlsVersion)
             {
                 case "Tls11":
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11;
+                    httpClientHandler.SslProtocols = System.Security.Authentication.SslProtocols.Tls11;
                     break;
                 case "Tls12":
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    httpClientHandler.SslProtocols = System.Security.Authentication.SslProtocols.Tls12;
                     break;
                 case "Tls13":
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
+                    httpClientHandler.SslProtocols = System.Security.Authentication.SslProtocols.Tls13;
                     break;
                 default:
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    httpClientHandler.SslProtocols = System.Security.Authentication.SslProtocols.Tls13;
                     break;
             }
 
