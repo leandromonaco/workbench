@@ -1,9 +1,0 @@
-﻿CREATE TABLE [calendar].[PublicHoliday](
-	[Id] [uniqueidentifier] NOT NULL DEFAULT (newsequentialid()),
-	[Date] [date] NOT NULL,
-	[Description] [ntext] NOT NULL,
- CONSTRAINT [PK_PublicHoliday] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
