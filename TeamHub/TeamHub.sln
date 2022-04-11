@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CD7AA401-6A20-47DA-9E36-1D4C31DE3AE0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{90A57695-230E-4FBF-B2C7-CED46B8F11A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{9AD082BE-2F02-4BAA-88E4-BABB2E85B5E5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{AC3658FC-6222-4712-B8A2-1240E8358FD0}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TeamHub.Database", "src\TeamHub.Database\TeamHub.Database.sqlproj", "{6BB37E65-2F4E-4ADB-B40B-5622A28D40AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamHub.API", "src\TeamHub.API\TeamHub.API.csproj", "{A5E21EEB-A964-4596-A244-1C9D81DC8032}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6BB37E65-2F4E-4ADB-B40B-5622A28D40AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BB37E65-2F4E-4ADB-B40B-5622A28D40AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BB37E65-2F4E-4ADB-B40B-5622A28D40AD}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{6BB37E65-2F4E-4ADB-B40B-5622A28D40AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BB37E65-2F4E-4ADB-B40B-5622A28D40AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BB37E65-2F4E-4ADB-B40B-5622A28D40AD}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{A5E21EEB-A964-4596-A244-1C9D81DC8032}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5E21EEB-A964-4596-A244-1C9D81DC8032}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5E21EEB-A964-4596-A244-1C9D81DC8032}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5E21EEB-A964-4596-A244-1C9D81DC8032}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6BB37E65-2F4E-4ADB-B40B-5622A28D40AD} = {CD7AA401-6A20-47DA-9E36-1D4C31DE3AE0}
+		{A5E21EEB-A964-4596-A244-1C9D81DC8032} = {CD7AA401-6A20-47DA-9E36-1D4C31DE3AE0}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {098ED8A9-C1FF-4456-8065-35E3B92CB7D4}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,9 @@
+name: TeamHub
+
+services:
+
+- name: TeamHub-API
+  project: src/TeamHub.API/TeamHub.API.csproj
+  bindings:
+  - name: TeamHub-API
+    port: 52091
