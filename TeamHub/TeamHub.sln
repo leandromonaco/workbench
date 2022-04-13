@@ -13,7 +13,28 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{AC3658FC-6
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TeamHub.Database", "src\TeamHub.Database\TeamHub.Database.sqlproj", "{6BB37E65-2F4E-4ADB-B40B-5622A28D40AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamHub.API", "src\TeamHub.API\TeamHub.API.csproj", "{A5E21EEB-A964-4596-A244-1C9D81DC8032}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.API", "src\TeamHub.API\TeamHub.API.csproj", "{A5E21EEB-A964-4596-A244-1C9D81DC8032}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "TeamHub.UI", "src\TeamHub.UI\", "{5489136B-6CE0-4C7A-B1CD-984A25DC328A}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_57377"
+		Debug.AspNetCompiler.PhysicalPath = "src\TeamHub.UI\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_57377\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_57377"
+		Release.AspNetCompiler.PhysicalPath = "src\TeamHub.UI\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_57377\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "57377"
+		SlnRelativePath = "src\TeamHub.UI\"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +52,10 @@ Global
 		{A5E21EEB-A964-4596-A244-1C9D81DC8032}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5E21EEB-A964-4596-A244-1C9D81DC8032}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5E21EEB-A964-4596-A244-1C9D81DC8032}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5489136B-6CE0-4C7A-B1CD-984A25DC328A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5489136B-6CE0-4C7A-B1CD-984A25DC328A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5489136B-6CE0-4C7A-B1CD-984A25DC328A}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{5489136B-6CE0-4C7A-B1CD-984A25DC328A}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -38,6 +63,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6BB37E65-2F4E-4ADB-B40B-5622A28D40AD} = {CD7AA401-6A20-47DA-9E36-1D4C31DE3AE0}
 		{A5E21EEB-A964-4596-A244-1C9D81DC8032} = {CD7AA401-6A20-47DA-9E36-1D4C31DE3AE0}
+		{5489136B-6CE0-4C7A-B1CD-984A25DC328A} = {CD7AA401-6A20-47DA-9E36-1D4C31DE3AE0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {098ED8A9-C1FF-4456-8065-35E3B92CB7D4}
