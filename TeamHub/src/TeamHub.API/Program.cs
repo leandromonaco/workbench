@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using TeamHub.API.Controllers;
 using TeamHub.API.Database;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +12,14 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+//https://github.com/dotnet/aspnetcore/issues/35904
+var jsonSerializerOptions = new JsonSerializerOptions()
+{
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    PropertyNameCaseInsensitive = true,
+    ReferenceHandler = ReferenceHandler.Preserve,
+    //MaxDepth = 1
+};
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -19,28 +30,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-       new WeatherForecast
-       (
-           DateTime.Now.AddDays(index),
-           Random.Shared.Next(-20, 55),
-           summaries[Random.Shared.Next(summaries.Length)]
-       ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+TeamHubDatabaseContext dataContext = new TeamHubDatabaseContext();
+app.MapEmployeesControllerEndpoints(dataContext, jsonSerializerOptions);
 
 app.Run();
 
-internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
