@@ -8,31 +8,14 @@ namespace TeamHub.API.Controllers
     {
         public static void MapEmployeesControllerEndpoints(this WebApplication app, TeamHubDatabaseContext dataContext, JsonSerializerOptions jsonSerializerOptions)
         {
+            //All
             app.MapGet("/employees", async () => 
             {
-                var employees =  dataContext.Employees.Include(e => e.Specialization).ToList();
+                var employees =  await dataContext.Employees.Include(e => e.Specialization).ToListAsync();
                 return JsonSerializer.Serialize(employees, jsonSerializerOptions);
             });
 
-            app.MapGet("/employees/{id}", async (Guid id) =>
-            {
-                var employee = dataContext.Employees.Include(e => e.Specialization)
-                                                    .Include(e => e.ReportsToNavigation).SingleOrDefault(x => x.Id == id);
-                return JsonSerializer.Serialize(employee, jsonSerializerOptions);
-            });
-
-            app.MapDelete("/employees/{id}", async (Guid id) =>
-            {
-                var employee = dataContext.Employees.SingleOrDefault(x => x.Id == id);
-                if (employee != null)
-                {
-                    dataContext.Employees.Remove(employee);
-                    await dataContext.SaveChangesAsync();
-                }
-
-                return Results.Ok($"Employee {id} was removed");
-            });
-
+            //Create
             app.MapPost("/employees", async (Employee employee) =>
             {
                 employee.Id = Guid.NewGuid();
@@ -41,9 +24,18 @@ namespace TeamHub.API.Controllers
                 return Results.Ok($"Employee {employee.Id} was created");
             });
 
+            //Retrieve
+            app.MapGet("/employees/{id}", async (Guid id) =>
+            {
+                var employee = await dataContext.Employees.Include(e => e.Specialization)
+                                                    .Include(e => e.ReportsToNavigation).SingleOrDefaultAsync(x => x.Id == id);
+                return JsonSerializer.Serialize(employee, jsonSerializerOptions);
+            });
+
+            //Update
             app.MapPut("/employees", async (Employee employee) =>
             {
-                var emp = dataContext.Employees.SingleOrDefault(x => x.Id == employee.Id);
+                var emp = await dataContext.Employees.FindAsync(employee.Id);
                 if (emp != null)
                 {
                     emp.Name = employee.Name;
@@ -51,6 +43,19 @@ namespace TeamHub.API.Controllers
                 }
 
                 return Results.Ok($"Employee {employee.Id} was updated");
+            });
+
+            //Delete
+            app.MapDelete("/employees/{id}", async (Guid id) =>
+            {
+                var employee = await dataContext.Employees.FindAsync(id);
+                if (employee != null)
+                {
+                    dataContext.Employees.Remove(employee);
+                    await dataContext.SaveChangesAsync();
+                }
+
+                return Results.Ok($"Employee {id} was removed");
             });
 
         }
