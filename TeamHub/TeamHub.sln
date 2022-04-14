@@ -6,6 +6,10 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CD7AA401-6A20-47DA-9E36-1D4C31DE3AE0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{90A57695-230E-4FBF-B2C7-CED46B8F11A8}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+		tye.yaml = tye.yaml
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{9AD082BE-2F02-4BAA-88E4-BABB2E85B5E5}"
 EndProject

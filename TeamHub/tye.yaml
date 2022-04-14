@@ -9,9 +9,9 @@ services:
     port: 52091
 
 
-- name: TeamHub-UI
+- name: TeamHub-Web
   dockerFile: Dockerfile
   bindings:
-  - name: TeamHub-UI
+  - name: TeamHub-Web
     port: 52092
     protocol: http

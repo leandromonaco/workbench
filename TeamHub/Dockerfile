@@ -3,7 +3,7 @@ FROM node:lts as node
 RUN npm install -g @angular/cli
 
 WORKDIR /usr/src/app
-COPY src/TeamHub.UI/ ./my-app/
+COPY src/TeamHub.Web/ ./my-app/
 
 WORKDIR /usr/src/app/my-app
 RUN npm install
