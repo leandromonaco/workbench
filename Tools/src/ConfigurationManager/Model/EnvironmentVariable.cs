@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace ConfigurationManager.Model
 {
-    public class Environment
+    public class EnvironmentVariable
     {
         public string Name { get; set; }
         public string Value { get; set; }
+        public bool IsSecret { get; set; }
+        public bool IsEncrypted { get; set; }
     }
 }

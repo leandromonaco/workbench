@@ -11,6 +11,9 @@ namespace ConfigurationManager
         public string ApplicationName { get; set; }
 
         [Option("environment", Required = false, HelpText = "Deployment Environment")]
-        public string DeploymentEnvironment { get; set; }
-   }
+        public string Environment { get; set; }
+
+        [Option("mode", Required = false, HelpText = "Modes: Save / Transform")]
+        public string Mode { get; set; }
+    }
 }

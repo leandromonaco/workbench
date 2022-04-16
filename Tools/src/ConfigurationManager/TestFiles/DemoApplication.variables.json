@@ -24,8 +24,27 @@
     },
     {
       "Name": "N_VariableName",
-      "IsSecret": true,
-      "Description": "Json Web Token Key"
+      "Description": "Json Web Token Key",
+      "Values": [
+        {
+          "Name": "DEV",
+          "Value": "Development Value"
+        },
+        {
+          "Name": "TST",
+          "Value": "Test Value"
+        },
+        {
+          "Name": "UAT",
+          "Value": "Staging Value"
+        },
+        {
+          "Name": "PROD",
+          "Value": "Production Value",
+          "IsSecret": true,
+          "IsEncrypted": false
+        }
+      ]
     },
     {
       "Name": "A_VariableName",

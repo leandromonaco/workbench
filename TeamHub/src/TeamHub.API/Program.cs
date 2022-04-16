@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -17,8 +18,8 @@ var jsonSerializerOptions = new JsonSerializerOptions()
 {
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     PropertyNameCaseInsensitive = true,
-    ReferenceHandler = ReferenceHandler.Preserve,
-    //MaxDepth = 1
+    WriteIndented = true,
+    ReferenceHandler = ReferenceHandler.IgnoreCycles
 };
 
 // Configure the HTTP request pipeline.
@@ -29,6 +30,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
 TeamHubDatabaseContext dataContext = new TeamHubDatabaseContext();
 app.MapEmployeesControllerEndpoints(dataContext, jsonSerializerOptions);
