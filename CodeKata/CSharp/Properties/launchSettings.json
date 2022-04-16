@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Kata1_UserImpersonation.cs": {
+      "commandName": "Project"
+    },
+    "Kata2_EncryptionUsingCertificate.cs": {
+      "commandName": "Project"
+    }
+  }
+}
