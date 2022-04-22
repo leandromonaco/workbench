@@ -1,4 +1,6 @@
+using IdentityServer;
 using Serilog;
+using TeamHub.Core;
 
 namespace TeamHub.Identity
 {
@@ -6,20 +8,19 @@ namespace TeamHub.Identity
     {
         public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
         {
-            // uncomment if you want to add a UI
-            //builder.Services.AddRazorPages();
+            // Configuring IdentityServer
+            var x509 = Security.LoadCertificate();
 
-            builder.Services.AddIdentityServer(options =>
-                {
-                // https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/api_scopes#authorization-based-on-scopes
-                options.EmitStaticAudienceClaim = true;
-                })
-                .AddInMemoryIdentityResources(Config.IdentityResources)
-                .AddInMemoryApiScopes(Config.ApiScopes)
-                .AddInMemoryClients(Config.Clients);
+            builder.Services.AddIdentityServer()
+                            .AddInMemoryApiScopes(Config.ApiScopes)
+                            .AddInMemoryClients(Config.Clients)
+                            .AddSigningCredential(x509)
+                            .AddValidationKey(x509);
 
             return builder.Build();
         }
+
+      
 
         public static WebApplication ConfigurePipeline(this WebApplication app)
         {

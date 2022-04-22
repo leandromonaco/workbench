@@ -1,21 +1,33 @@
 ﻿using Duende.IdentityServer.Models;
 
-namespace TeamHub.Identity
+namespace IdentityServer;
+
+public static class Config
 {
-    public static class Config
-    {
-        public static IEnumerable<IdentityResource> IdentityResources =>
-            new IdentityResource[]
+    public static IEnumerable<ApiScope> ApiScopes =>
+        new List<ApiScope>
+        {
+            new ApiScope("api1", "My API")
+        };
+
+    public static IEnumerable<Client> Clients =>
+        new List<Client>
+        {
+            new Client
             {
-            new IdentityResources.OpenId()
-            };
+                ClientId = "client",
 
-        public static IEnumerable<ApiScope> ApiScopes =>
-            new ApiScope[]
-                { };
+                // no interactive user, use the clientid/secret for authentication
+                AllowedGrantTypes = GrantTypes.ClientCredentials,
 
-        public static IEnumerable<Client> Clients =>
-            new Client[]
-                { };
-    }
+                // secret for authentication
+                ClientSecrets =
+                {
+                    new Secret("secret".Sha256())
+                },
+
+                // scopes that client has access to
+                AllowedScopes = { "api1" }
+            }
+        };
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using TeamHub.API.Database;
 
@@ -9,14 +10,14 @@ namespace TeamHub.API.Controllers
         public static void MapEmployeesControllerEndpoints(this WebApplication app, TeamHubDatabaseContext dataContext, JsonSerializerOptions jsonSerializerOptions)
         {
             //All
-            app.MapGet("/employees", async () => 
+            app.MapGet("/employees", [Authorize] async () => 
             {
                 var employees =  await dataContext.Employees.Include(e => e.Specialization).ToListAsync();
                 return JsonSerializer.Serialize(employees, jsonSerializerOptions);
-            });
+            }).RequireCors("MyAllowSpecificOrigins");
 
             //Create
-            app.MapPost("/employees", async (Employee employee) =>
+            app.MapPost("/employees", [Authorize] async (Employee employee) =>
             {
                 employee.Id = Guid.NewGuid();
                 await dataContext.Employees.AddAsync(employee);
@@ -25,7 +26,7 @@ namespace TeamHub.API.Controllers
             });
 
             //Retrieve
-            app.MapGet("/employees/{id}", async (Guid id) =>
+            app.MapGet("/employees/{id}", [Authorize] async (Guid id) =>
             {
                 var employee = await dataContext.Employees.Include(e => e.Specialization)
                                                     .Include(e => e.ReportsToNavigation).SingleOrDefaultAsync(x => x.Id == id);
@@ -33,7 +34,7 @@ namespace TeamHub.API.Controllers
             });
 
             //Update
-            app.MapPut("/employees", async (Employee employee) =>
+            app.MapPut("/employees", [Authorize] async (Employee employee) =>
             {
                 var emp = await dataContext.Employees.FindAsync(employee.Id);
                 if (emp != null)
@@ -46,7 +47,7 @@ namespace TeamHub.API.Controllers
             });
 
             //Delete
-            app.MapDelete("/employees/{id}", async (Guid id) =>
+            app.MapDelete("/employees/{id}", [Authorize] async (Guid id) =>
             {
                 var employee = await dataContext.Employees.FindAsync(id);
                 if (employee != null)

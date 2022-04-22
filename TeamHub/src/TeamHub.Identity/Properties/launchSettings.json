@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "SelfHost": {
+    "TeamHub.Identity": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 
@@ -14,19 +14,31 @@ export class AppComponent implements OnInit
   title = 'Team Hub';
   employees: any;
 
-    constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-  ngOnInit()
+  async ngOnInit()
   {
-    this.getEmployees();
+    var token:string = await this.getToken();
+    this.getEmployees(token);
   }
 
-  getEmployees()
+  getEmployees(token)
   {
-    this.http.get('https://localhost:7209/employees').subscribe(response => {
+    var httpHeaders = new HttpHeaders({
+        'Authorization': 'Bearer ' + token
+      });
+
+    this.http.get('https://localhost:7209/employees', {headers: httpHeaders }).subscribe(response => {
       this.employees = response;
     }, error => {
       console.log(error);
     })
   }
+
+
+   async getToken(): Promise<any>
+   {
+     return await this.http.get('https://localhost:7209/token', { responseType: 'text' }).toPromise();
+   }
+
 }
