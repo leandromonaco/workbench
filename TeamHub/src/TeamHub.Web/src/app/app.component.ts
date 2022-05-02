@@ -11,7 +11,10 @@ import { Component } from '@angular/core';
 export class AppComponent implements OnInit
 {
 
-  title = 'Team Hub';
+  data = {
+    title: 'Team Hub'
+  };
+
   employees: any;
 
   constructor(private http: HttpClient) { }
@@ -39,6 +42,15 @@ export class AppComponent implements OnInit
    async getToken(): Promise<any>
    {
      return await this.http.get('https://localhost:7209/token', { responseType: 'text' }).toPromise();
+   }
+
+   onInputClicked()
+   {
+     alert('input clicked');
+   }
+
+   onKeyUp(newTitle:string){
+     this.data.title = newTitle;
    }
 
 }
