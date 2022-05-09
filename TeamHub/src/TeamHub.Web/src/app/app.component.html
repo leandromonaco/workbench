@@ -1,5 +1,10 @@
-<h1>{{title}}</h1>
+<h1>{{data.title}}</h1>
 
 <ul>
   <li *ngFor="let employee of employees">{{employee.Id}} - {{employee.Name}}</li>
 </ul>
+
+
+<input title="test2" class="demo" value="test" (click)="onInputClicked()" />
+<input title="test2" class="demo" [value]="data.title" #titleInput (keyup)="onKeyUp(titleInput.value)"/>
+<div [innerHTML]="data.title"></div>
