@@ -19,5 +19,14 @@ namespace ConfluenceKB
         [Option("SpaceKey", Required = false, HelpText = "Space Key")]
         public string SpaceKey { get; set; }
 
+        [Option("Label", Required = false, HelpText = "Labels")]
+        public string Label { get; set; }
+
+        [Option("LastModifiedYear", Required = false, HelpText = "Last Modified Year")]
+        public string LastModifiedYear { get; set; }
+
+        [Option("CreatedYear", Required = false, HelpText = "Created Year")]
+        public string CreatedYear { get; set; }
+
     }
 }

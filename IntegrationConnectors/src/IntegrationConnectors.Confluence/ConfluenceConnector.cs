@@ -48,19 +48,14 @@ namespace IntegrationConnectors.Confluence
             var result = await PutAsync($"{_url}/wiki/rest/api/content/{pageId}", requestJson);
         }
 
-        public async Task<List<ConfluencePageSearchResult>> SearchContentByLabelAsync(string label)
-        {
-            //&expand=history
-            //expand=metadata.labels
-            var response = await GetAsync($"{_url}/wiki/rest/api/content/search?limit=10000&cql=type=page%20AND%20label='{label}'&expand=metadata.labels");
-            var wikiPageSearchResults = JsonSerializer.Deserialize<ConfluencePageSearchResults>(response, _jsonSerializerOptions);
-            return wikiPageSearchResults.Results.Where(r => r.Type.Equals("page")).ToList();
-        }
 
-        public async Task<List<ConfluencePageSearchResult>> SearchContentAsync(string contributorAccountId, string spaceKey)
+        public async Task<List<ConfluencePageSearchResult>> SearchContentAsync(string contributorAccountId, string spaceKey, string label, string lastModifiedYear, string createdYear)
         {
             string contributorClause = string.Empty;
             string spaceClause = string.Empty;
+            string labelClause = string.Empty;
+            string lastModifiedClause = string.Empty;
+            string createdYearClause = string.Empty;
 
             if (!string.IsNullOrEmpty(contributorAccountId))
             {
@@ -72,8 +67,23 @@ namespace IntegrationConnectors.Confluence
                 spaceClause = $" and space.key='{spaceKey}'";
             }
 
+            if (!string.IsNullOrEmpty(label))
+            {
+                spaceClause = $" and label='{label}'";
+            }
+
+            if (!string.IsNullOrEmpty(lastModifiedYear))
+            {
+                lastModifiedClause = $" and lastModified <= '{lastModifiedYear}-12-31'";
+            }
+
+            if (!string.IsNullOrEmpty(createdYear))
+            {
+                createdYearClause = $" and created  <= '{createdYear}-12-31'";
+            }
+
             var results = new List<ConfluencePageSearchResult>();
-            var response = await GetAsync($"{_url}/wiki/rest/api/content/search?limit=10000&cql=type=page{contributorClause}{spaceClause}&expand=history,history.lastUpdated");
+            var response = await GetAsync($"{_url}/wiki/rest/api/content/search?limit=10000&cql=type=page{contributorClause}{spaceClause}{labelClause}{lastModifiedClause}{createdYearClause}&expand=history,history.lastUpdated,metadata.labels");
             var wikiPageSearchResults = JsonSerializer.Deserialize<ConfluencePageSearchResults>(response, _jsonSerializerOptions);
             results.AddRange(wikiPageSearchResults.Results);
             while (wikiPageSearchResults.Links.Next != null)
