@@ -70,7 +70,7 @@ namespace JiraReporting.Report
 
                     row.CreateCell(5).SetCellValue(backlogItem.IssueTitle);
                     row.CreateCell(6).SetCellValue(backlogItem.IssueType);
-                    row.CreateCell(7).SetCellValue(backlogItem.Severity);
+                    row.CreateCell(7).SetCellValue(backlogItem.Priority);
                     row.CreateCell(8).SetCellValue(backlogItem.Status);
                     row.CreateCell(9).SetCellValue(Convert.ToDouble(backlogItem.Points));
                     row.CreateCell(10).SetCellValue(backlogItem.AssignedTo);

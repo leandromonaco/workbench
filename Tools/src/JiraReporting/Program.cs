@@ -23,7 +23,8 @@ namespace JiraReporting
             Parser.Default.ParseArguments<Options>(args)
                .WithParsed(o =>
                {
-                   ExecuteJob(o.JiraEndpoint, o.JiraProject, o.JiraUsername, o.JiraAuthenticationToken, o.PowerBiDatasetEndpoint);
+                   //ExecuteJob(o.JiraEndpoint, o.JiraProject, o.JiraUsername, o.JiraAuthenticationToken, o.PowerBiDatasetEndpoint);
+                   ExecuteJob(o.JiraEndpoint, o.JQL, o.JiraUsername, o.JiraAuthenticationToken);
                    //RecurringJob.AddOrUpdate("JiraReportJob",
                    //                        () => ExecuteJob(o.JiraEndpoint, o.JiraProject, o.JiraUsername, o.JiraAuthenticationToken, o.PowerBiDatasetEndpoint),
                    //                        Cron.Hourly);
@@ -33,7 +34,7 @@ namespace JiraReporting
             Console.ReadLine();
         }
 
-        public static void ExecuteJob(string jiraEndpoint, string jiraProject, string jiraUsername, string jiraAuthenticationToken, string powerBiDatasetEndpoint)
+        public static void ExecuteJob(string jiraEndpoint, string jql, string jiraUsername, string jiraAuthenticationToken)
         {
             Console.WriteLine($"Jira Report started {DateTime.Now}");
 
@@ -73,13 +74,15 @@ namespace JiraReporting
             while (startAt <= finishAt)
             {
                 var query = $@"{{
-                                ""jql"": ""project={jiraProject}"",
+                                ""jql"": ""{jql}"",
                                 ""maxResults"": {increment},
                                 ""startAt"": {startAt}
                             }}";
-
+           
                 var response = httpConnector.PostAsync($"{jiraEndpoint}/rest/api/2/search", query).Result;
                 var jqlQueryResult = JsonSerializer.Deserialize<JqlQueryResult>(response, jsonSerializerOptions);
+
+                Console.WriteLine($"Processing {startAt} of {jqlQueryResult.Total} {DateTime.Now}");
 
                 startAt += increment;
                 finishAt = jqlQueryResult.Total - 1;
@@ -87,10 +90,6 @@ namespace JiraReporting
                 foreach (var issue in jqlQueryResult.Issues)
                 {
                     var issueType = issue.Fields.IssueType.Name;
-                    if (issueType.Equals("RAID") && !string.IsNullOrEmpty(issue.Fields.RaidType?.Value))
-                    {
-                        issueType = issue.Fields.RaidType?.Value;
-                    }
 
                     var row = new BacklogItem
                     {
@@ -101,9 +100,9 @@ namespace JiraReporting
                         EpicId = issue.Fields.Parent?.Key,
                         EpicTitle = issue.Fields.Parent?.Fields.Summary,
                         IssueType = issueType,
-                        Severity = issue.Fields.Severity?.Value,
+                        Priority = issue.Fields.Priority?.Value,
                         Status = issue.Fields.Status.Name,
-                        Points = issue.Fields.Points?.Value,
+                        Points = Convert.ToInt32(issue.Fields.Points),
                         AssignedTo = issue.Fields.Assignee == null ? "Unassigned" : issue.Fields.Assignee.DisplayName
                     };
 
@@ -137,13 +136,13 @@ namespace JiraReporting
             var outputFile = $"{Environment.CurrentDirectory}\\report_{DateTime.Now.Date.ToString(dateFormat)}";
 
             ExcelHelper.Export(latestBacklog, null, $"{outputFile}.xlsx", jiraEndpoint);
-            ExcelHelper.Export(changedStories, null, $"ChangedStories.xlsx", jiraEndpoint);
-            ExcelHelper.Export(changedBugs, null, $"ChangedBugs.xlsx", jiraEndpoint);
-            ExcelHelper.Export(changedRaids, null, $"ChangedRaids.xlsx", jiraEndpoint);
+            //ExcelHelper.Export(changedStories, null, $"ChangedStories.xlsx", jiraEndpoint);
+            //ExcelHelper.Export(changedBugs, null, $"ChangedBugs.xlsx", jiraEndpoint);
+            //ExcelHelper.Export(changedRaids, null, $"ChangedRaids.xlsx", jiraEndpoint);
 
             File.WriteAllText($"{outputFile}.json", JsonSerializer.Serialize(latestBacklog));
 
-            var result = httpConnector.PostAsync(powerBiDatasetEndpoint, JsonSerializer.Serialize(latestBacklog)).Result;
+            //var result = httpConnector.PostAsync(powerBiDatasetEndpoint, JsonSerializer.Serialize(latestBacklog)).Result;
 
             Console.WriteLine($"Jira Report stopped {DateTime.Now}");
         }

@@ -12,16 +12,14 @@ namespace JiraReporting.Model
         public IssueType IssueType { get; set; }
         public Assignee Assignee { get; set; }
 
-        [JsonPropertyName("customfield_10263")]
-        public Severity Severity { get; set; }
-
-        [JsonPropertyName("customfield_10018")]
+        public Priority Priority { get; set; }
+        
+        //TODO: Make this customizable
+        [JsonPropertyName("customfield_10020")]
         public List<Sprint> Sprints { get; set; }
 
-        [JsonPropertyName("customfield_10281")]
-        public Points Points { get; set; }
+        [JsonPropertyName("customfield_10026")]
+        public double? Points { get; set; }
 
-        [JsonPropertyName("customfield_10283")]
-        public RaidType RaidType { get; set; }
     }
 }
