@@ -4,12 +4,11 @@
   <li *ngFor="let employee of employees">{{employee.Id}} - {{employee.Name}}</li>
 </ul>
 
+<app-user-component *ngFor="let employee of employees" [employee]="employee"></app-user-component>
 
 <input title="test2" class="demo" value="test" (click)="onInputClicked()" />
 <input title="test2" class="demo" [value]="data.title" #titleInput (keyup)="onKeyUp(titleInput.value)"/>
 <div [innerHTML]="data.title"></div>
 
 
-<app-user-component></app-user-component>
-<app-user-component></app-user-component>
-<app-user-component></app-user-component>
+

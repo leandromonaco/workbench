@@ -1,6 +1,7 @@
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
+import { Employee } from './model/employee';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,7 @@ export class AppComponent implements OnInit
     title: 'Team Hub'
   };
 
-  employees: any;
+  employees: Employee[];
 
   constructor(private http: HttpClient) { }
 
@@ -31,7 +32,7 @@ export class AppComponent implements OnInit
         'Authorization': 'Bearer ' + token
       });
 
-    this.http.get('https://localhost:7209/employees', {headers: httpHeaders }).subscribe(response => {
+    this.http.get<Employee[]>('https://localhost:7209/employees', {headers: httpHeaders }).subscribe(response => {
       this.employees = response;
     }, error => {
       console.log(error);
