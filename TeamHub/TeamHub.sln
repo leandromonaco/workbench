@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Infrastructure", "s
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "TeamHub.Web", "src\TeamHub.Web\", "{56D36E35-8C9C-4379-BB46-F0EFF845AB90}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_59131"
 		Debug.AspNetCompiler.PhysicalPath = "src\TeamHub.Web\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_59131\"
@@ -44,7 +44,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "TeamHub.Web", "src\TeamHub.
 		SlnRelativePath = "src\TeamHub.Web\"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamHub.Identity", "src\TeamHub.Identity\TeamHub.Identity.csproj", "{DECFF18B-0BB4-4133-93C8-277482F0EED1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Identity", "src\TeamHub.Identity\TeamHub.Identity.csproj", "{DECFF18B-0BB4-4133-93C8-277482F0EED1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
