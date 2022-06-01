@@ -6,6 +6,8 @@ class Program
 {
     public static async Task Main()
     {
+        //Code Generation --> pwsh bin\Debug\net6.0\playwright.ps1 codegen wikipedia.org
+
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Webkit.LaunchAsync(new BrowserTypeLaunchOptions
         {
