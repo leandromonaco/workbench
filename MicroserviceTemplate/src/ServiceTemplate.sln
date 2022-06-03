@@ -5,11 +5,15 @@ VisualStudioVersion = 17.2.32505.173
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.API", "ServiceName.API\ServiceName.API.csproj", "{DD4C16FE-1C12-4B91-92D1-184329282E65}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Application", "ServiceName.Application\ServiceName.Application.csproj", "{8F3CDF89-14BD-4553-BD25-B347CB5E1C89}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Domain", "ServiceName.Domain\ServiceName.Domain.csproj", "{64B2E9A0-8C17-4F93-8E8D-C55AF7C5B632}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Infrastructure", "ServiceName.Infrastructure\ServiceName.Infrastructure.csproj", "{9B43FACF-50A2-4332-9642-3F723488DE40}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{99A702BB-D8C1-4F89-9B4E-EB891693FD7A}"
+	ProjectSection(SolutionItems) = preProject
+		nginx.conf = nginx.conf
+		tye.yaml = tye.yaml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Core", "ServiceName.Core\ServiceName.Core.csproj", "{3733AF37-1B4D-4178-B4A8-46702493BCEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,18 +25,14 @@ Global
 		{DD4C16FE-1C12-4B91-92D1-184329282E65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD4C16FE-1C12-4B91-92D1-184329282E65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD4C16FE-1C12-4B91-92D1-184329282E65}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8F3CDF89-14BD-4553-BD25-B347CB5E1C89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8F3CDF89-14BD-4553-BD25-B347CB5E1C89}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8F3CDF89-14BD-4553-BD25-B347CB5E1C89}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8F3CDF89-14BD-4553-BD25-B347CB5E1C89}.Release|Any CPU.Build.0 = Release|Any CPU
-		{64B2E9A0-8C17-4F93-8E8D-C55AF7C5B632}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{64B2E9A0-8C17-4F93-8E8D-C55AF7C5B632}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{64B2E9A0-8C17-4F93-8E8D-C55AF7C5B632}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{64B2E9A0-8C17-4F93-8E8D-C55AF7C5B632}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B43FACF-50A2-4332-9642-3F723488DE40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9B43FACF-50A2-4332-9642-3F723488DE40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B43FACF-50A2-4332-9642-3F723488DE40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B43FACF-50A2-4332-9642-3F723488DE40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3733AF37-1B4D-4178-B4A8-46702493BCEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3733AF37-1B4D-4178-B4A8-46702493BCEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3733AF37-1B4D-4178-B4A8-46702493BCEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3733AF37-1B4D-4178-B4A8-46702493BCEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

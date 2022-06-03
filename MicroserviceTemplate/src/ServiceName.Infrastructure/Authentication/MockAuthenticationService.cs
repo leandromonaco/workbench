@@ -2,9 +2,9 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using Settings.Application.Common.Interfaces;
+using ServiceName.Core.Common.Interfaces;
 
-namespace Settings.Infrastructure.Mock
+namespace ServiceName.Infrastructure.Authentication
 {
     /// <summary>
     /// https://dotnetcoretutorials.com/2020/01/15/creating-and-validating-jwt-tokens-in-asp-net-core/

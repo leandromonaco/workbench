@@ -1,4 +1,4 @@
-﻿namespace Settings.Application.Common.Interfaces
+﻿namespace ServiceName.Core.Common.Interfaces
 {
     public interface IAuthenticationService
     {

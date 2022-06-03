@@ -1,16 +1,16 @@
 ﻿using System.Reflection;
 using MediatR;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using ServiceName.Core.Common.Behaviours;
 
-namespace Settings.Application
+namespace ServiceName.Core
 {
     public static class ConfigureServices
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
             return services;
         }
     }
