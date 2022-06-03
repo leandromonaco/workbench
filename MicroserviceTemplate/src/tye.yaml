@@ -1,0 +1,79 @@
+# tye application configuration file
+# read all about it at https://github.com/dotnet/tye
+#
+# when you've given us a try, we'd love to know what you think:
+#    https://aka.ms/AA7q20u
+#
+
+extensions:
+- name: seq
+  logPath: ./.logs
+
+name: servicetemplate
+services:
+
+    - name: nginx-ingress-controller
+      image: nginx
+      bindings:
+        - protocol: http
+          port: 51000
+      volumes:
+        - source: nginx.conf
+          target: /etc/nginx/conf.d/default.conf
+    - name: servicename-api
+      project: ServiceName.API/ServiceName.API.csproj
+      bindings:
+      - port: 51001
+      replicas: 2
+
+    #- name: SQL-Database
+    #  image: mcr.microsoft.com/mssql/server:2019-latest
+    #  bindings:
+    #  - connectionString: Data Source=host.docker.internal,1433;Initial Catalog=ServiceDB;Persist Security Info=True;User ID=sa;Password=${env:SA_PASSWORD}
+    #    port: 1433
+    #  env:
+    #  - name: SA_PASSWORD
+    #    value: M3rz0ug4!!!!
+    #  - name: ACCEPT_EULA
+    #    value: Y
+
+    - name: redis-cache
+      image: redis
+      bindings:
+      - port: 6379
+        connectionString: "${host}:${port}"
+      args: "redis-cli -h redis MONITOR"
+
+#https://github.com/dotnet/tye/issues/190
+#https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html
+    - name: dynamodb-local
+      image: "amazon/dynamodb-local:latest"
+      args: -jar DynamoDBLocal.jar -sharedDb -dbPath ./data
+      volumes:
+       - source: "/mnt/c/Temp"
+         target: "/mnt/c/Temp/DynamoDB"
+      bindings:
+      - port: 8000
+      env:
+      - name: AWS_ACCESS_KEY_ID
+        value: test
+      - name: AWS_SECRET_ACCESS_KEY
+        value: test
+      - name: MYSQL_USER
+        value: steeltoe
+      - name: REGION
+        value: ap-southeast-2
+      #volumes:
+      # - source: ./docker/dynamodb:/home/dynamodblocal/data
+      #     target: /home/dynamodblocal
+      #     bindings:
+      #     - port: 8000
+      #     env:
+      #     - name: AWS_ACCESS_KEY_ID
+      #       value: test
+      #     - name: AWS_SECRET_ACCESS_KEY
+      #       value: test
+      #     - name: MYSQL_USER
+      #       value: steeltoe
+      #     - name: REGION
+      #       value: ap-southeast-2

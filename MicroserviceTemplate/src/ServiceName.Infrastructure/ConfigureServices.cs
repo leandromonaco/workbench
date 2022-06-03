@@ -2,27 +2,35 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Settings.Application.Interfaces;
-using Settings.Infrastructure.Handlers;
-using Settings.Infrastructure.Mock;
-using Settings.Infrastructure.Repositories;
+using ServiceName.Core.Common.Interfaces;
+using ServiceName.Infrastructure.Authentication;
+using ServiceName.Infrastructure.Configuration;
+using ServiceName.Infrastructure.Logging;
+using ServiceName.Infrastructure.Repositories;
 
-namespace Settings.Infrastructure
+namespace ServiceName.Infrastructure
 {
     public static class ConfigureServices
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {
-            services.AddScoped<ISettingsRepository, SettingsRepositoryMock>();
-            //services.AddScoped<ISettingsService, SettingsServiceAws>();
 
-            services.AddSingleton<Application.Common.Interfaces.IAuthenticationService, AuthenticationServiceMock>();
+            //For Development Environment
+            //services.AddScoped<ISettingsRepository, MockSettingsRepository>();
+            services.AddScoped<ISettingsRepository, DynamoDbSettingsRepository>();
+            services.AddSingleton<ILoggingService, SeqLoggingService>();
+            services.AddSingleton<IConfigurationService, JsonStringConfigurationService>();
+            //services.AddSingleton<IAuthenticationService, AuthenticationServiceMock>();
+
+            //For Cloud Environment
+            //services.AddScoped<ISettingsRepository, DynamoDbSettingsRepository>();
+            //services.AddSingleton<ILoggingService, CloudWatchLoggingService>();
 
             // Authentication
-            services.AddAuthentication("BasicAuthentication")
-                    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
-            services.AddAuthorization();
-            
+            //services.AddAuthentication("BasicAuthentication")
+            //        .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+            //services.AddAuthorization();
+
             return services;
         }
     }
