@@ -10,7 +10,7 @@ namespace ServiceName.Infrastructure.Repositories
     /// <summary>
     //https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/CodeSamples.DotNet.html
     //https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/LowLevelDotNetItemCRUD.html
-    //aws --endpoint-url=http://localhost:4566 dynamodb create-table --table-name ServiceName_Setting --attribute-definitions AttributeName=TenantId,AttributeType=S --key-schema AttributeName=TenantId,KeyType=HASH --billing-mode PAY_PER_REQUEST
+    //aws --endpoint-url=http://localhost:8000 dynamodb create-table --table-name ServiceName_Setting --attribute-definitions AttributeName=TenantId,AttributeType=S --key-schema AttributeName=TenantId,KeyType=HASH --billing-mode PAY_PER_REQUEST
     //awslocal dynamodb create-table --table-name ServiceName_Setting --attribute-definitions AttributeName=TenantId,AttributeType=S --key-schema AttributeName=TenantId,KeyType=HASH --billing-mode PAY_PER_REQUEST
     /// </summary>
     public class DynamoDbSettingsRepository : ISettingsRepository
@@ -24,10 +24,10 @@ namespace ServiceName.Infrastructure.Repositories
             {
                 RegionEndpoint = RegionEndpoint.GetBySystemName("ap-southeast-2"),
                 UseHttp = true,
-                ServiceURL = "http://localhost:4566"
+                ServiceURL = "http://localhost:8000"
             };
 
-            _amazonDynamoDBClient = new AmazonDynamoDBClient("123", "123", clientConfig);
+            _amazonDynamoDBClient = new AmazonDynamoDBClient("test", "test", clientConfig);
         }
 
         public async Task<Settings> GetSettingsAsync(Guid tenantId)
