@@ -44,14 +44,13 @@ services:
         connectionString: "${host}:${port}"
       args: "redis-cli -h redis MONITOR"
 
-#https://github.com/dotnet/tye/issues/190
-#https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html
-    - name: dynamodb-local
+    # https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html (Docker Tab)
+    - name: dynamodb-database
       image: "amazon/dynamodb-local:latest"
-      args: -jar DynamoDBLocal.jar -sharedDb -dbPath ./data
+      args: -jar DynamoDBLocal.jar -sharedDb -dbPath /mnt/c/Temp/DynamoDB
       volumes:
-       - source: "/mnt/c/Temp"
-         target: "/mnt/c/Temp/DynamoDB"
+         - source: "./"
+           target: "/mnt/c/Temp/DynamoDB"
       bindings:
       - port: 8000
       env:
@@ -59,21 +58,5 @@ services:
         value: test
       - name: AWS_SECRET_ACCESS_KEY
         value: test
-      - name: MYSQL_USER
-        value: steeltoe
       - name: REGION
         value: ap-southeast-2
-      #volumes:
-      # - source: ./docker/dynamodb:/home/dynamodblocal/data
-      #     target: /home/dynamodblocal
-      #     bindings:
-      #     - port: 8000
-      #     env:
-      #     - name: AWS_ACCESS_KEY_ID
-      #       value: test
-      #     - name: AWS_SECRET_ACCESS_KEY
-      #       value: test
-      #     - name: MYSQL_USER
-      #       value: steeltoe
-      #     - name: REGION
-      #       value: ap-southeast-2
