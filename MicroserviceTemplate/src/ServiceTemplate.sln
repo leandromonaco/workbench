@@ -9,11 +9,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Infrastructure"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{99A702BB-D8C1-4F89-9B4E-EB891693FD7A}"
 	ProjectSection(SolutionItems) = preProject
-		nginx.conf = nginx.conf
 		tye.yaml = tye.yaml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Core", "ServiceName.Core\ServiceName.Core.csproj", "{3733AF37-1B4D-4178-B4A8-46702493BCEC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0750781A-30FA-4A91-B764-A5E89BD9CCB0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3FD41DDF-2B43-4372-9FB1-62597803431B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceName.Test", "..\tests\ServiceName.Test\ServiceName.Test.csproj", "{5A8EB360-D518-4F2C-929C-3628C6DA9226}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +38,19 @@ Global
 		{3733AF37-1B4D-4178-B4A8-46702493BCEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3733AF37-1B4D-4178-B4A8-46702493BCEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3733AF37-1B4D-4178-B4A8-46702493BCEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A8EB360-D518-4F2C-929C-3628C6DA9226}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A8EB360-D518-4F2C-929C-3628C6DA9226}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A8EB360-D518-4F2C-929C-3628C6DA9226}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A8EB360-D518-4F2C-929C-3628C6DA9226}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DD4C16FE-1C12-4B91-92D1-184329282E65} = {3FD41DDF-2B43-4372-9FB1-62597803431B}
+		{9B43FACF-50A2-4332-9642-3F723488DE40} = {3FD41DDF-2B43-4372-9FB1-62597803431B}
+		{3733AF37-1B4D-4178-B4A8-46702493BCEC} = {3FD41DDF-2B43-4372-9FB1-62597803431B}
+		{5A8EB360-D518-4F2C-929C-3628C6DA9226} = {0750781A-30FA-4A91-B764-A5E89BD9CCB0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C9A3A709-C3C6-4654-AC2B-A92420A60DF5}

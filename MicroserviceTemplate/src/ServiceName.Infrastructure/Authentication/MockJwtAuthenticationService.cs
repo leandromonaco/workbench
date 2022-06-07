@@ -9,11 +9,11 @@ namespace ServiceName.Infrastructure.Authentication
     /// <summary>
     /// https://dotnetcoretutorials.com/2020/01/15/creating-and-validating-jwt-tokens-in-asp-net-core/
     /// </summary>
-    public class AuthenticationServiceMock : IAuthenticationService
+    public class MockJwtAuthenticationService : IAuthenticationService
     {
         public string GenerateToken(int userId)
         {
-            var mySecret = "asdv234234^&%&^%&^hjsdfb2%%%";
+            var mySecret = "asdv234235^&%&^%&^hjsdfb2%%%";
             var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
             var myIssuer = "http://mysite.com";
             var myAudience = "http://myaudience.com";
@@ -22,7 +22,7 @@ namespace ServiceName.Infrastructure.Authentication
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 Issuer = myIssuer,
@@ -33,7 +33,7 @@ namespace ServiceName.Infrastructure.Authentication
             return tokenHandler.WriteToken(token);
         }
 
-        public bool ValidateCurrentToken(string token)
+        public bool ValidateToken(string token)
         {
             var mySecret = "asdv234234^&%&^%&^hjsdfb2%%%";
             var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));

@@ -3,6 +3,6 @@
     public interface IAuthenticationService
     {
         string GenerateToken(int userId);
-        bool ValidateCurrentToken(string token);
+        bool ValidateToken(string token);
     }
 }

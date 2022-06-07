@@ -13,14 +13,21 @@ namespace ServiceName.Infrastructure.Repositories
     //aws --endpoint-url=http://localhost:8000 dynamodb create-table --table-name ServiceName_Setting --attribute-definitions AttributeName=TenantId,AttributeType=S --key-schema AttributeName=TenantId,KeyType=HASH --billing-mode PAY_PER_REQUEST
     //awslocal dynamodb create-table --table-name ServiceName_Setting --attribute-definitions AttributeName=TenantId,AttributeType=S --key-schema AttributeName=TenantId,KeyType=HASH --billing-mode PAY_PER_REQUEST
     /// </summary>
-    public class DynamoDbSettingsRepository : ISettingsRepository
+    public class LocalDynamoDbSettingsRepository : ISettingsRepository
     {
         AmazonDynamoDBClient _amazonDynamoDBClient;
         string _dynamoTableName = "ServiceName_Setting";
 
-        public DynamoDbSettingsRepository()
+        public LocalDynamoDbSettingsRepository()
         {
-            _amazonDynamoDBClient = new AmazonDynamoDBClient("test", "test");
+            AmazonDynamoDBConfig clientConfig = new AmazonDynamoDBConfig
+            {
+                RegionEndpoint = RegionEndpoint.GetBySystemName("ap-southeast-2"),
+                UseHttp = true,
+                ServiceURL = "http://localhost:8000"
+            };
+
+            _amazonDynamoDBClient = new AmazonDynamoDBClient("test", "test", clientConfig);
         }
 
         public async Task<Settings> GetSettingsAsync(Guid tenantId)

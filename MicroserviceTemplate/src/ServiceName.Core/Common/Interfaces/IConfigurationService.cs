@@ -7,7 +7,7 @@ namespace ServiceName.Core.Common.Interfaces
     /// </summary>
     public interface IConfigurationService
     {
-        void LoadFromSource(params string[] configurationSources);
+        void LoadFromSource();
         public IConfiguration Configuration { get; }
     }
 }

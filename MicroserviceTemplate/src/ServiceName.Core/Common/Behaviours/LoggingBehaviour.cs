@@ -18,27 +18,25 @@ namespace ServiceName.Core.Common.Behaviours
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            var requestId = Guid.NewGuid();
+            var correlationId = Guid.NewGuid();
             var requestName = typeof(TRequest).Name;
 
-            await _loggingService.LogInformationAsync(@"requestId {requestId} 
+            await _loggingService.LogInformationAsync(@"correlationId {correlationId} 
                                                         requestName {requestName}
                                                         type {requestType}
-                                                        payload {requestPayload}", requestId, requestName, "Request", JsonSerializer.Serialize(request));
+                                                        payload {requestPayload}", correlationId, requestName, "Request", JsonSerializer.Serialize(request));
 
             _timer.Start();
             var response = await next();
             _timer.Stop();
 
-            await _loggingService.LogInformationAsync(@"requestId {requestId}
+            await _loggingService.LogInformationAsync(@"correlationId {correlationId}
                                                         requestName {requestName}
                                                         type {requestType}
-                                                        payload {requestPayload} {elapsedMilliseconds}", requestId, requestName, "Response", JsonSerializer.Serialize(response), _timer.ElapsedMilliseconds);
+                                                        payload {requestPayload} {elapsedMilliseconds}", correlationId, requestName, "Response", JsonSerializer.Serialize(response), _timer.ElapsedMilliseconds);
 
             return response;
         }
-
-
     }
 
 
