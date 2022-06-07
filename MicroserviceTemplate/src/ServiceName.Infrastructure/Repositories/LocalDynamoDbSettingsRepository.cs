@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text.Json;
 using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
@@ -13,7 +14,7 @@ namespace ServiceName.Infrastructure.Repositories
     //aws --endpoint-url=http://localhost:8000 dynamodb create-table --table-name ServiceName_Setting --attribute-definitions AttributeName=TenantId,AttributeType=S --key-schema AttributeName=TenantId,KeyType=HASH --billing-mode PAY_PER_REQUEST
     //awslocal dynamodb create-table --table-name ServiceName_Setting --attribute-definitions AttributeName=TenantId,AttributeType=S --key-schema AttributeName=TenantId,KeyType=HASH --billing-mode PAY_PER_REQUEST
     /// </summary>
-    public class LocalDynamoDbSettingsRepository : ISettingsRepository
+    public class LocalDynamoDbSettingsRepository : IRepositoryService<Settings>
     {
         AmazonDynamoDBClient _amazonDynamoDBClient;
         string _dynamoTableName = "ServiceName_Setting";
@@ -30,7 +31,7 @@ namespace ServiceName.Infrastructure.Repositories
             _amazonDynamoDBClient = new AmazonDynamoDBClient("test", "test", clientConfig);
         }
 
-        public async Task<Settings> GetSettingsAsync(Guid tenantId)
+        public async Task<Settings> GetAsync(Guid tenantId)
         {
             var getRequest = new GetItemRequest
             {
@@ -52,7 +53,7 @@ namespace ServiceName.Infrastructure.Repositories
                     },
                 };
 
-                await SaveSettings(tenantId, newSettings);
+                await SaveAsync(tenantId, newSettings);
 
                 return newSettings;
             }
@@ -62,14 +63,7 @@ namespace ServiceName.Infrastructure.Repositories
             return existingSettings;
         }
 
-        public async Task<bool> SaveSettingsAsync(Guid tenantId, Settings settings)
-        {
-            await SaveSettings(tenantId, settings);
-
-            return true;
-        }
-
-        private async Task SaveSettings(Guid tenantId, Settings settings)
+        public async Task<bool> SaveAsync(Guid tenantId, Settings settings)
         {
             var putRequest = new PutItemRequest
             {
@@ -82,6 +76,13 @@ namespace ServiceName.Infrastructure.Repositories
             };
 
             var response = await _amazonDynamoDBClient.PutItemAsync(putRequest);
+
+            if (!response.HttpStatusCode.Equals(HttpStatusCode.OK))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
