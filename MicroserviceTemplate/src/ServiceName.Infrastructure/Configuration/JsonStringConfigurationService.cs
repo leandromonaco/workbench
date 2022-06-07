@@ -9,11 +9,12 @@ namespace ServiceName.Infrastructure.Configuration
         IConfiguration _configuration;
         public IConfiguration Configuration => _configuration;
 
-        public void LoadFromSource(params string[] configurationSources)
+        public void LoadFromSource()
         {
-            _configuration = new ConfigurationBuilder()
-                          .AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(configurationSources[0])))
-                          .Build();  //https://github.com/dotnet/runtime/issues/36018
+            throw new NotImplementedException();
+            //_configuration = new ConfigurationBuilder()
+            //              .AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(jsonString)))
+            //              .Build();  //https://github.com/dotnet/runtime/issues/36018
         }
     }
 }

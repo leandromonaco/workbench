@@ -11,7 +11,7 @@ namespace ServiceName.Infrastructure.Configuration
         IConfiguration _configuration;
         public IConfiguration Configuration => _configuration;
 
-        public void LoadFromSource(params string[] configurationSources)
+        public void LoadFromSource()
         {
             throw new NotImplementedException();
         }

@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using ServiceName.Core.Common.Interfaces;
+﻿using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
 
 namespace ServiceName.Infrastructure.Repositories

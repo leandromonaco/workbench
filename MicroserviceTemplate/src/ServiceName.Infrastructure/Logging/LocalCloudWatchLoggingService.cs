@@ -5,16 +5,26 @@ using ServiceName.Core.Common.Interfaces;
 
 namespace ServiceName.Infrastructure.Logging
 {
-    internal class CloudWatchLoggingService : ILoggingService
+    internal class LocalCloudWatchLoggingService : ILoggingService
     {
         /// <summary>
+        /// https://awscli.amazonaws.com/v2/documentation/api/latest/reference/logs/tail.html
+        /// https://docs.aws.amazon.com/cli/latest/reference/logs/create-log-group.html
+        /// awslocal logs describe-log-groups
+        /// awslocal logs tail "/LocalStack/Microservice/Logs"
         /// https://docs.aws.amazon.com/lambda/latest/dg/csharp-logging.html (LambdaLogger)
         /// https://github.com/aws/aws-logging-dotnet
         /// https://github.com/aws/aws-logging-dotnet/tree/master/samples/Serilog
         /// </summary>
-        public CloudWatchLoggingService()
+        public LocalCloudWatchLoggingService()
         {
-            Log.Logger = new LoggerConfiguration().WriteTo.AWSSeriLog()
+            AWSLoggerConfig configuration = new("/LocalStack/Microservice/Logs")
+            {
+                Region = "ap-southeast-2",
+                ServiceUrl = "http://localhost:4566"
+            };
+
+            Log.Logger = new LoggerConfiguration().WriteTo.AWSSeriLog(configuration)
                                                   .WriteTo.Console()
                                                   .CreateLogger();
         }

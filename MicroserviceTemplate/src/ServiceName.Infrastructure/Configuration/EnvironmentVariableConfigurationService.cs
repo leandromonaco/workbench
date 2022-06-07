@@ -8,7 +8,7 @@ namespace ServiceName.Infrastructure.Configuration
         IConfiguration _configuration;
         public IConfiguration Configuration => _configuration;
 
-        public void LoadFromSource(params string[] configurationSources)
+        public void LoadFromSource()
         {
            _configuration = new ConfigurationBuilder()
                          .AddEnvironmentVariables()
