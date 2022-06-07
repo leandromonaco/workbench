@@ -11,11 +11,11 @@ namespace ServiceName.Core.CQRS.Queries
     }
     public class GetSettingsQueryHandler : IRequestHandler<GetSettingsQueryRequest, Settings>
     {
-        ISettingsRepository _settingsRepository;
+        IRepositoryService<Settings> _settingsRepository;
         IConfigurationService _configurationService;
         ICachingService _cachingService;
 
-        public GetSettingsQueryHandler(ISettingsRepository settingsRepository, IConfigurationService configurationService, ICachingService cachingService)
+        public GetSettingsQueryHandler(IRepositoryService<Settings> settingsRepository, IConfigurationService configurationService, ICachingService cachingService)
         {
             _settingsRepository = settingsRepository;
             _configurationService = configurationService;
@@ -27,7 +27,7 @@ namespace ServiceName.Core.CQRS.Queries
             var cachedSettings = _cachingService.Get<Settings>(request.TenantId.ToString());
             if (cachedSettings == null)
             {
-                var settings = await _settingsRepository.GetSettingsAsync(request.TenantId);
+                var settings = await _settingsRepository.GetAsync(request.TenantId);
                 _cachingService.Set(request.TenantId.ToString(), settings);
                 cachedSettings = settings;
             }

@@ -17,11 +17,12 @@ namespace ServiceName.Infrastructure.Configuration
         public void LoadFromSource()
         {
             
-            var configFileName = _infrastructureOptions.Value.IsDevelopment ? "appsettings.Development.json" : "appsettings.json";
+            var environmentName = _infrastructureOptions.Value.IsDevelopment ? "Development.json" : "appsettings.json";
             
              _configuration = new ConfigurationBuilder()
                           .SetBasePath(Assembly.GetExecutingAssembly().Location)
-                          .AddJsonFile(configFileName, optional: false, reloadOnChange: true)
+                          .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                          .AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true)
                           .Build();
         }
 

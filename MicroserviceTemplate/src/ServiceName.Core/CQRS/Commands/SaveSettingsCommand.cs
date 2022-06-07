@@ -12,11 +12,11 @@ namespace ServiceName.Core.CQRS.Commands
 
     public class CreateTodoListCommandHandler : IRequestHandler<SaveSettingsCommandRequest, bool>
     {
-        ISettingsRepository _settingsRepository;
+        IRepositoryService<Settings> _settingsRepository;
         IConfigurationService _configurationService;
         ICachingService _cachingService;
 
-        public CreateTodoListCommandHandler(ISettingsRepository settingsRepository, IConfigurationService configurationService, ICachingService cachingService)
+        public CreateTodoListCommandHandler(IRepositoryService<Settings> settingsRepository, IConfigurationService configurationService, ICachingService cachingService)
         {
             _settingsRepository = settingsRepository;
             _configurationService = configurationService;
@@ -25,7 +25,7 @@ namespace ServiceName.Core.CQRS.Commands
 
         public async Task<bool> Handle(SaveSettingsCommandRequest request, CancellationToken cancellationToken)
         {
-            var result = await _settingsRepository.SaveSettingsAsync(request.TenantId, request.Settings);
+            var result = await _settingsRepository.SaveAsync(request.TenantId, request.Settings);
             _cachingService.Set(request.TenantId.ToString(), request.Settings);
             return result;
         }
