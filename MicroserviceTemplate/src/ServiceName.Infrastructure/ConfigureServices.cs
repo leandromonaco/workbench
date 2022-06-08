@@ -4,8 +4,8 @@ using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
 using ServiceName.Infrastructure.Caching;
 using ServiceName.Infrastructure.Configuration;
+using ServiceName.Infrastructure.Databases;
 using ServiceName.Infrastructure.Logging;
-using ServiceName.Infrastructure.Repositories;
 
 namespace ServiceName.Infrastructure
 {
@@ -19,7 +19,7 @@ namespace ServiceName.Infrastructure
             
             if (options.IsDevelopment)
             {
-                services.AddScoped<IRepositoryService<Settings>, LocalDynamoDbSettingsRepository>();
+                services.AddScoped<IDatabaseService, LocalDynamoDatabaseService>();
                 services.AddSingleton<ILoggingService, LocalCloudWatchLoggingService>();
                 //services.AddSingleton<ILoggingService, SeqLoggingService>();
                 services.AddSingleton<IConfigurationService, FileConfigurationService>();
@@ -27,7 +27,7 @@ namespace ServiceName.Infrastructure
             }
             else
             {
-                services.AddScoped<IRepositoryService<Settings>, DynamoDbSettingsRepository>();
+                services.AddScoped<IDatabaseService, LocalDynamoDatabaseService>();
                 services.AddSingleton<ILoggingService, CloudWatchLoggingService>();
                 services.AddSingleton<IConfigurationService, FileConfigurationService>();
             }

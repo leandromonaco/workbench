@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using MediatR;
+﻿using MediatR;
 using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
 
@@ -27,7 +26,7 @@ namespace ServiceName.Core.CQRS.Queries
             var cachedSettings = _cachingService.Get<Settings>(request.TenantId.ToString());
             if (cachedSettings == null)
             {
-                var settings = await _settingsRepository.GetAsync(request.TenantId);
+                var settings = await _settingsRepository.GetByIdAsync(request.TenantId);
                 _cachingService.Set(request.TenantId.ToString(), settings);
                 cachedSettings = settings;
             }

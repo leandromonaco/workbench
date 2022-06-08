@@ -6,7 +6,7 @@ using Amazon.DynamoDBv2.Model;
 using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
 
-namespace ServiceName.Infrastructure.Repositories
+namespace ServiceName.Infrastructure.Databases
 {
     /// <summary>
     //https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/CodeSamples.DotNet.html
@@ -14,12 +14,11 @@ namespace ServiceName.Infrastructure.Repositories
     //aws --endpoint-url=http://localhost:8000 dynamodb create-table --table-name ServiceName_Setting --attribute-definitions AttributeName=TenantId,AttributeType=S --key-schema AttributeName=TenantId,KeyType=HASH --billing-mode PAY_PER_REQUEST
     //awslocal dynamodb create-table --table-name ServiceName_Setting --attribute-definitions AttributeName=TenantId,AttributeType=S --key-schema AttributeName=TenantId,KeyType=HASH --billing-mode PAY_PER_REQUEST
     /// </summary>
-    public class LocalDynamoDbSettingsRepository : IRepositoryService<Settings>
+    public class LocalDynamoDatabaseService : IDatabaseService
     {
         AmazonDynamoDBClient _amazonDynamoDBClient;
-        string _dynamoTableName = "ServiceName_Setting";
 
-        public LocalDynamoDbSettingsRepository()
+        public LocalDynamoDatabaseService()
         {
             AmazonDynamoDBConfig clientConfig = new AmazonDynamoDBConfig
             {
@@ -31,47 +30,46 @@ namespace ServiceName.Infrastructure.Repositories
             _amazonDynamoDBClient = new AmazonDynamoDBClient("test", "test", clientConfig);
         }
 
-        public async Task<Settings> GetAsync(Guid tenantId)
+        public async Task<object> ExecuteQuery(QueryRead queryRead)
         {
             var getRequest = new GetItemRequest
             {
-                TableName = _dynamoTableName,
-                Key = new Dictionary<string, AttributeValue>() { { "TenantId", new AttributeValue { S = tenantId.ToString().ToLower() } } },
+                TableName = queryRead.TableName,
+                Key = new Dictionary<string, AttributeValue>(),
             };
+
+            foreach (var filter in queryRead.FilterFields)
+            {
+                getRequest.Key.Add(filter.Name, new AttributeValue { S = filter.Value?.ToString().ToLower() });
+            }
 
             var response = await _amazonDynamoDBClient.GetItemAsync(getRequest);
 
             //If there is no settings configured for the tenant create a new one
             if (response.Item.Count.Equals(0))
             {
-                var newSettings = new Settings()
-                {
-                    Group1 = new SettingGroup()
-                    {
-                        Setting1 = "a",
-                        Setting2 = "b"
-                    },
-                };
-
-                await SaveAsync(tenantId, newSettings);
-
-                return newSettings;
+                //Save
+                var queryWrite = new QueryWrite();
+                queryWrite.FilterFields = queryRead.FilterFields;
+                queryWrite.UpdateFields = new List<QueryField>() { new QueryField() { Name= queryRead.SelectFields[0].ToString(), Value = queryRead.DefaultResult } };  
+                await ExecuteQuery(queryWrite);
+                return queryRead.DefaultResult;
             }
 
-            var existingSettings = JsonSerializer.Deserialize<Settings>(response.Item["Settings"].S, new JsonSerializerOptions() { MaxDepth = 0, PropertyNameCaseInsensitive = true });
+            var existingSettings = JsonSerializer.Deserialize<Settings>(response.Item[queryRead.SelectFields[0].ToString()].S, new JsonSerializerOptions() { MaxDepth = 0, PropertyNameCaseInsensitive = true });
 
             return existingSettings;
         }
 
-        public async Task<bool> SaveAsync(Guid tenantId, Settings settings)
+        public async Task<bool> ExecuteQuery(QueryWrite query)
         {
             var putRequest = new PutItemRequest
             {
-                TableName = _dynamoTableName,
+                TableName = query.TableName,
                 Item = new Dictionary<string, AttributeValue>()
                 {
-                    { "TenantId", new AttributeValue { S = tenantId.ToString() } },
-                    { "Settings", new AttributeValue { S = JsonSerializer.Serialize(settings).ToLower() } }
+                    { query.FilterFields[0].Name, new AttributeValue { S = query.FilterFields[0].Value.ToString() } },
+                    { query.UpdateFields[0].Name, new AttributeValue { S = JsonSerializer.Serialize(query.UpdateFields[0].Value).ToLower() } }
                 }
             };
 
