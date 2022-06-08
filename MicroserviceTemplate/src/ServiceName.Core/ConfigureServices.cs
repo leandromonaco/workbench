@@ -2,6 +2,9 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceName.Core.Common.Behaviours;
+using ServiceName.Core.Common.Interfaces;
+using ServiceName.Core.Model;
+using ServiceName.Core.Repository;
 
 namespace ServiceName.Core
 {
@@ -11,6 +14,7 @@ namespace ServiceName.Core
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
+            services.AddScoped<IRepositoryService<Settings>, SettingsRepository>();
             return services;
         }
     }
