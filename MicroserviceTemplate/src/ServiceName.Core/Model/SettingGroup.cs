@@ -4,9 +4,9 @@ namespace ServiceName.Core.Model
 {
     public class SettingGroup
     {
-        [JsonPropertyName("Setting1")]
-        public string Setting1 { get; set; }
-        [JsonPropertyName("Setting2")]
-        public string Setting2 { get; set; }
+        [JsonPropertyName("IsSettingAEnabled")]
+        public bool IsSettingAEnabled { get; set; }
+        [JsonPropertyName("IsSettingBEnabled")]
+        public bool IsSettingBEnabled { get; set; }
     }
 }

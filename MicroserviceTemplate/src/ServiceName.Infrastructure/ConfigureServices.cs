@@ -19,7 +19,7 @@ namespace ServiceName.Infrastructure
             
             if (options.IsDevelopment)
             {
-                services.AddScoped<IDatabaseService, LocalDynamoDatabaseService>();
+                services.AddScoped<IRepositoryService<Settings>, LocalDynamoDatabaseService>();
                 services.AddSingleton<ILoggingService, LocalCloudWatchLoggingService>();
                 //services.AddSingleton<ILoggingService, SeqLoggingService>();
                 services.AddSingleton<IConfigurationService, FileConfigurationService>();
@@ -27,7 +27,7 @@ namespace ServiceName.Infrastructure
             }
             else
             {
-                services.AddScoped<IDatabaseService, LocalDynamoDatabaseService>();
+                services.AddScoped<IRepositoryService<Settings>, LocalDynamoDatabaseService>();
                 services.AddSingleton<ILoggingService, CloudWatchLoggingService>();
                 services.AddSingleton<IConfigurationService, FileConfigurationService>();
             }
