@@ -27,7 +27,7 @@ services:
       project: ServiceName.API/ServiceName.API.csproj
       bindings:
       - port: 51001
-      replicas: 2
+      #replicas: 2
 
     - name: SqlServer
       image: mcr.microsoft.com/mssql/server:2019-latest

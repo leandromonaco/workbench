@@ -2,8 +2,6 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceName.Core.Common.Behaviours;
-using ServiceName.Core.Common.Interfaces;
-using ServiceName.Core.Model;
 
 namespace ServiceName.Core
 {
