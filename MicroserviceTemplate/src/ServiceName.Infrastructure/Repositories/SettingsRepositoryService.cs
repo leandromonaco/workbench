@@ -4,7 +4,7 @@ using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
 using ServiceName.Infrastructure.Repositories.DynamoDBModel;
 
-namespace ServiceName.Infrastructure.Databases
+namespace ServiceName.Infrastructure.Repositories
 {
     /// <summary>
     //https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/CodeSamples.DotNet.html
@@ -23,7 +23,7 @@ namespace ServiceName.Infrastructure.Databases
         {
             _configurationService = configurationService;
             _loggingService = loggingService;
-            _dynamoDBContext = dynamoContext;             
+            _dynamoDBContext = dynamoContext;
         }
 
         public Task<bool> DeleteAsync(int id)
@@ -45,7 +45,7 @@ namespace ServiceName.Infrastructure.Databases
 
                 if (settingDbRecord == null)
                 {
-                    settingDbRecord= await SaveNewSettings(id, new Settings() { CategoryA = new SettingGroup() });
+                    settingDbRecord = await SaveNewSettings(id, new Settings() { CategoryA = new SettingGroup() });
                 }
 
                 var settings = JsonSerializer.Deserialize<Settings>(settingDbRecord.Settings, new JsonSerializerOptions() { MaxDepth = 0, PropertyNameCaseInsensitive = true });
@@ -83,7 +83,7 @@ namespace ServiceName.Infrastructure.Databases
                 Settings = JsonSerializer.Serialize(obj)
             };
 
-            await _dynamoDBContext.SaveAsync<SettingDbRecord>(settingDbRecord);
+            await _dynamoDBContext.SaveAsync(settingDbRecord);
 
             return settingDbRecord;
         }

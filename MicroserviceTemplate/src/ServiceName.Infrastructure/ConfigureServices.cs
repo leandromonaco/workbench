@@ -7,8 +7,8 @@ using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
 using ServiceName.Infrastructure.Caching;
 using ServiceName.Infrastructure.Configuration;
-using ServiceName.Infrastructure.Databases;
 using ServiceName.Infrastructure.Logging;
+using ServiceName.Infrastructure.Repositories;
 
 namespace ServiceName.Infrastructure
 {

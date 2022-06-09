@@ -1,34 +1,45 @@
+using Amazon.DynamoDBv2.DataModel;
 using Moq;
-using ServiceName.Core.Common.Interfaces;
-using ServiceName.Core.Model;
+using Moq.AutoMock;
+using ServiceName.Infrastructure.Repositories;
+using ServiceName.Infrastructure.Repositories.DynamoDBModel;
+using ServiceName.Test.Helpers;
 
 namespace ServiceName.Test
 {
     public class RepositoryTests
     {
-        [Fact]
-        public async Task SettingRepositoryTest()
-        {
-            var tenantId = Guid.Parse("58628ac6-eba8-4e9f-87fe-a2d1b69d0d34");
-            var mock = new Mock<IRepositoryService<Settings>>();
-            mock.Setup(x => x.GetByIdAsync(tenantId)).Returns(Task.FromResult(GetSettingsObject()));
+        readonly AutoMocker _autoMocker;
+        readonly SettingsRepositoryService _mockSettingsRepository;
 
-            var result = await mock.Object.GetByIdAsync(tenantId);
+        public RepositoryTests()
+        {
+            _autoMocker = new AutoMocker();
+            _mockSettingsRepository = _autoMocker.CreateInstance<SettingsRepositoryService>();
+        }
+        
+        [Fact]
+        public async Task SettingRepositoryTestWhenTenantIdExists()
+        {
+            _autoMocker.GetMock<IDynamoDBContext>().Setup(x => x.LoadAsync<SettingDbRecord>("53a13ec4-fde8-4087-8e2a-5fb6b1fbc062", default)).ReturnsAsync(TestHelper.GetSettingsRecordObject());
+            
+            var result = await _mockSettingsRepository.GetByIdAsync(Guid.Parse("53a13ec4-fde8-4087-8e2a-5fb6b1fbc062"));
 
             Assert.NotNull(result.CategoryA);
             Assert.True(result.CategoryA.IsSettingAEnabled);
-            Assert.False(result.CategoryA.IsSettingBEnabled);
+            Assert.True(result.CategoryA.IsSettingBEnabled);
         }
 
-
-        private Settings GetSettingsObject()
+        [Fact]
+        public async Task SettingRepositoryTestWhenTenantIdDoesNotExist()
         {
-            return new Settings()
-            {
-                CategoryA = new SettingGroup() { IsSettingAEnabled = true, 
-                                                 IsSettingBEnabled = false }
+            _autoMocker.GetMock<IDynamoDBContext>().Setup(x => x.LoadAsync<SettingDbRecord>("296b73d9-692a-42bf-9ccb-ff41ca256722", default)).ReturnsAsync((SettingDbRecord)null);
+            
+            var result = await _mockSettingsRepository.GetByIdAsync(Guid.Parse("296b73d9-692a-42bf-9ccb-ff41ca256722"));
 
-            };
+            Assert.NotNull(result.CategoryA);
+            Assert.False(result.CategoryA.IsSettingAEnabled);
+            Assert.False(result.CategoryA.IsSettingBEnabled);
         }
     }
 }
