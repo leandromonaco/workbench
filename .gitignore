@@ -347,3 +347,5 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/MicroserviceTemplate/src/.logs
+/MicroserviceTemplate/src/shared-local-instance.db
