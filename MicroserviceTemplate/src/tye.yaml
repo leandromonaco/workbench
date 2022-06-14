@@ -38,7 +38,7 @@ services:
       - name: SA_PASSWORD
         value: M3rz0ug4!!!!
       - name: ACCEPT_EULA
-        value: Y
+        value: "Y"
 
     - name: Redis
       image: redis

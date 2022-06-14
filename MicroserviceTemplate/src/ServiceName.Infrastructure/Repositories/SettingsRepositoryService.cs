@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Amazon.DynamoDBv2.DataModel;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
 using ServiceName.Infrastructure.Repositories.DynamoDBModel;
@@ -18,12 +19,12 @@ namespace ServiceName.Infrastructure.Repositories
     {
         readonly IDynamoDBContext _dynamoDBContext;
         readonly IConfiguration _configuration;
-        readonly ILoggingService _loggingService;
+        readonly ILogger _logger;
 
-        public SettingsRepositoryService(IConfiguration configuration, ILoggingService loggingService, IDynamoDBContext dynamoContext)
+        public SettingsRepositoryService(IConfiguration configuration, ILogger logger, IDynamoDBContext dynamoContext)
         {
             _configuration = configuration;
-            _loggingService = loggingService;
+            _logger = logger;
             _dynamoDBContext = dynamoContext;
         }
 
@@ -41,7 +42,7 @@ namespace ServiceName.Infrastructure.Repositories
         {
             try
             {
-                await _loggingService.LogInformationAsync($"LocalDynamoDatabaseService GetByIdAsync {id} started");
+                _logger.Information($"LocalDynamoDatabaseService GetByIdAsync {id} started");
                 var settingDbRecord = await _dynamoDBContext.LoadAsync<SettingDbRecord>(id.ToString());
 
                 if (settingDbRecord == null)
@@ -51,13 +52,13 @@ namespace ServiceName.Infrastructure.Repositories
 
                 var settings = JsonSerializer.Deserialize<Settings>(settingDbRecord.Settings, new JsonSerializerOptions() { MaxDepth = 0, PropertyNameCaseInsensitive = true });
 
-                await _loggingService.LogInformationAsync($"LocalDynamoDatabaseService GetByIdAsync {id} finished");
+                _logger.Information($"LocalDynamoDatabaseService GetByIdAsync {id} finished");
 
                 return settings;
             }
             catch (Exception ex)
             {
-                await _loggingService.LogErrorAsync(ex.Message, ex.StackTrace);
+                _logger.Error(ex.Message, ex.StackTrace);
                 throw;
             }
         }
@@ -71,7 +72,7 @@ namespace ServiceName.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                await _loggingService.LogErrorAsync(ex.Message, ex.StackTrace);
+                _logger.Error(ex.Message, ex.StackTrace);
                 throw;
             }
         }
