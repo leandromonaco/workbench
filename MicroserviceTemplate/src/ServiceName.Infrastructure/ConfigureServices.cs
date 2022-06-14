@@ -3,12 +3,13 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using AWS.Logger;
 using AWS.Logger.SeriLog;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
-using ServiceName.Infrastructure.Caching;
 using ServiceName.Infrastructure.Repositories;
 
 namespace ServiceName.Infrastructure
@@ -22,10 +23,20 @@ namespace ServiceName.Infrastructure
             services.AddSingleton<ILogger>(GetCloudWatchLogger());
             //services.AddSingleton<ILogger>(GetCloudSeqLogger());
 
-            services.AddSingleton<ICachingService, InMemoryCachingService>();
+            services.AddSingleton<IDistributedCache>(GetRedisCache());
             services.AddSingleton<IDynamoDBContext>(GetLocalDynamoDB());
 
             return services;
+        }
+
+        private static IDistributedCache GetRedisCache()
+        {
+            var cache = new RedisCache(new RedisCacheOptions
+            {
+                Configuration = "localhost:6379"
+            });
+
+            return cache;
         }
 
         private static ILogger GetCloudSeqLogger()

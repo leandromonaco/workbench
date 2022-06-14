@@ -10,6 +10,7 @@
 	<PackageReference Include="Amazon.Lambda.Logging.AspNetCore" Version="3.1.0" />
 	<PackageReference Include="AWS.Logger.SeriLog" Version="3.2.0" />
 	<PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.3.43" />
+	<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.5" />
 	<PackageReference Include="Microsoft.SqlServer.Management.SqlParser" Version="160.22506.0" />
 	<PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="150.4897.1" />
 	<PackageReference Include="Redis.OM" Version="0.1.9" />

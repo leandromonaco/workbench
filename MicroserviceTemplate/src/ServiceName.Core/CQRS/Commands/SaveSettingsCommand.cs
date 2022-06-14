@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using System.Text.Json;
+using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
@@ -15,19 +17,19 @@ namespace ServiceName.Core.CQRS.Commands
     {
         IRepositoryService<Settings> _settingsRepository;
         IConfiguration _configuration;
-        ICachingService _cachingService;
+        IDistributedCache _cache;
 
-        public CreateTodoListCommandHandler(IRepositoryService<Settings> settingsRepository, IConfiguration configuration, ICachingService cachingService)
+        public CreateTodoListCommandHandler(IRepositoryService<Settings> settingsRepository, IConfiguration configuration, IDistributedCache cache)
         {
             _settingsRepository = settingsRepository;
             _configuration = configuration;
-            _cachingService = cachingService;
+            _cache = cache;
         }
 
         public async Task<bool> Handle(SaveSettingsCommandRequest request, CancellationToken cancellationToken)
         {
             var result = await _settingsRepository.SaveAsync(request.TenantId, request.Settings);
-            _cachingService.Set(request.TenantId.ToString(), request.Settings);
+            await _cache.SetStringAsync(request.TenantId.ToString(), JsonSerializer.Serialize(request.Settings));
             return result;
         }
     }

@@ -45,7 +45,7 @@ namespace ServiceName.Infrastructure.Repositories
                 _logger.Information($"LocalDynamoDatabaseService GetByIdAsync {id} started");
                 var settingDbRecord = await _dynamoDBContext.LoadAsync<SettingDbRecord>(id.ToString());
 
-                if (settingDbRecord == null)
+                if (settingDbRecord == null || string.IsNullOrEmpty(settingDbRecord.Settings))
                 {
                     settingDbRecord = await SaveNewSettings(id, new Settings() { CategoryA = new SettingGroup() });
                 }

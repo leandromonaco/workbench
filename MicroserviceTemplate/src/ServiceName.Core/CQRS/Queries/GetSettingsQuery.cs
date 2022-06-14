@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using System.Text.Json;
+using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
@@ -13,23 +15,30 @@ namespace ServiceName.Core.CQRS.Queries
     {
         IRepositoryService<Settings> _settingsRepository;
         IConfiguration _configuration;
-        ICachingService _cachingService;
+        IDistributedCache _cache;
 
-        public GetSettingsQueryHandler(IRepositoryService<Settings> settingsRepository, IConfiguration configuration, ICachingService cachingService)
+        public GetSettingsQueryHandler(IRepositoryService<Settings> settingsRepository, IConfiguration configuration, IDistributedCache cache)
         {
             _settingsRepository = settingsRepository;
             _configuration = configuration;
-            _cachingService = cachingService;
+            _cache = cache;
         }
 
         public async Task<Settings> Handle(GetSettingsQueryRequest request, CancellationToken cancellationToken)
         {
-            var cachedSettings = _cachingService.Get<Settings>(request.TenantId.ToString());
-            if (cachedSettings == null)
+            Settings cachedSettings;
+            
+            var cachedSettingsJson = await _cache.GetStringAsync(request.TenantId.ToString());
+            
+            if (string.IsNullOrEmpty(cachedSettingsJson))
             {
                 var settings = await _settingsRepository.GetByIdAsync(request.TenantId);
-                _cachingService.Set(request.TenantId.ToString(), settings);
+                await _cache.SetStringAsync(request.TenantId.ToString(), JsonSerializer.Serialize(settings));
                 cachedSettings = settings;
+            }
+            else
+            {
+                cachedSettings = JsonSerializer.Deserialize<Settings>(cachedSettingsJson);
             }
             
             return cachedSettings;
