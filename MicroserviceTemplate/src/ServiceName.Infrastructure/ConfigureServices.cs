@@ -1,12 +1,14 @@
 ﻿using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using AWS.Logger;
+using AWS.Logger.SeriLog;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
 using ServiceName.Infrastructure.Caching;
-using ServiceName.Infrastructure.Logging;
 using ServiceName.Infrastructure.Repositories;
 
 namespace ServiceName.Infrastructure
@@ -17,13 +19,38 @@ namespace ServiceName.Infrastructure
         {
             services.AddSingleton<IConfiguration>(GetConfiguration(configurationManager));
             services.AddScoped<IRepositoryService<Settings>, SettingsRepositoryService>();
-            services.AddSingleton<ILoggingService, LocalCloudWatchLoggingService>();
-            //services.AddSingleton<ILoggingService, SeqLoggingService>();
+            services.AddSingleton<ILogger>(GetCloudWatchLogger());
+            //services.AddSingleton<ILogger>(GetCloudSeqLogger());
 
             services.AddSingleton<ICachingService, InMemoryCachingService>();
             services.AddSingleton<IDynamoDBContext>(GetLocalDynamoDB());
 
             return services;
+        }
+
+        private static ILogger GetCloudSeqLogger()
+        {
+            Log.Logger = new LoggerConfiguration()
+                               .WriteTo.Console()
+                               .WriteTo.Seq("http://localhost:5341")
+                               .CreateLogger();
+
+            return Log.Logger;
+        }
+
+        private static ILogger GetCloudWatchLogger()
+        {
+            AWSLoggerConfig configuration = new("/LocalStack/Microservice/Logs")
+            {
+                Region = "ap-southeast-2",
+                ServiceUrl = "http://localhost:4566"
+            };
+
+            Log.Logger = new LoggerConfiguration().WriteTo.AWSSeriLog(configuration)
+                                                  .WriteTo.Console()
+                                                  .CreateLogger();
+
+            return Log.Logger;
         }
 
         private static IConfiguration GetConfiguration(ConfigurationManager configurationManager)

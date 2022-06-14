@@ -1,18 +1,18 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
 using MediatR;
-using ServiceName.Core.Common.Interfaces;
+using Serilog;
 
 namespace ServiceName.Core.Common.Behaviours
 {
     public class LoggingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        ILoggingService _loggingService;
+        ILogger _logger;
         private readonly Stopwatch _timer;
 
-        public LoggingBehaviour(ILoggingService loggingService)
+        public LoggingBehaviour(ILogger logger)
         {
-            _loggingService = loggingService;
+            _logger = logger;
             _timer = new Stopwatch();
         }
 
@@ -21,7 +21,7 @@ namespace ServiceName.Core.Common.Behaviours
             var correlationId = Guid.NewGuid();
             var requestName = typeof(TRequest).Name;
 
-            await _loggingService.LogInformationAsync(@"correlationId {correlationId} 
+            _logger.Information(@"correlationId {correlationId} 
                                                         requestName {requestName}
                                                         type {requestType}
                                                         payload {requestPayload}", correlationId, requestName, "Request", JsonSerializer.Serialize(request));
@@ -30,7 +30,7 @@ namespace ServiceName.Core.Common.Behaviours
             var response = await next();
             _timer.Stop();
 
-            await _loggingService.LogInformationAsync(@"correlationId {correlationId}
+            _logger.Information(@"correlationId {correlationId}
                                                         requestName {requestName}
                                                         type {requestType}
                                                         payload {requestPayload} {elapsedMilliseconds}", correlationId, requestName, "Response", JsonSerializer.Serialize(response), _timer.ElapsedMilliseconds);
