@@ -45,7 +45,7 @@ services:
       bindings:
       - port: 6379
         connectionString: "${host}:${port}"
-      args: "redis-cli -h redis MONITOR"
+      #args: "redis-cli -h redis MONITOR"
 
     # https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html (Docker Tab)
     # https://docs.amazonaws.cn/en_us/amazondynamodb/latest/developerguide/DynamoDBLocal.UsageNotes.html

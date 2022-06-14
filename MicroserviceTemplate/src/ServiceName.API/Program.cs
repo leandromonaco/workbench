@@ -19,8 +19,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwaggerServices();
 
 //Clean Architecute: Service Injection
+builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices(options => options.IsDevelopment = true);
 
 var app = builder.Build();
 

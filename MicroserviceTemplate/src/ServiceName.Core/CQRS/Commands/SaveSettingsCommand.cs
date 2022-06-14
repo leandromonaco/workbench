@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Configuration;
 using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
 
@@ -13,13 +14,13 @@ namespace ServiceName.Core.CQRS.Commands
     public class CreateTodoListCommandHandler : IRequestHandler<SaveSettingsCommandRequest, bool>
     {
         IRepositoryService<Settings> _settingsRepository;
-        IConfigurationService _configurationService;
+        IConfiguration _configuration;
         ICachingService _cachingService;
 
-        public CreateTodoListCommandHandler(IRepositoryService<Settings> settingsRepository, IConfigurationService configurationService, ICachingService cachingService)
+        public CreateTodoListCommandHandler(IRepositoryService<Settings> settingsRepository, IConfiguration configuration, ICachingService cachingService)
         {
             _settingsRepository = settingsRepository;
-            _configurationService = configurationService;
+            _configuration = configuration;
             _cachingService = cachingService;
         }
 
