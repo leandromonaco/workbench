@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Configuration;
 using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
 
@@ -11,13 +12,13 @@ namespace ServiceName.Core.CQRS.Queries
     public class GetSettingsQueryHandler : IRequestHandler<GetSettingsQueryRequest, Settings>
     {
         IRepositoryService<Settings> _settingsRepository;
-        IConfigurationService _configurationService;
+        IConfiguration _configuration;
         ICachingService _cachingService;
 
-        public GetSettingsQueryHandler(IRepositoryService<Settings> settingsRepository, IConfigurationService configurationService, ICachingService cachingService)
+        public GetSettingsQueryHandler(IRepositoryService<Settings> settingsRepository, IConfiguration configuration, ICachingService cachingService)
         {
             _settingsRepository = settingsRepository;
-            _configurationService = configurationService;
+            _configuration = configuration;
             _cachingService = cachingService;
         }
 

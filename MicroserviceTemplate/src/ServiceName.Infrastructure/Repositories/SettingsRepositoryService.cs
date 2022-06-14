@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Amazon.DynamoDBv2.DataModel;
+using Microsoft.Extensions.Configuration;
 using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
 using ServiceName.Infrastructure.Repositories.DynamoDBModel;
@@ -16,12 +17,12 @@ namespace ServiceName.Infrastructure.Repositories
     public class SettingsRepositoryService : IRepositoryService<Settings>
     {
         readonly IDynamoDBContext _dynamoDBContext;
-        readonly IConfigurationService _configurationService;
+        readonly IConfiguration _configuration;
         readonly ILoggingService _loggingService;
 
-        public SettingsRepositoryService(IConfigurationService configurationService, ILoggingService loggingService, IDynamoDBContext dynamoContext)
+        public SettingsRepositoryService(IConfiguration configuration, ILoggingService loggingService, IDynamoDBContext dynamoContext)
         {
-            _configurationService = configurationService;
+            _configuration = configuration;
             _loggingService = loggingService;
             _dynamoDBContext = dynamoContext;
         }
