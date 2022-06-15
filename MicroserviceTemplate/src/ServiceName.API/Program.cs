@@ -15,14 +15,19 @@ builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
 
 builder.Services.AddEndpointsApiExplorer();
 
-//Configure Swagger with Bearer Token authentication
-builder.Services.ConfigureSwaggerServices();
+builder.Services.AddApiVersioningSupport();
 
-//Clean Architecute: Service Injection
+builder.Services.AddSwaggerSupport();
+
 builder.Services.AddInfrastructureServices(builder.Configuration);
+
 builder.Services.AddApplicationServices();
 
 var app = builder.Build();
+
+app.MapControllers();
+
+app.MapEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
@@ -33,8 +38,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
 
-app.MapControllers();
-app.MapEndpoints();
 
 app.Run();
 
