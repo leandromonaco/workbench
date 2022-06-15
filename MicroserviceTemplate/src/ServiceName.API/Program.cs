@@ -23,11 +23,15 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 
 builder.Services.AddApplicationServices();
 
+builder.Services.AddHealthCheckSupport();
+
 var app = builder.Build();
 
 app.MapControllers();
 
 app.MapEndpoints();
+
+app.ConfigureHealthCheck();
 
 if (app.Environment.IsDevelopment())
 {
