@@ -1,16 +1,21 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using ServiceName.API.Extensions.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ServiceName.API.Extensions
 {
     public static class SwaggerExtensions
     {
-        public static void ConfigureSwaggerServices(this IServiceCollection services)
-        { 
-            services.AddSwaggerGen(c =>
+        public static void AddSwaggerSupport(this IServiceCollection services)
+        {
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();            
+            
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Microservice API", Version = "v1" });
+                options.OperationFilter<SwaggerDefaultValues>();
 
-                c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                options.AddSecurityDefinition("basic", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
                     Type = SecuritySchemeType.Http,
@@ -19,7 +24,7 @@ namespace ServiceName.API.Extensions
                     Description = "Basic Authorization header using the Bearer scheme."
                 });
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                           new OpenApiSecurityScheme
@@ -41,8 +46,17 @@ namespace ServiceName.API.Extensions
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("./swagger/v1/swagger.json", "v1");
                 options.RoutePrefix = string.Empty;
+                
+                var descriptions = app.DescribeApiVersions();
+
+                // build a swagger endpoint for each discovered API version
+                foreach (var description in descriptions)
+                {
+                    var url = $"./swagger/{description.GroupName}/swagger.json";
+                    var name = description.GroupName.ToUpperInvariant();
+                    options.SwaggerEndpoint(url, name);
+                }
             });
         }
     }
