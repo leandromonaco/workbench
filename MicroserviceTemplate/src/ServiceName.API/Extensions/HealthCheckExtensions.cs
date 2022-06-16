@@ -1,6 +1,5 @@
 ﻿using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using ServiceName.API.Extensions.HealthCheck;
 
 namespace ServiceName.API.Extensions
@@ -18,14 +17,13 @@ namespace ServiceName.API.Extensions
     /// </summary>
     public static class HealthCheckExtensions
     {
-        public static void AddHealthCheckSupport(this IServiceCollection services)
+        
+        public static void AddHealthCheckSupport(this IServiceCollection services, ConfigurationManager configurationManager)
         {
             services.AddHealthChecks()
-                    .AddCheck("AlwaysHealthy", () => HealthCheckResult.Healthy())
-                    .AddCheck<CustomServiceHealthCheck>("ServiceHealthCheck")
-                    .AddSqlServer("")
-                    .AddRedis("");
-                    //.AddDynamoDb("");
+                    .AddCheck<DynamoDbHealthCheck>("dynamodb")
+                    .AddSqlServer(configurationManager["ModuleConfiguration:ConnectionStrings:SqlServer"])
+                    .AddRedis(configurationManager["ModuleConfiguration:ConnectionStrings:Redis"]);
 
             services.AddHealthChecksUI(s =>
             {
