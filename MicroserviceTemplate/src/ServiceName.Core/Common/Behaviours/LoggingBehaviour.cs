@@ -7,7 +7,7 @@ namespace ServiceName.Core.Common.Behaviours
 {
     public class LoggingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        ILogger _logger;
+        readonly ILogger _logger;
         private readonly Stopwatch _timer;
 
         public LoggingBehaviour(ILogger logger)

@@ -1,6 +1,7 @@
 ﻿using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.KeyManagementService;
 using Amazon.Runtime;
 using AWS.Logger;
 using AWS.Logger.SeriLog;
@@ -40,8 +41,35 @@ namespace ServiceName.Infrastructure
 
             services.AddSingleton<IDistributedCache>(GetRedisCache());
             services.AddSingleton<IDynamoDBContext>(GetDynamoDBContext());
+            services.AddSingleton<IAmazonKeyManagementService>(GetAmazonKms());
 
             return services;
+        }
+
+        private static IAmazonKeyManagementService GetAmazonKms()
+        {
+            var accessKey = _configurationManager["ModuleConfiguration:AwsServices:Kms:AccessKey"];
+            var secretKey = _configurationManager["ModuleConfiguration:AwsServices:Kms:SecretKey"];
+            var regionEndpoint = RegionEndpoint.GetBySystemName(_configurationManager["ModuleConfiguration:AwsServices:Kms:RegionEndpoint"]);
+            var localTestEndpoint = _configurationManager["ModuleConfiguration:AwsServices:Kms:LocalTestEndpoint"];
+            
+            AmazonKeyManagementServiceConfig amazonKeyManagementServiceConfig = new()
+            {
+                RegionEndpoint = regionEndpoint,
+            };
+
+            if (!string.IsNullOrEmpty(localTestEndpoint))
+            {
+                amazonKeyManagementServiceConfig.UseHttp = true;
+                amazonKeyManagementServiceConfig.ServiceURL = localTestEndpoint;
+            }
+
+            if (!string.IsNullOrEmpty(accessKey) && !string.IsNullOrEmpty(secretKey))
+            {
+                return new AmazonKeyManagementServiceClient(accessKey, secretKey, amazonKeyManagementServiceConfig);
+            }
+
+            return new AmazonKeyManagementServiceClient(amazonKeyManagementServiceConfig);
         }
 
         private static IDistributedCache GetRedisCache()
@@ -121,21 +149,28 @@ namespace ServiceName.Infrastructure
             var secretKey = _configurationManager["ModuleConfiguration:ConnectionStrings:DynamoDb:SecretKey"];
             var regionEndpoint = RegionEndpoint.GetBySystemName(_configurationManager["ModuleConfiguration:ConnectionStrings:DynamoDb:RegionEndpoint"]);
             var localTestEndpoint = _configurationManager["ModuleConfiguration:ConnectionStrings:DynamoDb:LocalTestEndpoint"];
+
+            var dynamoDBContextConfig = new DynamoDBContextConfig() { ConsistentRead = true };
             
-            AmazonDynamoDBConfig clientConfig = new AmazonDynamoDBConfig
+            AmazonDynamoDBConfig amazonDynamoDBConfig = new()
             {
                 RegionEndpoint = regionEndpoint
             };
 
             if (!string.IsNullOrEmpty(localTestEndpoint))
             {
-                clientConfig.UseHttp = true;
-                clientConfig.ServiceURL = localTestEndpoint;
+                amazonDynamoDBConfig.UseHttp = true;
+                amazonDynamoDBConfig.ServiceURL = localTestEndpoint;
             }
 
-            var amazonDynamoDBClient = new AmazonDynamoDBClient(accessKey, secretKey, clientConfig);
-            var dynamoDBContextConfig = new DynamoDBContextConfig() { ConsistentRead = true };
-            return new DynamoDBContext(amazonDynamoDBClient, dynamoDBContextConfig);
+            if (!string.IsNullOrEmpty(accessKey) && !string.IsNullOrEmpty(secretKey))
+            {
+                var amazonDynamoDBClientWithCredentials = new AmazonDynamoDBClient(accessKey, secretKey, amazonDynamoDBConfig);
+                return new DynamoDBContext(amazonDynamoDBClientWithCredentials, dynamoDBContextConfig);
+            }
+
+            var amazonDynamoDBClientWithoutCredentials = new AmazonDynamoDBClient(amazonDynamoDBConfig);
+            return new DynamoDBContext(amazonDynamoDBClientWithoutCredentials, dynamoDBContextConfig);
         }
     }
 }

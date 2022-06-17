@@ -3,15 +3,16 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using ServiceName.Core.Common.Interfaces;
+using ServiceName.Core.Model;
 
 namespace ServiceName.Infrastructure.Authentication
 {
     /// <summary>
     /// https://dotnetcoretutorials.com/2020/01/15/creating-and-validating-jwt-tokens-in-asp-net-core/
     /// </summary>
-    public class MockJwtAuthenticationService : IAuthenticationService
+    public class SymmetricJwtAuthenticationService : IJwtAuthenticationService
     {
-        public string GenerateToken(int userId)
+        public Task<string> GenerateTokenAsync(ModuleIdentity identity, int lifetimeSeconds, string issuer, string audience)
         {
             var mySecret = "asdv234235^&%&^%&^hjsdfb2%%%";
             var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
@@ -22,7 +23,7 @@ namespace ServiceName.Infrastructure.Authentication
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, identity.UserGuid),
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 Issuer = myIssuer,
@@ -30,10 +31,10 @@ namespace ServiceName.Infrastructure.Authentication
                 SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            return Task.FromResult(tokenHandler.WriteToken(token));
         }
-
-        public bool ValidateToken(string token)
+        
+        public async Task<bool> ValidateTokenAsync(string token)
         {
             var mySecret = "asdv234234^&%&^%&^hjsdfb2%%%";
             var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
@@ -54,9 +55,9 @@ namespace ServiceName.Infrastructure.Authentication
             }
             catch
             {
-                return false;
+                return await Task.FromResult(false);
             }
-            return true;
+            return await Task.FromResult(true);
         }
     }
 }

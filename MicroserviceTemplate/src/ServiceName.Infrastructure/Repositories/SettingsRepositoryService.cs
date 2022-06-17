@@ -18,12 +18,10 @@ namespace ServiceName.Infrastructure.Repositories
     public class SettingsRepositoryService : IRepositoryService<Settings>
     {
         readonly IDynamoDBContext _dynamoDBContext;
-        readonly IConfiguration _configuration;
         readonly ILogger _logger;
 
-        public SettingsRepositoryService(IConfiguration configuration, ILogger logger, IDynamoDBContext dynamoContext)
+        public SettingsRepositoryService(IDynamoDBContext dynamoContext, ILogger logger)
         {
-            _configuration = configuration;
             _logger = logger;
             _dynamoDBContext = dynamoContext;
         }
