@@ -98,11 +98,11 @@ namespace ServiceName.Infrastructure
 
         private static ILogger GetCloudWatchLogger()
         {
-            var accessKey = _configurationManager["ModuleConfiguration:Logging:AwsCloudWatch:AccessKey"];
-            var secretKey = _configurationManager["ModuleConfiguration:Logging:AwsCloudWatch:SecretKey"];
-            var regionEndpoint = _configurationManager["ModuleConfiguration:Logging:AwsCloudWatch:RegionEndpoint"];
-            var localTestEndpoint = _configurationManager["ModuleConfiguration:Logging:AwsCloudWatch:LocalTestEndpoint"];
-            var logGroupName = _configurationManager["ModuleConfiguration:Logging:AwsCloudWatch:LogGroupName"];
+            var accessKey = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:AccessKey"];
+            var secretKey = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:SecretKey"];
+            var regionEndpoint = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:RegionEndpoint"];
+            var localTestEndpoint = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:LocalTestEndpoint"];
+            var logGroupName = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:LogGroupName"];
 
             AWSLoggerConfig configuration;
 
@@ -145,10 +145,10 @@ namespace ServiceName.Infrastructure
 
         private static DynamoDBContext GetDynamoDBContext()
         {
-            var accessKey = _configurationManager["ModuleConfiguration:ConnectionStrings:DynamoDb:AccessKey"];
-            var secretKey = _configurationManager["ModuleConfiguration:ConnectionStrings:DynamoDb:SecretKey"];
-            var regionEndpoint = RegionEndpoint.GetBySystemName(_configurationManager["ModuleConfiguration:ConnectionStrings:DynamoDb:RegionEndpoint"]);
-            var localTestEndpoint = _configurationManager["ModuleConfiguration:ConnectionStrings:DynamoDb:LocalTestEndpoint"];
+            var accessKey = _configurationManager["ModuleConfiguration:AwsServices:DynamoDb:AccessKey"];
+            var secretKey = _configurationManager["ModuleConfiguration:AwsServices:DynamoDb:SecretKey"];
+            var regionEndpoint = RegionEndpoint.GetBySystemName(_configurationManager["ModuleConfiguration:AwsServices:DynamoDb:RegionEndpoint"]);
+            var localTestEndpoint = _configurationManager["ModuleConfiguration:AwsServices:DynamoDb:LocalTestEndpoint"];
 
             var dynamoDBContextConfig = new DynamoDBContextConfig() { ConsistentRead = true };
             

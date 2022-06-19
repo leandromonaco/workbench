@@ -18,11 +18,11 @@ namespace ServiceName.API.Extensions.HealthCheck
         {
             try
             {
-                var accessKey = _configuration["ModuleConfiguration:ConnectionStrings:DynamoDb:AccessKey"];
-                var secretKey = _configuration["ModuleConfiguration:ConnectionStrings:DynamoDb:SecretKey"];
-                var regionEndpoint = RegionEndpoint.GetBySystemName(_configuration["ModuleConfiguration:ConnectionStrings:DynamoDb:RegionEndpoint"]);
-                var tableName = _configuration["ModuleConfiguration:ConnectionStrings:DynamoDb:TableName"];
-                var localTestEndpoint = _configuration["ModuleConfiguration:ConnectionStrings:DynamoDb:LocalTestEndpoint"];
+                var accessKey = _configuration["ModuleConfiguration:AwsServices:DynamoDb:AccessKey"];
+                var secretKey = _configuration["ModuleConfiguration:AwsServices:DynamoDb:SecretKey"];
+                var regionEndpoint = RegionEndpoint.GetBySystemName(_configuration["ModuleConfiguration:AwsServices:DynamoDb:RegionEndpoint"]);
+                var tableName = _configuration["ModuleConfiguration:AwsServices:DynamoDb:TableName"];
+                var localTestEndpoint = _configuration["ModuleConfiguration:AwsServices:DynamoDb:LocalTestEndpoint"];
 
                 AmazonDynamoDBConfig clientConfig = new()
                 {
