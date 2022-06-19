@@ -2,7 +2,6 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using Amazon;
 using Amazon.KeyManagementService;
 using Amazon.KeyManagementService.Model;
 using Microsoft.Extensions.Configuration;
