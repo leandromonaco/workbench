@@ -20,10 +20,24 @@ namespace ServiceName.API.Extensions
         
         public static void AddHealthCheckSupport(this IServiceCollection services, ConfigurationManager configurationManager)
         {
+            var sqlServerName = configurationManager["ModuleConfiguration:Infrastructure:SqlServer:Server"];
+            var sqlPort = configurationManager["ModuleConfiguration:Infrastructure:SqlServer:Port"];
+            var sqlDatabase = configurationManager["ModuleConfiguration:Infrastructure:SqlServer:Database"];
+            var sqlUsername = configurationManager["ModuleConfiguration:Infrastructure:SqlServer:Username"];
+            var sqlPassword = configurationManager["ModuleConfiguration:Infrastructure:SqlServer:Password"];
+
+            var sqlConnectionString = $"Data Source={sqlServerName},{sqlPort};Initial Catalog={sqlDatabase};User ID={sqlUsername};Password={sqlPassword}";
+
+
+            var redisServerName = configurationManager["ModuleConfiguration:Infrastructure:Redis:Server"];
+            var redisPort = configurationManager["ModuleConfiguration:Infrastructure:Redis:Port"];
+
+            var redisConnectionString = $"{redisServerName}:{redisPort}";
+
             services.AddHealthChecks()
                     .AddCheck<DynamoDbHealthCheck>("dynamodb")
-                    .AddSqlServer(configurationManager["ModuleConfiguration:ConnectionStrings:SqlServer"])
-                    .AddRedis(configurationManager["ModuleConfiguration:ConnectionStrings:Redis"]);
+                    .AddSqlServer(sqlConnectionString)
+                    .AddRedis(redisConnectionString);
 
             services.AddHealthChecksUI(s =>
             {
