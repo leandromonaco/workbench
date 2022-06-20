@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
+using ServiceName.Infrastructure.Authentication;
 using ServiceName.Infrastructure.Repositories;
 
 namespace ServiceName.Infrastructure
@@ -25,23 +26,12 @@ namespace ServiceName.Infrastructure
             _configurationManager = configurationManager;
             
             services.AddSingleton<IConfiguration>(GetConfiguration(configurationManager));
-            services.AddScoped<IRepositoryService<Settings>, SettingsRepositoryService>();
-
-            var loggingSink = _configurationManager["ModuleConfiguration:Logging:Sink"];
-
-            switch (loggingSink)
-            {
-                case "Seq":
-                    services.AddSingleton<ILogger>(GetCloudSeqLogger());
-                    break;
-                default:
-                    services.AddSingleton<ILogger>(GetCloudWatchLogger());
-                    break;
-            }
-
+            services.AddSingleton<ILogger>(GetLogger());
             services.AddSingleton<IDistributedCache>(GetRedisCache());
             services.AddSingleton<IDynamoDBContext>(GetDynamoDBContext());
             services.AddSingleton<IAmazonKeyManagementService>(GetAmazonKms());
+            services.AddScoped<IRepositoryService<Settings>, SettingsRepositoryService>();
+            services.AddScoped<IJwtAuthenticationService, AssymetricKmsJwtService>();
 
             return services;
         }
@@ -82,53 +72,63 @@ namespace ServiceName.Infrastructure
             return cache;
         }
 
-        private static ILogger GetCloudSeqLogger()
+
+        private static ILogger GetLogger()
         {
-            var serverUrl = _configurationManager["ModuleConfiguration:Logging:Seq:ServerUrl"];
-            var apiKey = _configurationManager["ModuleConfiguration:Logging:Seq:ApiKey"];
 
-            Log.Logger = new LoggerConfiguration()
-                               .WriteTo.Console()
-                               .WriteTo.Seq(serverUrl: serverUrl,
-                                            apiKey: apiKey)
-                               .CreateLogger();
+            var loggingSink = _configurationManager["ModuleConfiguration:Logging:Sink"];
 
-            return Log.Logger;
-        }
-
-        private static ILogger GetCloudWatchLogger()
-        {
-            var accessKey = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:AccessKey"];
-            var secretKey = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:SecretKey"];
-            var regionEndpoint = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:RegionEndpoint"];
-            var localTestEndpoint = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:LocalTestEndpoint"];
-            var logGroupName = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:LogGroupName"];
-
-            AWSLoggerConfig configuration;
-
-            //If logGroupName is empty it uses the default AWS Lambad Log Group
-            if (!string.IsNullOrEmpty(logGroupName))
+            switch (loggingSink)
             {
-                configuration = new(logGroupName)
-                {
-                    Region = regionEndpoint,
-                    Credentials = new BasicAWSCredentials(accessKey, secretKey)
-                };
+                case "Seq":
+                    
+                    var serverUrl = _configurationManager["ModuleConfiguration:Logging:Seq:ServerUrl"];
+                    var apiKey = _configurationManager["ModuleConfiguration:Logging:Seq:ApiKey"];
 
-                //used for local testing only
-                if (!string.IsNullOrEmpty(localTestEndpoint))
-                {
-                    configuration.ServiceUrl = localTestEndpoint;
-                }
+                    return new LoggerConfiguration()
+                                       .WriteTo.Console()
+                                       .WriteTo.Seq(serverUrl: serverUrl,
+                                                    apiKey: apiKey)
+                                       .CreateLogger();
 
-                return new LoggerConfiguration().WriteTo.AWSSeriLog(configuration)
-                                                  .WriteTo.Console()
-                                                  .CreateLogger();
-            }
+                case "CloudWatchLogs":
+                    
+                    var accessKey = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:AccessKey"];
+                    var secretKey = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:SecretKey"];
+                    var regionEndpoint = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:RegionEndpoint"];
+                    var localTestEndpoint = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:LocalTestEndpoint"];
+                    var logGroupName = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:LogGroupName"];
 
-            return new LoggerConfiguration().WriteTo.AWSSeriLog()
-                                                  .WriteTo.Console()
-                                                  .CreateLogger();            
+                    AWSLoggerConfig configuration;
+
+                    //If logGroupName is empty it uses the default AWS Lambad Log Group
+                    if (!string.IsNullOrEmpty(logGroupName))
+                    {
+                        configuration = new(logGroupName)
+                        {
+                            Region = regionEndpoint,
+                            Credentials = new BasicAWSCredentials(accessKey, secretKey)
+                        };
+
+                        //used for local testing only
+                        if (!string.IsNullOrEmpty(localTestEndpoint))
+                        {
+                            configuration.ServiceUrl = localTestEndpoint;
+                        }
+
+                        return new LoggerConfiguration().WriteTo.AWSSeriLog(configuration)
+                                                          .WriteTo.Console()
+                                                          .CreateLogger();
+                    }
+
+                    return new LoggerConfiguration().WriteTo.AWSSeriLog()
+                                                          .WriteTo.Console()
+                                                          .CreateLogger();
+                    
+                default:
+                    throw new Exception("Logger Sink is not supported.");
+
+            }    
         }
 
         private static IConfiguration GetConfiguration(ConfigurationManager configurationManager)

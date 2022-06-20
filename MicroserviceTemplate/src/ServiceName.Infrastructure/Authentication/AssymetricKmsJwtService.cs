@@ -10,6 +10,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 using Serilog;
 using ServiceName.Core.Common.Interfaces;
+using ServiceName.Core.Common.Security;
 using ServiceName.Core.Model;
 using ServiceName.Infrastructure.Authentication.JWT;
 
@@ -36,7 +37,7 @@ namespace ServiceName.Infrastructure.Authentication
 
         public async Task<string> GenerateTokenAsync(ModuleIdentity identity, int lifetimeSeconds, string issuer, string audience)
         {
-            var signingKeyId = _configuration["ModuleConfiguration:Jwt:SigningKeyId"];
+            var signingKeyId = _configuration["ModuleConfiguration:AwsServices:KMS:SigningKeyId"];
 
             if (string.IsNullOrWhiteSpace(signingKeyId))
             {
@@ -82,15 +83,7 @@ namespace ServiceName.Infrastructure.Authentication
 
         public async Task<bool> ValidateTokenAsync(string token)
         {
-            var publicKey = Convert.FromBase64String(_configuration["ModuleConfiguration:Jwt:PublicKey"]);
-            var asymmetricKeyParameter = PublicKeyFactory.CreateKey(publicKey);
-            var rsaKeyParameters = (RsaKeyParameters)asymmetricKeyParameter;
-            var rsaParameters = new RSAParameters
-            {
-                Modulus = rsaKeyParameters.Modulus.ToByteArrayUnsigned(),
-                Exponent = rsaKeyParameters.Exponent.ToByteArrayUnsigned()
-            };
-            var rsaSecurityKey = new RsaSecurityKey(rsaParameters);
+            RsaSecurityKey rsaSecurityKey = SecurityHelper.GetRsaSecurityKey(_configuration["ModuleConfiguration:AwsServices:KMS:PublicKey"]);
 
             var issuer = _configuration["ModuleConfiguration:Jwt:Issuer"];
             var audience = _configuration["ModuleConfiguration:Jwt:Audience"];
