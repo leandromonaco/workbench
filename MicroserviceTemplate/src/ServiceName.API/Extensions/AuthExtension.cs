@@ -22,7 +22,7 @@ namespace ServiceName.API.Extensions
                      ValidateAudience = true,
                      ValidIssuer = configurationManager["ModuleConfiguration:Jwt:Issuer"],
                      ValidAudience = configurationManager["ModuleConfiguration:Jwt:Audience"],
-                     IssuerSigningKey = SecurityHelper.GetRsaSecurityKey(configurationManager["ModuleConfiguration:AwsServices:KMS:PublicKey"])
+                     IssuerSigningKey = SecurityHelper.GetRsaSecurityKey(configurationManager["ModuleConfiguration:Infrastructure:Kms:PublicKey"])
                  };
              });
 

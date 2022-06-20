@@ -31,7 +31,7 @@ namespace ServiceName.Test
                 UserName = "UserName"
             };
 
-            //SignResponse mockSignResponse = JsonSerializer.Deserialize<SignResponse>(@"{""KeyId"":""arn:aws:kms:eu-west-2:111122223333:key/6732c7ca-6ec9-4b96-9711-fd1c7d637c8e"",""Signature"":null,""SigningAlgorithm"":{""Value"":""RSASSA_PKCS1_V1_5_SHA_256""},""ResponseMetadata"":{""RequestId"":"""",""Metadata"":{},""ChecksumAlgorithm"":0,""ChecksumValidationStatus"":0},""ContentLength"":493,""HttpStatusCode"":200}");
+            //SignResponse mockSignResponse = JsonSerializer.Deserialize<SignResponse>(@"{""KeyId"":""arn:aws:Kms:eu-west-2:111122223333:key/6732c7ca-6ec9-4b96-9711-fd1c7d637c8e"",""Signature"":null,""SigningAlgorithm"":{""Value"":""RSASSA_PKCS1_V1_5_SHA_256""},""ResponseMetadata"":{""RequestId"":"""",""Metadata"":{},""ChecksumAlgorithm"":0,""ChecksumValidationStatus"":0},""ContentLength"":493,""HttpStatusCode"":200}");
             //byte[] byteArray = Encoding.UTF8.GetBytes("hzxyCYR5Zse5pzb49qr9ydvusAiPkCCYlr961/orhNUYLo0oOyLeBcW6rIlaI8id7TeIHtENCOrPGc8aUXxLjsWW4KuKthPaU/1LC3lBBaEzA1gs2VpRZajzWbCCPHhwcI522dypVi4TwabMgmlRh8iPD6QOxPexvtPnibetIcBwTZx6viLdepyz1mdd9RKAQprjSvI4K9Lm84NRaUXs969qfXlfKSRUVpDpWxWQ2pDnPt847WbDQZM8AR2U3aEfVN+56gilzOSE4LAlXPqgfRmzdtJzZA3Lv3wULBS96Eq1LkPfaXovk2yzU/dQL6/T3X/azDenl5kyymDovuCmvw==");
             //mockSignResponse.Signature = new MemoryStream(byteArray);
             //_autoMocker.GetMock<IAmazonKeyManagementService>().Setup(x => x.SignAsync(It.IsAny<SignRequest>(), default)).ReturnsAsync(mockSignResponse);
@@ -47,10 +47,10 @@ namespace ServiceName.Test
         /// <returns></returns>
         private  IAmazonKeyManagementService GetAmazonKms()
         {
-            var accessKey = _configurationMock["ModuleConfiguration:AwsServices:Kms:AccessKey"];
-            var secretKey = _configurationMock["ModuleConfiguration:AwsServices:Kms:SecretKey"];
-            var regionEndpoint = RegionEndpoint.GetBySystemName(_configurationMock["ModuleConfiguration:AwsServices:Kms:RegionEndpoint"]);
-            var localTestEndpoint = _configurationMock["ModuleConfiguration:AwsServices:Kms:LocalTestEndpoint"];
+            var accessKey = _configurationMock["ModuleConfiguration:Infrastructure:Kms:AccessKey"];
+            var secretKey = _configurationMock["ModuleConfiguration:Infrastructure:Kms:SecretKey"];
+            var regionEndpoint = RegionEndpoint.GetBySystemName(_configurationMock["ModuleConfiguration:Infrastructure:Kms:RegionEndpoint"]);
+            var localTestEndpoint = _configurationMock["ModuleConfiguration:Infrastructure:Kms:LocalTestEndpoint"];
 
             AmazonKeyManagementServiceConfig amazonKeyManagementServiceConfig = new()
             {

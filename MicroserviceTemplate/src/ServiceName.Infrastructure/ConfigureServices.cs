@@ -38,10 +38,10 @@ namespace ServiceName.Infrastructure
 
         private static IAmazonKeyManagementService GetAmazonKms()
         {
-            var accessKey = _configurationManager["ModuleConfiguration:AwsServices:Kms:AccessKey"];
-            var secretKey = _configurationManager["ModuleConfiguration:AwsServices:Kms:SecretKey"];
-            var regionEndpoint = RegionEndpoint.GetBySystemName(_configurationManager["ModuleConfiguration:AwsServices:Kms:RegionEndpoint"]);
-            var localTestEndpoint = _configurationManager["ModuleConfiguration:AwsServices:Kms:LocalTestEndpoint"];
+            var accessKey = _configurationManager["ModuleConfiguration:Infrastructure:Kms:AccessKey"];
+            var secretKey = _configurationManager["ModuleConfiguration:Infrastructure:Kms:SecretKey"];
+            var regionEndpoint = RegionEndpoint.GetBySystemName(_configurationManager["ModuleConfiguration:Infrastructure:Kms:RegionEndpoint"]);
+            var localTestEndpoint = _configurationManager["ModuleConfiguration:Infrastructure:Kms:LocalTestEndpoint"];
             
             AmazonKeyManagementServiceConfig amazonKeyManagementServiceConfig = new()
             {
@@ -64,9 +64,14 @@ namespace ServiceName.Infrastructure
 
         private static IDistributedCache GetRedisCache()
         {
+            var redisServerName = _configurationManager["ModuleConfiguration:Infrastructure:Redis:Server"];
+            var redisPort = _configurationManager["ModuleConfiguration:Infrastructure:Redis:Port"];
+
+            var redisConnectionString = $"{redisServerName}:{redisPort}";
+            
             var cache = new RedisCache(new RedisCacheOptions
             {
-                Configuration = _configurationManager["ModuleConfiguration:ConnectionStrings:Redis"]
+                Configuration = redisConnectionString
             });
 
             return cache;
@@ -76,14 +81,14 @@ namespace ServiceName.Infrastructure
         private static ILogger GetLogger()
         {
 
-            var loggingSink = _configurationManager["ModuleConfiguration:Logging:Sink"];
+            var loggingSink = _configurationManager["Logging:Sink"];
 
             switch (loggingSink)
             {
                 case "Seq":
                     
-                    var serverUrl = _configurationManager["ModuleConfiguration:Logging:Seq:ServerUrl"];
-                    var apiKey = _configurationManager["ModuleConfiguration:Logging:Seq:ApiKey"];
+                    var serverUrl = _configurationManager["ModuleConfiguration:Infrastructure:Seq:ServerUrl"];
+                    var apiKey = _configurationManager["ModuleConfiguration:Infrastructure:Seq:ApiKey"];
 
                     return new LoggerConfiguration()
                                        .WriteTo.Console()
@@ -93,11 +98,11 @@ namespace ServiceName.Infrastructure
 
                 case "CloudWatchLogs":
                     
-                    var accessKey = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:AccessKey"];
-                    var secretKey = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:SecretKey"];
-                    var regionEndpoint = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:RegionEndpoint"];
-                    var localTestEndpoint = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:LocalTestEndpoint"];
-                    var logGroupName = _configurationManager["ModuleConfiguration:AwsServices:CloudWatchLogs:LogGroupName"];
+                    var accessKey = _configurationManager["ModuleConfiguration:Infrastructure:CloudWatchLogs:AccessKey"];
+                    var secretKey = _configurationManager["ModuleConfiguration:Infrastructure:CloudWatchLogs:SecretKey"];
+                    var regionEndpoint = _configurationManager["ModuleConfiguration:Infrastructure:CloudWatchLogs:RegionEndpoint"];
+                    var localTestEndpoint = _configurationManager["ModuleConfiguration:Infrastructure:CloudWatchLogs:LocalTestEndpoint"];
+                    var logGroupName = _configurationManager["ModuleConfiguration:Infrastructure:CloudWatchLogs:LogGroupName"];
 
                     AWSLoggerConfig configuration;
 
@@ -145,10 +150,10 @@ namespace ServiceName.Infrastructure
 
         private static DynamoDBContext GetDynamoDBContext()
         {
-            var accessKey = _configurationManager["ModuleConfiguration:AwsServices:DynamoDb:AccessKey"];
-            var secretKey = _configurationManager["ModuleConfiguration:AwsServices:DynamoDb:SecretKey"];
-            var regionEndpoint = RegionEndpoint.GetBySystemName(_configurationManager["ModuleConfiguration:AwsServices:DynamoDb:RegionEndpoint"]);
-            var localTestEndpoint = _configurationManager["ModuleConfiguration:AwsServices:DynamoDb:LocalTestEndpoint"];
+            var accessKey = _configurationManager["ModuleConfiguration:Infrastructure:DynamoDb:AccessKey"];
+            var secretKey = _configurationManager["ModuleConfiguration:Infrastructure:DynamoDb:SecretKey"];
+            var regionEndpoint = RegionEndpoint.GetBySystemName(_configurationManager["ModuleConfiguration:Infrastructure:DynamoDb:RegionEndpoint"]);
+            var localTestEndpoint = _configurationManager["ModuleConfiguration:Infrastructure:DynamoDb:LocalTestEndpoint"];
 
             var dynamoDBContextConfig = new DynamoDBContextConfig() { ConsistentRead = true };
             

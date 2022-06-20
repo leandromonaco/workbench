@@ -37,7 +37,7 @@ namespace ServiceName.Infrastructure.Authentication
 
         public async Task<string> GenerateTokenAsync(ModuleIdentity identity, int lifetimeSeconds, string issuer, string audience)
         {
-            var signingKeyId = _configuration["ModuleConfiguration:AwsServices:KMS:SigningKeyId"];
+            var signingKeyId = _configuration["ModuleConfiguration:Infrastructure:Kms:SigningKeyId"];
 
             if (string.IsNullOrWhiteSpace(signingKeyId))
             {
@@ -83,7 +83,7 @@ namespace ServiceName.Infrastructure.Authentication
 
         public async Task<bool> ValidateTokenAsync(string token)
         {
-            RsaSecurityKey rsaSecurityKey = SecurityHelper.GetRsaSecurityKey(_configuration["ModuleConfiguration:AwsServices:KMS:PublicKey"]);
+            RsaSecurityKey rsaSecurityKey = SecurityHelper.GetRsaSecurityKey(_configuration["ModuleConfiguration:Infrastructure:Kms:PublicKey"]);
 
             var issuer = _configuration["ModuleConfiguration:Jwt:Issuer"];
             var audience = _configuration["ModuleConfiguration:Jwt:Audience"];
