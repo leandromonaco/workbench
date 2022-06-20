@@ -1,4 +1,5 @@
-﻿using ServiceName.Infrastructure.Repositories.DynamoDBModel;
+﻿using Microsoft.Extensions.Configuration;
+using ServiceName.Infrastructure.Repositories.DynamoDBModel;
 
 namespace ServiceName.Test.Helpers
 {
@@ -23,6 +24,29 @@ namespace ServiceName.Test.Helpers
                 default:
                     return null;
             }      
+        }
+
+        internal static IConfigurationRoot GetConfigurationMock()
+        {
+           var configDictionary = new Dictionary<string, string>
+                                    {
+                                            {"ModuleConfiguration:AwsServices:Kms:AccessKey", "test"},
+                                            {"ModuleConfiguration:AwsServices:Kms:SecretKey", "test"},
+                                            {"ModuleConfiguration:AwsServices:Kms:RegionEndpoint", "eu-west-2"},
+                                            {"ModuleConfiguration:AwsServices:Kms:LocalTestEndpoint", "http://localhost:52002"},
+                                            {"ModuleConfiguration:AwsServices:KMS:SigningKeyId", "6732c7ca-6ec9-4b96-9711-fd1c7d637c8e"},
+                                            {"ModuleConfiguration:AwsServices:KMS:PublicKey", "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA56tfR6w3YJpbH5XZ6Ze2kB2evnUpbyZJiTLPKSc/VeA46m09lVB7bJRp0pKX2LusT2pccrVe5AYtbnikKqhOQWUdjLJnSONPNpd4yjEseqPblsXicA+xdP+Fk2W0yDxOc79LUAywgjV8JqNbbtVbhzqVPOLalJYnPEAVa3NQV138dnU7NzxbAjPjXINi7BBZ2OLRuocJRMfe16AUiQtH8MaWfRnnRRwdCBLJCXnZy+0hVc701SrVoTS+CA8RfGTCnzutx9MXW7t4SCEjZH0MSfhSZbKggPfi36HeUdClacgD6L0+FhSBKzd8kOC06CDf5WM9oV/XtWVXEWWGPDHv8wIDAQAB"},
+                                            {"ModuleConfiguration:Jwt:Issuer", "Issuer"},
+                                            {"ModuleConfiguration:Jwt:Audience", "Audience"},
+                                    };
+
+
+
+            var configuration = new ConfigurationBuilder()
+                        .AddInMemoryCollection(configDictionary)
+                        .Build();
+
+            return configuration;
         }
     }
 }

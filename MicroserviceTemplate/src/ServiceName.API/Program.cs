@@ -1,5 +1,9 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using ServiceName.API.Extensions;
 using ServiceName.Core;
+using ServiceName.Core.Common.Security;
 using ServiceName.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +17,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
 
-builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
 builder.Services.AddApplicationServices();
@@ -25,11 +27,15 @@ builder.Services.AddSwaggerSupport();
 
 builder.Services.AddHealthCheckSupport(builder.Configuration);
 
+builder.Services.AddAuthSupport(builder.Configuration);
+
+builder.Services.AddEndpointsApiExplorer();
+
 var app = builder.Build();
 
 app.MapControllers();
 
-app.MapEndpoints();
+app.MapEndpoints(builder.Configuration);
 
 app.ConfigureHealthCheck();
 
@@ -38,10 +44,9 @@ if (bool.Parse(builder.Configuration["ModuleConfiguration:IsSwaggerUIEnabled"]))
     app.ConfigureSwaggerUI();
 }
 
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseHttpsRedirection();
+app.UseAuth();
 
+app.UseHttpsRedirection();
 
 app.Run();
 

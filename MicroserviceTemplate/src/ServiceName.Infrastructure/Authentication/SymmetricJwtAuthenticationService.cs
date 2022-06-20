@@ -36,7 +36,7 @@ namespace ServiceName.Infrastructure.Authentication
         
         public async Task<bool> ValidateTokenAsync(string token)
         {
-            var mySecret = "asdv234234^&%&^%&^hjsdfb2%%%";
+            var mySecret = "asdv234235^&%&^%&^hjsdfb2%%%";
             var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
             var myIssuer = "http://mysite.com";
             var myAudience = "http://myaudience.com";

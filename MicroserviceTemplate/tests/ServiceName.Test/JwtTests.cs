@@ -1,6 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Text;
+using System.Text.Json;
+using Amazon;
+using Amazon.KeyManagementService;
+using Amazon.KeyManagementService.Model;
+using Microsoft.Extensions.Configuration;
+using Moq;
+using Moq.AutoMock;
+using Serilog;
 using ServiceName.Core.Model;
 using ServiceName.Infrastructure.Authentication;
+using ServiceName.Test.Helpers;
 
 namespace ServiceName.Test
 {
@@ -8,20 +17,12 @@ namespace ServiceName.Test
     {
         AssymetricKmsJwtService _assymetricKmsJwtService;
         ModuleIdentity _moduleIdentity;
+        IConfiguration _configurationMock;
 
         public JwtTests()
         {
-            var configMock = new Dictionary<string, string>
-                            {
-                                    {"ModuleConfiguration:AwsServices:Kms:AccessKey", "test"},
-                                    {"ModuleConfiguration:AwsServices:Kms:SecretKey", "test"},
-                                    {"ModuleConfiguration:AwsServices:Kms:RegionEndpoint", "eu-west-2"},
-                                    {"ModuleConfiguration:AwsServices:Kms:LocalTestEndpoint", "http://localhost:52002"},
-                                    {"ModuleConfiguration:Jwt:SigningKeyId", "6732c7ca-6ec9-4b96-9711-fd1c7d637c8e"},
-                                    {"ModuleConfiguration:Jwt:PublicKey", "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA56tfR6w3YJpbH5XZ6Ze2kB2evnUpbyZJiTLPKSc/VeA46m09lVB7bJRp0pKX2LusT2pccrVe5AYtbnikKqhOQWUdjLJnSONPNpd4yjEseqPblsXicA+xdP+Fk2W0yDxOc79LUAywgjV8JqNbbtVbhzqVPOLalJYnPEAVa3NQV138dnU7NzxbAjPjXINi7BBZ2OLRuocJRMfe16AUiQtH8MaWfRnnRRwdCBLJCXnZy+0hVc701SrVoTS+CA8RfGTCnzutx9MXW7t4SCEjZH0MSfhSZbKggPfi36HeUdClacgD6L0+FhSBKzd8kOC06CDf5WM9oV/XtWVXEWWGPDHv8wIDAQAB"},
-                                    {"ModuleConfiguration:Jwt:Issuer", "Issuer"},
-                                    {"ModuleConfiguration:Jwt:Audience", "Audience"},
-                            };
+            var _autoMocker = new AutoMocker();
+            _configurationMock = TestHelper.GetConfigurationMock();
 
             _moduleIdentity = new()
             {
@@ -30,13 +31,47 @@ namespace ServiceName.Test
                 UserName = "UserName"
             };
 
-            var configuration = new ConfigurationBuilder()
-                        .AddInMemoryCollection(configMock)
-                        .Build();
+            //SignResponse mockSignResponse = JsonSerializer.Deserialize<SignResponse>(@"{""KeyId"":""arn:aws:kms:eu-west-2:111122223333:key/6732c7ca-6ec9-4b96-9711-fd1c7d637c8e"",""Signature"":null,""SigningAlgorithm"":{""Value"":""RSASSA_PKCS1_V1_5_SHA_256""},""ResponseMetadata"":{""RequestId"":"""",""Metadata"":{},""ChecksumAlgorithm"":0,""ChecksumValidationStatus"":0},""ContentLength"":493,""HttpStatusCode"":200}");
+            //byte[] byteArray = Encoding.UTF8.GetBytes("hzxyCYR5Zse5pzb49qr9ydvusAiPkCCYlr961/orhNUYLo0oOyLeBcW6rIlaI8id7TeIHtENCOrPGc8aUXxLjsWW4KuKthPaU/1LC3lBBaEzA1gs2VpRZajzWbCCPHhwcI522dypVi4TwabMgmlRh8iPD6QOxPexvtPnibetIcBwTZx6viLdepyz1mdd9RKAQprjSvI4K9Lm84NRaUXs969qfXlfKSRUVpDpWxWQ2pDnPt847WbDQZM8AR2U3aEfVN+56gilzOSE4LAlXPqgfRmzdtJzZA3Lv3wULBS96Eq1LkPfaXovk2yzU/dQL6/T3X/azDenl5kyymDovuCmvw==");
+            //mockSignResponse.Signature = new MemoryStream(byteArray);
+            //_autoMocker.GetMock<IAmazonKeyManagementService>().Setup(x => x.SignAsync(It.IsAny<SignRequest>(), default)).ReturnsAsync(mockSignResponse);
 
-            _assymetricKmsJwtService = new(configuration);
+            _autoMocker.Use<IAmazonKeyManagementService>(GetAmazonKms()); //This should be replaced with a SignResponse mock as response of the SignAsync method
+            _autoMocker.Use<IConfiguration>(_configurationMock);
+            _assymetricKmsJwtService = _autoMocker.CreateInstance<AssymetricKmsJwtService>();
         }
-        
+
+        /// <summary>
+        /// TODO: Move to Helper class
+        /// </summary>
+        /// <returns></returns>
+        private  IAmazonKeyManagementService GetAmazonKms()
+        {
+            var accessKey = _configurationMock["ModuleConfiguration:AwsServices:Kms:AccessKey"];
+            var secretKey = _configurationMock["ModuleConfiguration:AwsServices:Kms:SecretKey"];
+            var regionEndpoint = RegionEndpoint.GetBySystemName(_configurationMock["ModuleConfiguration:AwsServices:Kms:RegionEndpoint"]);
+            var localTestEndpoint = _configurationMock["ModuleConfiguration:AwsServices:Kms:LocalTestEndpoint"];
+
+            AmazonKeyManagementServiceConfig amazonKeyManagementServiceConfig = new()
+            {
+                RegionEndpoint = regionEndpoint,
+            };
+
+            if (!string.IsNullOrEmpty(localTestEndpoint))
+            {
+                amazonKeyManagementServiceConfig.UseHttp = true;
+                amazonKeyManagementServiceConfig.ServiceURL = localTestEndpoint;
+            }
+
+            if (!string.IsNullOrEmpty(accessKey) && !string.IsNullOrEmpty(secretKey))
+            {
+                return new AmazonKeyManagementServiceClient(accessKey, secretKey, amazonKeyManagementServiceConfig);
+            }
+
+            return new AmazonKeyManagementServiceClient(amazonKeyManagementServiceConfig);
+        }
+
+
         [Fact]
         public async Task JwtValidationOK()
         {

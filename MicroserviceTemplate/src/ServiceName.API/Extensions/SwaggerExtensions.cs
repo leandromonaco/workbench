@@ -15,29 +15,33 @@ namespace ServiceName.API.Extensions
             {
                 options.OperationFilter<SwaggerDefaultValues>();
 
-                options.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                var securityScheme = new OpenApiSecurityScheme()
                 {
                     Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "basic",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Basic Authorization header using the Bearer scheme."
-                });
+                    Description = "JSON Web Token based security",
+                };
 
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                var securityReq = new OpenApiSecurityRequirement()
                 {
                     {
-                          new OpenApiSecurityScheme
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
                             {
-                                Reference = new OpenApiReference
-                                {
-                                    Type = ReferenceType.SecurityScheme,
-                                    Id = "basic"
-                                }
-                            },
-                            new string[] {}
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
                     }
-                });
+                };
+
+                options.AddSecurityDefinition("Bearer", securityScheme);
+                options.AddSecurityRequirement(securityReq);
             });
         }
         
