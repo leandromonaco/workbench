@@ -1,4 +1,5 @@
-﻿using Asp.Versioning.Conventions;
+﻿using System.IdentityModel.Tokens.Jwt;
+using Asp.Versioning.Conventions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace ServiceName.API.Extensions
                                 .Build();
 
 
-            app.MapGet("/settings/{tenantId}", [Authorize] async (IMediator mediator, string tenantId) => await mediator.Send(new GetSettingsQueryRequest() { TenantId = Guid.Parse(tenantId) }))
+            app.MapGet("/settings", [Authorize] async (IMediator mediator, [FromHeader] string authorization) => await mediator.Send(new GetSettingsQueryRequest() { TenantId = GetTenantIdFromJwt(authorization) }))
                .WithApiVersionSet(versionSet)
                .MapToApiVersion(1.0);
 
@@ -29,14 +30,14 @@ namespace ServiceName.API.Extensions
             //  .WithApiVersionSet(versionSet)
             //  .MapToApiVersion(2.0);
 
-            app.MapPost("/settings/{tenantId}", [Authorize] async (IMediator mediator, [FromBody] Settings settings, string tenantId) => await mediator.Send(new SaveSettingsCommandRequest() { TenantId = Guid.Parse(tenantId), Settings = settings }))
+            app.MapPost("/settings", [Authorize] async (IMediator mediator, [FromHeader] string authorization, [FromBody] Settings settings) => await mediator.Send(new SaveSettingsCommandRequest() { TenantId = GetTenantIdFromJwt(authorization), Settings = settings }))
                .WithApiVersionSet(versionSet)
                .MapToApiVersion(1.0);
 
             //These endpoints are only for JWT Testing & Troubleshooting Purposes
             if (bool.Parse(configuration["ModuleConfiguration:Jwt:TestMode"]))
             {
-                app.MapPost("/test/token/generate", [AllowAnonymous] async (IJwtAuthenticationService authService, string issuer, string audience) => await authService.GenerateTokenAsync(new ModuleIdentity(), 60, issuer, audience))
+                app.MapPost("/test/token/generate", [AllowAnonymous] async (IJwtAuthenticationService authService, string tenantId, string issuer, string audience) => await authService.GenerateTokenAsync(new ModuleIdentity() { InstanceGuid = tenantId }, 60, issuer, audience))
                    .WithApiVersionSet(versionSet)
                    .MapToApiVersion(1.0);
 
@@ -44,6 +45,14 @@ namespace ServiceName.API.Extensions
                    .WithApiVersionSet(versionSet)
                    .MapToApiVersion(1.0);
             }
+        }
+
+        private static Guid GetTenantIdFromJwt(string token)
+        {
+            token = token.Replace("Bearer ", "");
+            var jwtToken = new JwtSecurityToken(token);
+            var tenantId = jwtToken.Payload.FirstOrDefault(p => p.Key.Equals("custom:tenantId")).Value.ToString();
+            return Guid.Parse(tenantId);
         }
     }
 }
