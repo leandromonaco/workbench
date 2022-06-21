@@ -40,11 +40,9 @@
                 {
                     parameter.Schema.Default = new OpenApiString(description.DefaultValue.ToString());
                 }
-            }
 
-            //Hide Authorization Parameter in Swagger
-            var authorizationParameter = operation.Parameters.FirstOrDefault(p => p.Name.Equals("authorization"));
-            operation.Parameters.Remove(authorizationParameter);
+                parameter.Required |= description.IsRequired;
+            }
         }
     }
 }
