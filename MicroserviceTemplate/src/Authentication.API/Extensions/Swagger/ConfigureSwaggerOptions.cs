@@ -37,7 +37,7 @@
         {
             var info = new OpenApiInfo()
             {
-                Title = "ServiceName API",
+                Title = "Authentication API",
                 Version = description.ApiVersion.ToString(),
                 Description = "A sample application with Swagger, Swashbuckle, and API versioning.",
                 Contact = new OpenApiContact() { Name = "Leandro", Email = "leandro@somewhere.com" },
