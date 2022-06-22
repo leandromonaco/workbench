@@ -17,16 +17,26 @@ ingress:
     - name: Ingress
       bindings:
         - port: 51000
+          protocol: https
+          ip: '127.0.0.1'
       rules:
-        - path: /A
+        - host: servicename.domain.local
           service: servicename-api
-        - path: /B
-          service: servicename-api
+        - host: authentication.domain.local
+          service: authentication-api
+
 services:
+    - name: authentication-api
+      project: Authentication.API/Authentication.API.csproj
+      bindings:
+      - port: 51001
+        protocol: https
+      #replicas: 2
     - name: servicename-api
       project: ServiceName.API/ServiceName.API.csproj
       bindings:
-      - port: 51001
+      - port: 51002
+        protocol: https
       #replicas: 2
 
     - name: SqlServer
@@ -70,8 +80,6 @@ services:
       - name: REGION
         value: ap-southeast-2
         
-    #aws --endpoint-url=http://localhost:52002 kms --region ap-southeast-2 create-key --key-spec RSA_4096 --key-usage ENCRYPT_DECRYPT
-    #aws --endpoint-url=http://localhost:52002 kms --region ap-southeast-2 list-keys
     - name: KMS
       image: nsmithuk/local-kms
       volumes:
@@ -89,3 +97,9 @@ services:
         value: "1"
       - name: SERVICES
         value: "logs"
+
+    - name: Zipkin
+      image: "openzipkin/zipkin"
+      bindings:
+      - port: 9411
+        protocol: http
