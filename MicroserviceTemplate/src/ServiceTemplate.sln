@@ -22,6 +22,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Test", "..\test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.API", "Authentication.API\Authentication.API.csproj", "{EEF86165-70C1-4ED1-9D67-F929B2B73455}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{04E0AED5-37A9-482D-9624-FB1F991C15DE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnvironmentInitializer", "..\tools\EnvironmentInitializer\EnvironmentInitializer.csproj", "{48B3400D-3AA0-435E-BB68-B03A12D01217}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +52,10 @@ Global
 		{EEF86165-70C1-4ED1-9D67-F929B2B73455}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEF86165-70C1-4ED1-9D67-F929B2B73455}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEF86165-70C1-4ED1-9D67-F929B2B73455}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48B3400D-3AA0-435E-BB68-B03A12D01217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B3400D-3AA0-435E-BB68-B03A12D01217}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B3400D-3AA0-435E-BB68-B03A12D01217}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B3400D-3AA0-435E-BB68-B03A12D01217}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +66,7 @@ Global
 		{3733AF37-1B4D-4178-B4A8-46702493BCEC} = {3FD41DDF-2B43-4372-9FB1-62597803431B}
 		{5A8EB360-D518-4F2C-929C-3628C6DA9226} = {0750781A-30FA-4A91-B764-A5E89BD9CCB0}
 		{EEF86165-70C1-4ED1-9D67-F929B2B73455} = {3FD41DDF-2B43-4372-9FB1-62597803431B}
+		{48B3400D-3AA0-435E-BB68-B03A12D01217} = {04E0AED5-37A9-482D-9624-FB1F991C15DE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C9A3A709-C3C6-4654-AC2B-A92420A60DF5}
