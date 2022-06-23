@@ -17,6 +17,7 @@ var dynamoDbTables = configuration.GetSection("DynamoDbTables").Get<List<DynamoD
 /*
  * TODO: Clean up environment to re-run Tye
  * Kill Tye process
+ * wsl --shutdown
  * docker kill $(docker ps -q)
  * docker rm $(docker ps -a -q
  * docker network prune
