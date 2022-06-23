@@ -9,8 +9,8 @@ namespace ServiceName.API.Extensions
     {
         public static void AddSwaggerSupport(this IServiceCollection services)
         {
-            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();            
-            
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+
             services.AddSwaggerGen(options =>
             {
                 options.OperationFilter<SwaggerDefaultValues>();
@@ -44,14 +44,14 @@ namespace ServiceName.API.Extensions
                 options.AddSecurityRequirement(securityReq);
             });
         }
-        
+
         public static void ConfigureSwaggerUI(this WebApplication app)
         {
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
                 options.RoutePrefix = string.Empty;
-                
+
                 var descriptions = app.DescribeApiVersions();
 
                 // build a swagger endpoint for each discovered API version

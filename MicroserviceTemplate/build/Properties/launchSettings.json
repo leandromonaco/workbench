@@ -1,0 +1,8 @@
+{
+    "profiles": {
+        "Build": {
+            "commandName": "Project",
+            "commandLineArgs": "--OctopusServerUrl \"https://octoserver\" --OctopusApiKey \"abc\" --OctopusSpaceId \"pae\""
+        }
+    }
+}

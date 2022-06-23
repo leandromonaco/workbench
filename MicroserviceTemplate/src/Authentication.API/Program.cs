@@ -1,9 +1,5 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using ServiceName.API.Extensions;
 using ServiceName.Core;
-using ServiceName.Core.Common.Security;
 using ServiceName.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,4 +45,3 @@ app.UseAuth();
 app.UseHttpsRedirection();
 
 app.Run();
-

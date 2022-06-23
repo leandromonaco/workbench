@@ -19,12 +19,12 @@ namespace ServiceName.Infrastructure
 {
     public static class ConfigureServices
     {
-        static ConfigurationManager _configurationManager;
-        
+        private static ConfigurationManager _configurationManager;
+
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, ConfigurationManager configurationManager)
         {
             _configurationManager = configurationManager;
-            
+
             services.AddSingleton<IConfiguration>(GetConfiguration(configurationManager));
             services.AddSingleton<ILogger>(GetLogger());
             services.AddSingleton<IDistributedCache>(GetRedisCache());
@@ -42,7 +42,7 @@ namespace ServiceName.Infrastructure
             var secretKey = _configurationManager["ModuleConfiguration:Infrastructure:Kms:SecretKey"];
             var regionEndpoint = RegionEndpoint.GetBySystemName(_configurationManager["ModuleConfiguration:Infrastructure:Kms:RegionEndpoint"]);
             var localTestEndpoint = _configurationManager["ModuleConfiguration:Infrastructure:Kms:LocalTestEndpoint"];
-            
+
             AmazonKeyManagementServiceConfig amazonKeyManagementServiceConfig = new()
             {
                 RegionEndpoint = regionEndpoint,
@@ -68,7 +68,7 @@ namespace ServiceName.Infrastructure
             var redisPort = _configurationManager["ModuleConfiguration:Infrastructure:Redis:Port"];
 
             var redisConnectionString = $"{redisServerName}:{redisPort}";
-            
+
             var cache = new RedisCache(new RedisCacheOptions
             {
                 Configuration = redisConnectionString
@@ -77,16 +77,14 @@ namespace ServiceName.Infrastructure
             return cache;
         }
 
-
         private static ILogger GetLogger()
         {
-
             var loggingSink = _configurationManager["Logging:Sink"];
 
             switch (loggingSink)
             {
                 case "Seq":
-                    
+
                     var serverUrl = _configurationManager["ModuleConfiguration:Infrastructure:Seq:ServerUrl"];
                     var apiKey = _configurationManager["ModuleConfiguration:Infrastructure:Seq:ApiKey"];
 
@@ -97,7 +95,7 @@ namespace ServiceName.Infrastructure
                                        .CreateLogger();
 
                 case "CloudWatchLogs":
-                    
+
                     var accessKey = _configurationManager["ModuleConfiguration:Infrastructure:CloudWatchLogs:AccessKey"];
                     var secretKey = _configurationManager["ModuleConfiguration:Infrastructure:CloudWatchLogs:SecretKey"];
                     var regionEndpoint = _configurationManager["ModuleConfiguration:Infrastructure:CloudWatchLogs:RegionEndpoint"];
@@ -129,11 +127,10 @@ namespace ServiceName.Infrastructure
                     return new LoggerConfiguration().WriteTo.AWSSeriLog()
                                                           .WriteTo.Console()
                                                           .CreateLogger();
-                    
+
                 default:
                     throw new Exception("Logger Sink is not supported.");
-
-            }    
+            }
         }
 
         private static IConfiguration GetConfiguration(ConfigurationManager configurationManager)
@@ -144,7 +141,7 @@ namespace ServiceName.Infrastructure
                          .AddJsonFile($"appsettings.Development.json", optional: true, reloadOnChange: true)
                          .AddEnvironmentVariables()
                          .Build();
-    
+
             return configurationManager;
         }
 
@@ -156,7 +153,7 @@ namespace ServiceName.Infrastructure
             var localTestEndpoint = _configurationManager["ModuleConfiguration:Infrastructure:DynamoDb:LocalTestEndpoint"];
 
             var dynamoDBContextConfig = new DynamoDBContextConfig() { ConsistentRead = true };
-            
+
             AmazonDynamoDBConfig amazonDynamoDBConfig = new()
             {
                 RegionEndpoint = regionEndpoint

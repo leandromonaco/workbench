@@ -3,7 +3,6 @@ using Asp.Versioning.Conventions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.CQRS.Commands;
 using ServiceName.Core.CQRS.Queries;
 using ServiceName.Core.Model;
@@ -20,7 +19,6 @@ namespace ServiceName.API.Extensions
                                 //.HasApiVersion(2.0)
                                 .ReportApiVersions()
                                 .Build();
-
 
             app.MapGet("/settings", [Authorize] async (IMediator mediator, [FromHeader] string authorization) => await mediator.Send(new GetSettingsQueryRequest() { TenantId = GetTenantIdFromJwt(authorization) }))
                .WithApiVersionSet(versionSet)

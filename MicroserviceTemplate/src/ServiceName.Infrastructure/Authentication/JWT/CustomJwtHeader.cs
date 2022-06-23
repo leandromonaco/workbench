@@ -6,6 +6,7 @@ namespace ServiceName.Infrastructure.Authentication.JWT
     {
         [JsonPropertyName("kid")]
         public string KeyId { get; set; }
+
         [JsonPropertyName("alg")]
         public string Algorithm { get; set; }
     }

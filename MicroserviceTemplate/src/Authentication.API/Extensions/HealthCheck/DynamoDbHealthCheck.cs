@@ -7,13 +7,13 @@ namespace ServiceName.API.Extensions.HealthCheck
 {
     public class DynamoDbHealthCheck : IHealthCheck
     {
-        readonly IConfiguration _configuration;
-        
+        private readonly IConfiguration _configuration;
+
         public DynamoDbHealthCheck(IConfiguration configuration)
         {
             _configuration = configuration;
         }
-        
+
         public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             try
@@ -35,18 +35,16 @@ namespace ServiceName.API.Extensions.HealthCheck
                     clientConfig.ServiceURL = localTestEndpoint;
                 }
 
-                var amazonDynamoDBClient = new AmazonDynamoDBClient(accessKey, secretKey, clientConfig);  
-                
+                var amazonDynamoDBClient = new AmazonDynamoDBClient(accessKey, secretKey, clientConfig);
+
                 Table.LoadTable(amazonDynamoDBClient, tableName);
-               
+
                 return Task.FromResult(HealthCheckResult.Healthy($"Table {tableName} exists."));
             }
             catch (Exception ex)
             {
                 return Task.FromResult(new HealthCheckResult(context.Registration.FailureStatus, ex.Message));
             }
-
-          
         }
     }
 }

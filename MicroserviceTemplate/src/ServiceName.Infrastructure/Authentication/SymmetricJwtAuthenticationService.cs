@@ -33,7 +33,7 @@ namespace ServiceName.Infrastructure.Authentication
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return Task.FromResult(tokenHandler.WriteToken(token));
         }
-        
+
         public async Task<bool> ValidateTokenAsync(string token)
         {
             var mySecret = "asdv234235^&%&^%&^hjsdfb2%%%";

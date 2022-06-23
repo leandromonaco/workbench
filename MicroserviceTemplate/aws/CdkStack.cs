@@ -1,10 +1,9 @@
 using Amazon.CDK;
 using Amazon.CDK.AWS.APIGateway;
+using Amazon.CDK.AWS.DynamoDB;
 using Amazon.CDK.AWS.Lambda;
 using Amazon.CDK.AWS.Logs;
-using Amazon.CDK.AWS.DynamoDB;
 using Constructs;
-using Amazon.CDK.AWS.CertificateManager;
 
 namespace Cdk
 {
@@ -13,7 +12,7 @@ namespace Cdk
         internal CdkStack(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
         {
             //https://www.alexdebrie.com/posts/api-gateway-access-logs/
-         
+
             //    logGroup.set = "/cloudwatchlogs/dotnet6-app/";
             //Bucket logBucket = new Bucket(this, "S3 Bucket");
 
@@ -96,7 +95,6 @@ namespace Cdk
             });
 
             dynamoTable.GrantFullAccess(lambda);
-
         }
     }
 }

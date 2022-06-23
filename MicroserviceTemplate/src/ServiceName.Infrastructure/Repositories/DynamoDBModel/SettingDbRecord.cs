@@ -10,6 +10,7 @@ namespace ServiceName.Infrastructure.Repositories.DynamoDBModel
         {
             get; set;
         }
+
         public string Settings
         {
             get; set;

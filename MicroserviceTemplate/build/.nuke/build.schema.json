@@ -84,7 +84,9 @@
               "Clean",
               "Compile",
               "Pack",
+              "Push",
               "Restore",
+              "Test",
               "Versioning"
             ]
           }
@@ -102,7 +104,9 @@
               "Clean",
               "Compile",
               "Pack",
+              "Push",
               "Restore",
+              "Test",
               "Versioning"
             ]
           }

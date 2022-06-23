@@ -1,11 +1,11 @@
 ﻿namespace ServiceName.API.Extensions.Swagger
 {
+    using System;
     using Asp.Versioning.ApiExplorer;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Options;
     using Microsoft.OpenApi.Models;
     using Swashbuckle.AspNetCore.SwaggerGen;
-    using System;
 
     /// <summary>
     /// Configures the Swagger generation options.
@@ -14,7 +14,7 @@
     /// <see cref="IApiVersionDescriptionProvider"/> service has been resolved from the service container.</remarks>
     public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {
-        readonly IApiVersionDescriptionProvider provider;
+        private readonly IApiVersionDescriptionProvider provider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigureSwaggerOptions"/> class.
@@ -33,7 +33,7 @@
             }
         }
 
-        static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
+        private static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
         {
             var info = new OpenApiInfo()
             {
