@@ -3,28 +3,36 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32505.173
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.API", "ServiceName.API\ServiceName.API.csproj", "{DD4C16FE-1C12-4B91-92D1-184329282E65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.API", "src\ServiceName.API\ServiceName.API.csproj", "{DD4C16FE-1C12-4B91-92D1-184329282E65}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Infrastructure", "ServiceName.Infrastructure\ServiceName.Infrastructure.csproj", "{9B43FACF-50A2-4332-9642-3F723488DE40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Infrastructure", "src\ServiceName.Infrastructure\ServiceName.Infrastructure.csproj", "{9B43FACF-50A2-4332-9642-3F723488DE40}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{99A702BB-D8C1-4F89-9B4E-EB891693FD7A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tye", "tye", "{99A702BB-D8C1-4F89-9B4E-EB891693FD7A}"
 	ProjectSection(SolutionItems) = preProject
-		tye.yaml = tye.yaml
+		src\tye.yaml = src\tye.yaml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Core", "ServiceName.Core\ServiceName.Core.csproj", "{3733AF37-1B4D-4178-B4A8-46702493BCEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Core", "src\ServiceName.Core\ServiceName.Core.csproj", "{3733AF37-1B4D-4178-B4A8-46702493BCEC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0750781A-30FA-4A91-B764-A5E89BD9CCB0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3FD41DDF-2B43-4372-9FB1-62597803431B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Test", "..\tests\ServiceName.Test\ServiceName.Test.csproj", "{5A8EB360-D518-4F2C-929C-3628C6DA9226}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Test", "tests\ServiceName.Test\ServiceName.Test.csproj", "{5A8EB360-D518-4F2C-929C-3628C6DA9226}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.API", "Authentication.API\Authentication.API.csproj", "{EEF86165-70C1-4ED1-9D67-F929B2B73455}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.API", "src\Authentication.API\Authentication.API.csproj", "{EEF86165-70C1-4ED1-9D67-F929B2B73455}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{04E0AED5-37A9-482D-9624-FB1F991C15DE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnvironmentInitializer", "..\tools\EnvironmentInitializer\EnvironmentInitializer.csproj", "{48B3400D-3AA0-435E-BB68-B03A12D01217}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnvironmentInitializer", "tools\EnvironmentInitializer\EnvironmentInitializer.csproj", "{48B3400D-3AA0-435E-BB68-B03A12D01217}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{39870B6D-6682-4B08-8208-6C05B41930EC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Build", "build\Build.csproj", "{A9FA5380-D9B1-4AA1-93FB-F805E22FC9B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aws", "aws", "{462D80EC-4E6B-4B0F-8062-779007AB3A90}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cdk", "aws\Cdk.csproj", "{F9885267-A919-4711-B9AF-9C6ADEC4DA21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +64,14 @@ Global
 		{48B3400D-3AA0-435E-BB68-B03A12D01217}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48B3400D-3AA0-435E-BB68-B03A12D01217}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48B3400D-3AA0-435E-BB68-B03A12D01217}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9FA5380-D9B1-4AA1-93FB-F805E22FC9B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9FA5380-D9B1-4AA1-93FB-F805E22FC9B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9FA5380-D9B1-4AA1-93FB-F805E22FC9B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9FA5380-D9B1-4AA1-93FB-F805E22FC9B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9885267-A919-4711-B9AF-9C6ADEC4DA21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9885267-A919-4711-B9AF-9C6ADEC4DA21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9885267-A919-4711-B9AF-9C6ADEC4DA21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9885267-A919-4711-B9AF-9C6ADEC4DA21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +83,8 @@ Global
 		{5A8EB360-D518-4F2C-929C-3628C6DA9226} = {0750781A-30FA-4A91-B764-A5E89BD9CCB0}
 		{EEF86165-70C1-4ED1-9D67-F929B2B73455} = {3FD41DDF-2B43-4372-9FB1-62597803431B}
 		{48B3400D-3AA0-435E-BB68-B03A12D01217} = {04E0AED5-37A9-482D-9624-FB1F991C15DE}
+		{A9FA5380-D9B1-4AA1-93FB-F805E22FC9B2} = {39870B6D-6682-4B08-8208-6C05B41930EC}
+		{F9885267-A919-4711-B9AF-9C6ADEC4DA21} = {462D80EC-4E6B-4B0F-8062-779007AB3A90}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C9A3A709-C3C6-4654-AC2B-A92420A60DF5}

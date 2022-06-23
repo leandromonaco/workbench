@@ -1,9 +1,6 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using ServiceName.API.BackgroundTasks;
 using ServiceName.API.Extensions;
 using ServiceName.Core;
-using ServiceName.Core.Common.Security;
 using ServiceName.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +27,8 @@ builder.Services.AddHealthCheckSupport(builder.Configuration);
 builder.Services.AddAuthSupport(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddHostedService<RepeatingTask>();
 
 var app = builder.Build();
 
