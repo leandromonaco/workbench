@@ -19,29 +19,30 @@ using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 
 [ShutdownDotNetAfterServerBuild]
-class Build : NukeBuild
+internal class Build : NukeBuild
 {
-    readonly IConfiguration _configuration;
-    readonly Dictionary<string, string> _versions;
-    readonly List<FileInfo> _csProjects;
-    readonly List<string> _releaseableProjects;
+    private readonly IConfiguration _configuration;
+    private readonly Dictionary<string, string> _versions;
+    private readonly List<FileInfo> _srcProjects;
+    private readonly List<FileInfo> _testProjects;
+    private readonly List<FileInfo> _outputProjects;
+    private readonly List<string> _releaseableProjects;
 
-
-    public static int Main() => Execute<Build>(x => x.Pack);
+    public static int Main() => Execute<Build>(x => x.Push);
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
-    readonly Configuration Configuration = Configuration.Release;
+    private readonly Configuration Configuration = Configuration.Release;
 
-    [Parameter] string OctopusServerUrl;
-    [Parameter] string OctopusApiKey;
-    [Parameter] string OctopusSpaceId;
+    [Parameter] private string OctopusServerUrl;
+    [Parameter] private string OctopusApiKey;
+    [Parameter] private string OctopusSpaceId;
 
-    [Solution] readonly Solution Solution;
-    AbsolutePath SolutionDirectory => RootDirectory.Parent;
-    AbsolutePath SourceDirectory => SolutionDirectory / "src";
-    AbsolutePath TestDirectory => SolutionDirectory / "test";
-    AbsolutePath ToolDirectory => SolutionDirectory / "tools";
-    AbsolutePath OutputDirectory => SolutionDirectory / "output";
+    [Solution] private readonly Solution Solution;
+    private AbsolutePath SolutionDirectory => RootDirectory.Parent;
+    private AbsolutePath SourceDirectory => SolutionDirectory / "src";
+    private AbsolutePath TestDirectory => SolutionDirectory / "tests";
+    private AbsolutePath ToolDirectory => SolutionDirectory / "tools";
+    private AbsolutePath OutputDirectory => SolutionDirectory / "output";
 
     public Build()
     {
@@ -52,10 +53,12 @@ class Build : NukeBuild
 
         _versions = new Dictionary<string, string>();
         _releaseableProjects = _configuration.GetSection("ReleaseableProjects").Get<List<string>>();
-        _csProjects = SolutionDirectory.GlobFiles("**/*.csproj").Where(p => _releaseableProjects.Contains(new FileInfo(p).Name)).Select(p => new FileInfo(p)).ToList(); 
+        _srcProjects = SourceDirectory.GlobFiles("**/*.csproj").Select(p => new FileInfo(p)).ToList();
+        _testProjects = TestDirectory.GlobFiles("**/*.csproj").Select(p => new FileInfo(p)).ToList();
+        _outputProjects = _srcProjects.Where(p => _releaseableProjects.Contains(p.Name)).ToList();
     }
 
-    Target Clean => _ => _
+    private Target Clean => _ => _
         .Executes(() =>
         {
             SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
@@ -64,18 +67,21 @@ class Build : NukeBuild
             EnsureCleanDirectory(OutputDirectory);
         });
 
-    Target Restore => _ => _
+    private Target Restore => _ => _
         .DependsOn(Clean)
         .Executes(() =>
         {
-            NuGetTasks.NuGetRestore(s => s.SetTargetPath(SolutionDirectory));
+            foreach (var project in _srcProjects)
+            {
+                DotNetTasks.DotNetRestore(o => o.SetProjectFile(project.FullName));
+            }
         });
 
-    Target Versioning => _ => _
+    private Target Versioning => _ => _
     .DependsOn(Restore)
           .Executes(() =>
           {
-              foreach (var csProject in _csProjects)
+              foreach (var csProject in _outputProjects)
               {
                   var versionResult = NerdbankGitVersioningTasks.NerdbankGitVersioningGetVersion(v => v.SetProcessWorkingDirectory(csProject.DirectoryName).SetProcessArgumentConfigurator(a => a.Add("-f json"))).Result;
                   NerdbankGitVersioningTasks.NerdbankGitVersioningSetVersion(v => v.SetProject(csProject.DirectoryName)
@@ -85,21 +91,31 @@ class Build : NukeBuild
               }
           });
 
-    Target Compile => _ => _
+    private Target Compile => _ => _
     .DependsOn(Versioning)
     .Executes(() =>
     {
-        MSBuildTasks.MSBuild(s => s
-            .SetTargetPath(SolutionDirectory)
-            .SetConfiguration(Configuration)
-            );
+        foreach (var project in _srcProjects)
+        {
+            DotNetTasks.DotNetBuild(o => o.SetProjectFile(project.FullName));
+        }
     });
 
-    Target Pack => _ => _
-    .DependsOn(Compile)
+    private Target Test => _ => _
+      .DependsOn(Compile)
+      .Executes(() =>
+      {
+          foreach (var project in _testProjects)
+          {
+              DotNetTasks.DotNetTest(o => o.SetProjectFile(project.FullName));
+          }
+      });
+
+    private Target Pack => _ => _
+    .DependsOn(Test)
     .Executes(() =>
     {
-        foreach (var csProject in _csProjects)
+        foreach (var csProject in _outputProjects)
         {
             var packageId = csProject.Name.Replace(".csproj", string.Empty);
             var sourcePath = $"{csProject.DirectoryName}\\bin";
@@ -123,19 +139,18 @@ class Build : NukeBuild
         }
     });
 
-    //Target Push => _ => _
-    //          .DependsOn(Pack)
-    //          .Executes(() =>
-    //          {
-    //              var packages = SolutionDirectory.GlobFiles("**/output/*.nupkg");
-    //              foreach (var package in packages)
-    //              {
-    //                  //if the package exists the default behaviour is to reject the package
-    //                  OctopusTasks.OctopusPush(o => o.SetServer(OctopusServerUrl)
-    //                                                 .SetApiKey(OctopusApiKey)
-    //                                                 .SetSpace(OctopusSpaceId)
-    //                                                 .SetPackage(package));
-    //              }
-
-    //          });
+    private Target Push => _ => _
+              .DependsOn(Pack)
+              .Executes(() =>
+              {
+                  var outputPackages = OutputDirectory.GlobFiles("**/*.nupkg").ToList();
+                  foreach (var package in outputPackages)
+                  {
+                      //if the package exists the default behaviour is to reject the package
+                      OctopusTasks.OctopusPush(o => o.SetServer(OctopusServerUrl)
+                                                     .SetApiKey(OctopusApiKey)
+                                                     .SetSpace(OctopusSpaceId)
+                                                     .SetPackage(package));
+                  }
+              });
 }

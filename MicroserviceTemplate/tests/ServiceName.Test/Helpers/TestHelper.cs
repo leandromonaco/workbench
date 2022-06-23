@@ -15,20 +15,22 @@ namespace ServiceName.Test.Helpers
                         TenantId = "53a13ec4-fde8-4087-8e2a-5fb6b1fbc062",
                         Settings = @"{""CategoryA"":{""IsSettingAEnabled"":true,""IsSettingBEnabled"":true}}"
                     };
+
                 case "e2c92679-5309-438b-8efc-64054a7babc2":
                     return new SettingDbRecord()
                     {
                         TenantId = "e2c92679-5309-438b-8efc-64054a7babc2",
                         Settings = String.Empty
-                    };                  
+                    };
+
                 default:
                     return null;
-            }      
+            }
         }
 
         internal static IConfigurationRoot GetConfigurationMock()
         {
-           var configDictionary = new Dictionary<string, string>
+            var configDictionary = new Dictionary<string, string>
                                     {
                                             {"ModuleConfiguration:Infrastructure:Kms:AccessKey", "test"},
                                             {"ModuleConfiguration:Infrastructure:Kms:SecretKey", "test"},
@@ -39,8 +41,6 @@ namespace ServiceName.Test.Helpers
                                             {"ModuleConfiguration:Jwt:Issuer", "Issuer"},
                                             {"ModuleConfiguration:Jwt:Audience", "Audience"},
                                     };
-
-
 
             var configuration = new ConfigurationBuilder()
                         .AddInMemoryCollection(configDictionary)

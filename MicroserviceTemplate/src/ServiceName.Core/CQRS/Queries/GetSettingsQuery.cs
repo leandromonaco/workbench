@@ -11,11 +11,12 @@ namespace ServiceName.Core.CQRS.Queries
     {
         public Guid TenantId { get; set; }
     }
+
     public class GetSettingsQueryHandler : IRequestHandler<GetSettingsQueryRequest, Settings>
     {
-        IRepositoryService<Settings> _settingsRepository;
-        IConfiguration _configuration;
-        IDistributedCache _cache;
+        private IRepositoryService<Settings> _settingsRepository;
+        private IConfiguration _configuration;
+        private IDistributedCache _cache;
 
         public GetSettingsQueryHandler(IRepositoryService<Settings> settingsRepository, IConfiguration configuration, IDistributedCache cache)
         {
@@ -27,9 +28,9 @@ namespace ServiceName.Core.CQRS.Queries
         public async Task<Settings> Handle(GetSettingsQueryRequest request, CancellationToken cancellationToken)
         {
             Settings cachedSettings;
-            
+
             var cachedSettingsJson = await _cache.GetStringAsync(request.TenantId.ToString());
-            
+
             if (string.IsNullOrEmpty(cachedSettingsJson))
             {
                 var settings = await _settingsRepository.GetByIdAsync(request.TenantId);
@@ -40,7 +41,7 @@ namespace ServiceName.Core.CQRS.Queries
             {
                 cachedSettings = JsonSerializer.Deserialize<Settings>(cachedSettingsJson);
             }
-            
+
             return cachedSettings;
         }
     }

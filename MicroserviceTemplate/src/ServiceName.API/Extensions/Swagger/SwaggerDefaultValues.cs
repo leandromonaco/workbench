@@ -1,10 +1,10 @@
 ﻿namespace ServiceName.API.Extensions.Swagger
 {
+    using System.Linq;
     using Microsoft.AspNetCore.Mvc.ApiExplorer;
     using Microsoft.OpenApi.Any;
     using Microsoft.OpenApi.Models;
     using Swashbuckle.AspNetCore.SwaggerGen;
-    using System.Linq;
 
     /// <summary>
     /// Represents the Swagger/Swashbuckle operation filter used to document the implicit API version parameter.

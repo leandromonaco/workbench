@@ -19,6 +19,6 @@ namespace ServiceName.Core.Common.Security
             };
             var rsaSecurityKey = new RsaSecurityKey(rsaParameters);
             return rsaSecurityKey;
-        }        
+        }
     }
 }

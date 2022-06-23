@@ -6,6 +6,7 @@ namespace ServiceName.Core.Model
     {
         [JsonPropertyName("IsSettingAEnabled")]
         public bool IsSettingAEnabled { get; set; }
+
         [JsonPropertyName("IsSettingBEnabled")]
         public bool IsSettingBEnabled { get; set; }
     }

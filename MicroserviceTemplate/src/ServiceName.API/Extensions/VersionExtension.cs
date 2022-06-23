@@ -3,7 +3,7 @@
     public static class VersionExtension
     {
         public static void AddApiVersioningSupport(this IServiceCollection services)
-        { 
+        {
             services.AddApiVersioning()
                     .AddApiExplorer(
                         options =>

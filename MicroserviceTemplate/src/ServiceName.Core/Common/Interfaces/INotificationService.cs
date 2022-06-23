@@ -3,6 +3,7 @@
     public interface INotificationService
     {
         void SendEmail();
+
         void SendSMS();
     }
 }

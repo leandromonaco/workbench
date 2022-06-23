@@ -1,13 +1,10 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Amazon.KeyManagementService;
 using Amazon.KeyManagementService.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Security;
 using Serilog;
 using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Common.Security;
@@ -17,16 +14,16 @@ using ServiceName.Infrastructure.Authentication.JWT;
 namespace ServiceName.Infrastructure.Authentication
 {
     /// <summary>
-    /// 
+    ///
     /// aws --endpoint-url=http://localhost:52002 kms --region ap-southeast-2 create-key --key-spec RSA_2048 --key-usage SIGN_VERIFY
     /// aws --endpoint-url=http://localhost:52002 kms --region ap-southeast-2 list-keys
     /// aws --endpoint-url=http://localhost:52002 kms --region ap-southeast-2 get-public-key --key-id 6732c7ca-6ec9-4b96-9711-fd1c7d637c8e
     /// </summary>
     public class AssymetricKmsJwtService : IJwtAuthenticationService
     {
-        readonly IConfiguration _configuration;
-        readonly IAmazonKeyManagementService _amazonKms;
-        readonly ILogger _logger;
+        private readonly IConfiguration _configuration;
+        private readonly IAmazonKeyManagementService _amazonKms;
+        private readonly ILogger _logger;
 
         public AssymetricKmsJwtService(IConfiguration configuration, IAmazonKeyManagementService amazonKms, ILogger logger)
         {
@@ -43,7 +40,7 @@ namespace ServiceName.Infrastructure.Authentication
             {
                 throw new InvalidOperationException("The amazonKmsSigningKeyId is not defined.");
             }
-            
+
             var header = Base64UrlEncoder.Encode(JsonSerializer.Serialize(new CustomJwtHeader()
             {
                 Algorithm = "RS256",

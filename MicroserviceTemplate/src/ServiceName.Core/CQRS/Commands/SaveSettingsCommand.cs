@@ -15,9 +15,9 @@ namespace ServiceName.Core.CQRS.Commands
 
     public class CreateTodoListCommandHandler : IRequestHandler<SaveSettingsCommandRequest, bool>
     {
-        IRepositoryService<Settings> _settingsRepository;
-        IConfiguration _configuration;
-        IDistributedCache _cache;
+        private IRepositoryService<Settings> _settingsRepository;
+        private IConfiguration _configuration;
+        private IDistributedCache _cache;
 
         public CreateTodoListCommandHandler(IRepositoryService<Settings> settingsRepository, IConfiguration configuration, IDistributedCache cache)
         {

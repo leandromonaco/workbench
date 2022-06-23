@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using Amazon.DynamoDBv2.DataModel;
-using Microsoft.Extensions.Configuration;
 using Serilog;
 using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
@@ -11,14 +10,14 @@ namespace ServiceName.Infrastructure.Repositories
     /// <summary>
     //https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/CodeSamples.DotNet.html
     //https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/LowLevelDotNetItemCRUD.html
-    //https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DotNetSDKHighLevel.html    
+    //https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DotNetSDKHighLevel.html
     //aws --endpoint-url=http://localhost:8000 dynamodb create-table --table-name ServiceName_Setting --attribute-definitions AttributeName=TenantId,AttributeType=S --key-schema AttributeName=TenantId,KeyType=HASH --billing-mode PAY_PER_REQUEST
     //aws dynamodb list-tables --endpoint-url http://localhost:8000
     /// </summary>
     public class SettingsRepositoryService : IRepositoryService<Settings>
     {
-        readonly IDynamoDBContext _dynamoDBContext;
-        readonly ILogger _logger;
+        private readonly IDynamoDBContext _dynamoDBContext;
+        private readonly ILogger _logger;
 
         public SettingsRepositoryService(IDynamoDBContext dynamoContext, ILogger logger)
         {

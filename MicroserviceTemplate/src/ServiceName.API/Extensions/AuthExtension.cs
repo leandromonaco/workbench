@@ -29,8 +29,8 @@ namespace ServiceName.API.Extensions
             services.AddAuthorization();
         }
 
-        public static void UseAuth(this WebApplication app) {
-
+        public static void UseAuth(this WebApplication app)
+        {
             app.UseAuthentication();
             app.UseAuthorization();
         }

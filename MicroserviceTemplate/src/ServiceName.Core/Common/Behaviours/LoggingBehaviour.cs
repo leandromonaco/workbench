@@ -7,7 +7,7 @@ namespace ServiceName.Core.Common.Behaviours
 {
     public class LoggingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        readonly ILogger _logger;
+        private readonly ILogger _logger;
         private readonly Stopwatch _timer;
 
         public LoggingBehaviour(ILogger logger)
@@ -21,7 +21,7 @@ namespace ServiceName.Core.Common.Behaviours
             var correlationId = Guid.NewGuid();
             var requestName = typeof(TRequest).Name;
 
-            _logger.Information(@"correlationId {correlationId} 
+            _logger.Information(@"correlationId {correlationId}
                                                         requestName {requestName}
                                                         type {requestType}
                                                         payload {requestPayload}", correlationId, requestName, "Request", JsonSerializer.Serialize(request));
@@ -38,6 +38,4 @@ namespace ServiceName.Core.Common.Behaviours
             return response;
         }
     }
-
-
 }

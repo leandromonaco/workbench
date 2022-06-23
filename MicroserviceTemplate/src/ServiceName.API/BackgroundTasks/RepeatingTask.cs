@@ -7,8 +7,8 @@
     /// </summary>
     public class RepeatingTask : BackgroundService
     {
-        ILogger _logger;
-        PeriodicTimer _timer;
+        private ILogger _logger;
+        private PeriodicTimer _timer;
 
         //public RepeatingTask(ILogger logger)
         public RepeatingTask()
