@@ -19,7 +19,7 @@ var dynamoDbTables = configuration.GetSection("DynamoDbTables").Get<List<DynamoD
  * Kill Tye process
  * wsl --shutdown
  * docker kill $(docker ps -q)
- * docker rm $(docker ps -a -q
+ * docker rm $(docker ps -a -q)
  * docker network prune
  * tye run --port 10000 --dashboard
  */

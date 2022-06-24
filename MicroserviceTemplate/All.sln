@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Infrastructure"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tye", "tye", "{99A702BB-D8C1-4F89-9B4E-EB891693FD7A}"
 	ProjectSection(SolutionItems) = preProject
-		src\tye.yaml = src\tye.yaml
+		tye.yaml = tye.yaml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceName.Core", "src\ServiceName.Core\ServiceName.Core.csproj", "{3733AF37-1B4D-4178-B4A8-46702493BCEC}"
