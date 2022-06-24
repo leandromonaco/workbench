@@ -16,7 +16,6 @@
     <PackageDownload Include="OctopusTools" Version="[7.4.3357]" />
 	<PackageDownload Include="nbgv" Version="[3.4.231]" />
     <PackageReference Include="Nuke.Common" Version="6.1.1" />
-	<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
 	<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
 	<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
   </ItemGroup>

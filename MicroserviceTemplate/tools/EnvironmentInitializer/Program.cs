@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using CmdRunner;
 using CmdRunner.Model;
+using Microsoft.Extensions.Configuration;
 
 var configuration = new ConfigurationBuilder()
                             .SetBasePath(Environment.CurrentDirectory)

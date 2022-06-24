@@ -8,13 +8,12 @@
 
   <ItemGroup>
 	<PackageReference Include="AWS.Logger.SeriLog" Version="3.2.0" />
-	<PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.3.43" />
-	<PackageReference Include="AWSSDK.KeyManagementService" Version="3.7.3.25" />
-	<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.5" />
-	<PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
+	<PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.3.50" />
+	<PackageReference Include="AWSSDK.KeyManagementService" Version="3.7.3.26" />
+	<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.6" />
 	<PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="5.1.1" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.18.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.20.0" />
   </ItemGroup>
 
   <ItemGroup>
