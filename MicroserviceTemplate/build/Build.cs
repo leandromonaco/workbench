@@ -14,7 +14,6 @@ using Nuke.Common.Tools.MSBuild;
 using Nuke.Common.Tools.NerdbankGitVersioning;
 using Nuke.Common.Tools.NuGet;
 using Nuke.Common.Tools.Octopus;
-using Nuke.Common.Utilities.Collections;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 
@@ -23,10 +22,11 @@ internal class Build : NukeBuild
 {
     private readonly IConfiguration _configuration;
     private readonly Dictionary<string, string> _versions;
-    private readonly List<FileInfo> _srcProjects;
     private readonly List<FileInfo> _testProjects;
     private readonly List<FileInfo> _outputProjects;
-    private readonly List<string> _releaseableProjects;
+    private readonly List<FileInfo> _allProjects;
+    private readonly List<AbsolutePath> _allCleanUpDirectories;
+    private readonly List<string> _projectFilter;
 
     public static int Main() => Execute<Build>(x => x.Push);
 
@@ -52,26 +52,24 @@ internal class Build : NukeBuild
                             .Build();
 
         _versions = new Dictionary<string, string>();
-        _releaseableProjects = _configuration.GetSection("ReleaseableProjects").Get<List<string>>();
-        _srcProjects = SourceDirectory.GlobFiles("**/*.csproj").Select(p => new FileInfo(p)).ToList();
+        _projectFilter = _configuration.GetSection("ReleaseableProjects").Get<List<string>>();
         _testProjects = TestDirectory.GlobFiles("**/*.csproj").Select(p => new FileInfo(p)).ToList();
-        _outputProjects = _srcProjects.Where(p => _releaseableProjects.Contains(p.Name)).ToList();
+        _allCleanUpDirectories = SolutionDirectory.GlobDirectories("**/bin", "**/obj", "**/output").Where(d => !d.Parent.Name.Equals("build")).ToList();
+        _allProjects = SolutionDirectory.GlobFiles("**/*.csproj").Where(f => !f.Parent.Name.Equals("build")).Select(p => new FileInfo(p)).ToList();
+        _outputProjects = _allProjects.Where(p => _projectFilter.Contains(p.Name)).ToList();
     }
 
     private Target Clean => _ => _
         .Executes(() =>
         {
-            SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
-            TestDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
-            ToolDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
-            EnsureCleanDirectory(OutputDirectory);
+            _allCleanUpDirectories.ForEach(DeleteDirectory);
         });
 
     private Target Restore => _ => _
         .DependsOn(Clean)
         .Executes(() =>
         {
-            foreach (var project in _srcProjects)
+            foreach (var project in _allProjects)
             {
                 DotNetTasks.DotNetRestore(o => o.SetProjectFile(project.FullName));
             }
@@ -95,9 +93,10 @@ internal class Build : NukeBuild
     .DependsOn(Versioning)
     .Executes(() =>
     {
-        foreach (var project in _srcProjects)
+        foreach (var project in _allProjects)
         {
-            DotNetTasks.DotNetBuild(o => o.SetProjectFile(project.FullName));
+            DotNetTasks.DotNetBuild(o => o.SetProjectFile(project.FullName)
+                                          .SetConfiguration(Configuration));
         }
     });
 
@@ -117,25 +116,28 @@ internal class Build : NukeBuild
     {
         foreach (var csProject in _outputProjects)
         {
-            var packageId = csProject.Name.Replace(".csproj", string.Empty);
-            var sourcePath = $"{csProject.DirectoryName}\\bin";
-            var targetPath = $"{OutputDirectory}\\{packageId}";
+            var packageId = csProject.Name.Replace(csProject.Extension, string.Empty);
 
-            var directories = Directory.GetDirectories(sourcePath, "*net*", SearchOption.AllDirectories).ToList();
+            OctopusTasks.OctopusPack(o => o.SetBasePath($"{csProject.Directory}\\{_configuration["ReleaseFolder"]}")
+                                         .SetOutputFolder(OutputDirectory)
+                                         .SetId(packageId)
+                                         .SetVersion(_versions.GetValueOrDefault(csProject.Name)));
 
-            if (directories.Count > 0)
-            {
-                sourcePath = directories.FirstOrDefault();
-            }
 
-            CopyDirectoryRecursively(sourcePath, targetPath);
+            //Use this for libraries
+            //<PropertyGroup>
+            //  <IsPackable>true</IsPackable>
+            //</PropertyGroup>
+            //DotNetTasks.DotNetPack(o => o.EnableNoBuild()
+            //                             .EnableNoRestore()
+            //                             .SetConfiguration(Configuration)
+            //                             .SetPackageId(packageId)
+            //                             .SetVersion(_versions.GetValueOrDefault(csProject.Name))
+            //                             .SetProcessWorkingDirectory(csProject.Directory.FullName)
+            //                             .SetProject(csProject.FullName)
+            //                             .SetOutputDirectory(OutputDirectory)
+            //                             );
 
-            OctopusTasks.OctopusPack(o => o.SetBasePath(targetPath)
-                                           .SetOutputFolder(OutputDirectory)
-                                           .SetId(packageId)
-                                           .SetVersion(_versions.GetValueOrDefault(csProject.Name)));
-
-            DeleteDirectory(targetPath);
         }
     });
 
