@@ -7,19 +7,13 @@ using ServiceName.Core.Model;
 
 namespace ServiceName.Core.CQRS.Commands
 {
-    public record SaveSettingsCommandRequest : IRequest<bool>
-    {
-        public Guid TenantId { get; set; }
-        public Settings Settings { get; set; }
-    }
-
-    public class CreateTodoListCommandHandler : IRequestHandler<SaveSettingsCommandRequest, bool>
+    public class SaveSettingsCommandHandler : IRequestHandler<SaveSettingsCommandRequest, bool>
     {
         private IRepositoryService<Settings> _settingsRepository;
         private IConfiguration _configuration;
         private IDistributedCache _cache;
 
-        public CreateTodoListCommandHandler(IRepositoryService<Settings> settingsRepository, IConfiguration configuration, IDistributedCache cache)
+        public SaveSettingsCommandHandler(IRepositoryService<Settings> settingsRepository, IConfiguration configuration, IDistributedCache cache)
         {
             _settingsRepository = settingsRepository;
             _configuration = configuration;
