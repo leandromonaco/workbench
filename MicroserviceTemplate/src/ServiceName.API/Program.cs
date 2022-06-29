@@ -36,6 +36,8 @@ app.MapControllers();
 
 app.MapEndpoints(builder.Configuration);
 
+app.ConfigureExceptionHandler();
+
 app.ConfigureHealthCheck();
 
 if (bool.Parse(builder.Configuration["ModuleConfiguration:IsSwaggerUIEnabled"]))
