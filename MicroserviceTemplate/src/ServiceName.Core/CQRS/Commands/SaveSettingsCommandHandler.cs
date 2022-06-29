@@ -22,8 +22,8 @@ namespace ServiceName.Core.CQRS.Commands
 
         public async Task<bool> Handle(SaveSettingsCommandRequest request, CancellationToken cancellationToken)
         {
-            var result = await _settingsRepository.SaveAsync(request.TenantId, request.Settings);
-            await _cache.SetStringAsync(request.TenantId.ToString(), JsonSerializer.Serialize(request.Settings));
+            var result = await _settingsRepository.SaveAsync(request.TenantId, request.Settings); //TODO: If it fails, log error and throw
+            await _cache.SetStringAsync(request.TenantId.ToString(), JsonSerializer.Serialize(request.Settings)); //TODO: If it fails, just log error
             return result;
         }
     }

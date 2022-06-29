@@ -24,11 +24,11 @@ namespace ServiceName.Core.CQRS.Queries
         {
             Settings cachedSettings;
 
-            var cachedSettingsJson = await _cache.GetStringAsync(request.TenantId.ToString());
+            var cachedSettingsJson = await _cache.GetStringAsync(request.TenantId.ToString());//TODO: If it fails, just log error
 
             if (string.IsNullOrEmpty(cachedSettingsJson))
             {
-                var settings = await _settingsRepository.GetByIdAsync(request.TenantId);
+                var settings = await _settingsRepository.GetByIdAsync(request.TenantId); //TODO: If it fails, log error and throw
                 await _cache.SetStringAsync(request.TenantId.ToString(), JsonSerializer.Serialize(settings));
                 cachedSettings = settings;
             }
