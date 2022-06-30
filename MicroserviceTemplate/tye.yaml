@@ -38,6 +38,12 @@ services:
       - port: 51002
         protocol: https
       #replicas: 2
+    - name: mock-api
+      project: src/Mock.API/Mock.API.csproj
+      bindings:
+      - port: 51003
+        protocol: https
+      #replicas: 2
 
     - name: SqlServer
       image: mcr.microsoft.com/mssql/server:2019-latest

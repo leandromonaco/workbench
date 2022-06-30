@@ -1,12 +1,12 @@
 {
   "profiles": {
-    "ServiceName.API": {
+    "Mock.API": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:62060;http://localhost:62061"
+      "applicationUrl": "https://localhost:64916;http://localhost:64917"
     },
     "Mock Lambda Test Tool": {
       "commandName": "Executable",
