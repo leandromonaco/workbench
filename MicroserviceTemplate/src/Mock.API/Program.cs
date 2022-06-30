@@ -18,22 +18,28 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
-app.MapGet("/resources", () => GetMocks());
-app.MapGet("/resources/{id}", (string id) => GetMock(id));
+app.MapGet("/resources", ([FromHeader] int delayInMilliseconds) => GetMocks(delayInMilliseconds));
+app.MapGet("/resources/{id}", (string id, [FromHeader] int delayInMilliseconds) => GetMock(id, delayInMilliseconds));
 
 app.Run();
 
 
-ResourceMock? GetMock(string id)
+ResourceMock? GetMock(string id, int delayInMilliseconds)
 {
     var mockJson = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Files", "Mock.json"));
     var mockFile = JsonSerializer.Deserialize<MockFile>(mockJson);
+
+    Thread.Sleep(delayInMilliseconds);
+
     return mockFile?.Resources?.FirstOrDefault(m => m.Id.Equals(id));
 }
 
-List<ResourceMock?> GetMocks()
+List<ResourceMock?> GetMocks(int delayInMilliseconds)
 {
     var mockJson = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Files", "Mock.json"));
     var mockFile = JsonSerializer.Deserialize<MockFile>(mockJson);
+
+    Thread.Sleep(delayInMilliseconds);
+
     return mockFile?.Resources!;
 }
