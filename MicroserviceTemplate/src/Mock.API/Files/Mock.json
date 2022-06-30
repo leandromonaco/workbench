@@ -1,0 +1,20 @@
+{
+    "Resources": [
+        {
+            "Id": "20140437-e82d-44f2-a38c-f2246cedee34",
+            "Value": "Mocked Value A"
+        },
+        {
+            "Id": "56c49594-8974-44e2-8a32-b5eeeddfc057",
+            "Value": "Mocked Value B"
+        },
+        {
+            "Id": "fad30592-5853-4678-adb0-89d648d108d3",
+            "Value": "Mocked Value C"
+        },
+        {
+            "Id": "79dc9f76-785d-44c9-bed9-b4f5482313aa",
+            "Value": "Mocked Value D"
+        }
+    ]
+}

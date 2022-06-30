@@ -4,7 +4,7 @@ using ServiceName.Core.Common.Security;
 
 namespace ServiceName.API.Extensions
 {
-    public static class SecurityExtension
+    public static class AuthenticationExtension
     {
         public static void AddAuthSupport(this IServiceCollection services, ConfigurationManager configurationManager)
         {
