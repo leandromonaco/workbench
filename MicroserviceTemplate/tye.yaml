@@ -74,7 +74,7 @@ services:
     - name: Cognito
       image: jagregory/cognito-local:latest
       volumes:
-         - source: "C:/Dev/HF-Services/.cognito"
+         - source: "C:/Dev/.cognito"
            target: "/app/.cognito"
       bindings:
       - port: 9229
