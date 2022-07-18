@@ -34,7 +34,7 @@ services:
         port: 1433
       env:
       - name: SA_PASSWORD
-        value: M3rz0ug4!!!!
+        value: secret
       - name: ACCEPT_EULA
         value: "Y"
 
@@ -43,6 +43,7 @@ services:
       bindings:
       - port: 6379
         connectionString: "${host}:${port}"
+      args: "--requirepass secret"
 
     - name: DynamoDB
       image: "amazon/dynamodb-local:latest"
@@ -73,10 +74,13 @@ services:
     - name: Cognito
       image: jagregory/cognito-local:latest
       volumes:
-         - source: "C:/mnt/c/.cognito"
+         - source: "C:/Dev/HF-Services/.cognito"
            target: "/app/.cognito"
       bindings:
       - port: 9229
+      env:
+      - name: NODE_TLS_REJECT_UNAUTHORIZED
+        value: "0"
 
     - name: LocalStack
       image: "localstack/localstack:latest"
