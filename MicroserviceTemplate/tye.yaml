@@ -11,28 +11,38 @@ ingress:
           protocol: https
           ip: '127.0.0.1'
       rules:
-        - host: notification-api.dev.timetarget.com
-          service: notification-api
-
+        - host: authentication-api.domain.com
+          service: authentication-api
 services:
-    - name: notification-api
-      project: Notification/src/Notification.API/Notification.API.csproj
+
+    - name: authentication-api
+      project: src/Authentication.API/Authentication.API.csproj
       bindings:
       - port: 51001
         protocol: https
+      #replicas: 2
+
+    - name: servicename-api
+      project: src/ServiceName.API/ServiceName.API.csproj
+      bindings:
+      - port: 51002
+        protocol: https
+      #replicas: 2
 
     - name: mock-api
-      project: Notification/tests/Mock.API/Mock.API.csproj
+      project: src/Mock.API/Mock.API.csproj
       bindings:
       - port: 51003
         protocol: https
       #replicas: 2
+
     - name: featureflag-api
       project: src/FeatureFlag.API/FeatureFlag.API.csproj
       bindings:
       - port: 51004
         protocol: https
       #replicas: 2
+
     - name: SqlServer
       image: mcr.microsoft.com/mssql/server:2019-latest
       bindings:
