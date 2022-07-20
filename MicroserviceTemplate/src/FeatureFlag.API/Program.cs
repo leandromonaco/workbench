@@ -7,13 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//TODO: Get AppConfigApplicationId, AppConfigEnvironmentId and AppConfigConfigurationProfileId from configuration file
 builder.Configuration.SetBasePath(Environment.CurrentDirectory)
                      .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                      .AddSystemsManager("/AppConfigApplicationId/", TimeSpan.FromMinutes(5))
-                     //.AddSystemsManager("/kbt546s/", TimeSpan.FromMinutes(5))
-                     //.AddAppConfigUsingLambdaExtension("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId")
-                    .AddAppConfigUsingLambdaExtension("kbt546s", "bcre59f", "gdx1prc")
-                    .Build();
+                     .AddAppConfigUsingLambdaExtension("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId")
+                     .Build();
 
 builder.Services.AddFeatureManagement();
 
