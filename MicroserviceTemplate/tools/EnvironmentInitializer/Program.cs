@@ -1,7 +1,9 @@
-﻿using System.Text.Json;
-using CmdRunner;
-using CmdRunner.Model;
+﻿using EnvironmentInitializer;
 using Microsoft.Extensions.Configuration;
+
+var debugEnabled = args.Length > 0 && !string.IsNullOrEmpty(args[0]) && args[0].ToLower().Equals("--debug");
+
+var exitEnabled = args.Length > 0 && !string.IsNullOrEmpty(args[0]) && args[0].ToLower().Equals("--exit");
 
 var configuration = new ConfigurationBuilder()
                             .SetBasePath(Environment.CurrentDirectory)
@@ -9,97 +11,72 @@ var configuration = new ConfigurationBuilder()
                             .AddJsonFile($"appsettings.Development.json", optional: true, reloadOnChange: true)
                             .Build();
 
-var kmsLocalUrl = configuration["KmsLocalUrl"];
 var dynamoDbLocalUrl = configuration["DynamoDbLocalUrl"];
-var targetConfigurationFiles = configuration.GetSection("TargetConfigurationFiles").GetChildren().ToList();
 var dynamoDbTables = configuration.GetSection("DynamoDbTables").Get<List<DynamoDbTable>>();
+var cognitoLocalDbFolder = configuration["CognitoLocalDbFolder"];
+var cognitoContainerId = string.Empty;
 
-/*
- * TODO: Clean up environment to re-run Tye
- * Kill Tye process
- * wsl --shutdown
- * docker kill $(docker ps -q)
- * docker rm $(docker ps -a -q)
- * docker network prune
- * tye run --port 10000 --dashboard
- */
+Console.WriteLine("Cleaning up docker containers...");
+Helper.KillProcess("tye");
+//TODO: Add all processes here
+Helper.KillProcess("Mock.API");
+Helper.RunPowerShellCommand(@"docker kill $(docker ps -q)");
+Helper.RunPowerShellCommand(@"docker rm --force $(docker ps -a -q)");
+Helper.RunPowerShellCommand(@"docker network prune --force");
 
-//KMS
-var sourceJson = Helper.RunCommand(@"docker container ls --filter ""name = kms*"" --format=""{{json .}}""");
-var kmsDockerState = Helper.GetJsonPropertyValue("State", sourceJson);
-if (kmsDockerState.Equals("running"))
+if (exitEnabled)
 {
-    Console.WriteLine("KMS container is running");
+    Console.WriteLine("Environment is no longer running.");
+    return;
+}
 
-    var existingKeys = Helper.RunCommand($"aws --endpoint-url={kmsLocalUrl} kms --region ap-southeast-2 list-keys");
-    var existingKeysList = JsonSerializer.Deserialize<KmsKeys>(existingKeys);
-    var KmsKeyId = existingKeysList.Keys.FirstOrDefault()?.KeyId;
+var tyeYmlFolder = @"C:\Dev\GitHub\Workbench\MicroserviceTemplate";
 
-    if (KmsKeyId == null)
-    {
-        //Create new KMS Key
-        sourceJson = Helper.RunCommand($"aws --endpoint-url={kmsLocalUrl} kms --region ap-southeast-2 create-key --key-spec RSA_2048 --key-usage SIGN_VERIFY");
-        var newKmsKeyId = Helper.GetJsonPropertyValue("KeyMetadata.KeyId", sourceJson);
-        KmsKeyId = newKmsKeyId;
-    }
-
-    Console.WriteLine($"KeyId is {KmsKeyId}");
-
-    //Get the new Public Key based on the newly created Key
-    sourceJson = Helper.RunCommand($"aws --endpoint-url={kmsLocalUrl} kms --region ap-southeast-2 get-public-key --key-id {KmsKeyId}");
-
-    var KmsPublicKey = Helper.GetJsonPropertyValue("PublicKey", sourceJson);
-
-    Console.WriteLine($"PublicKey is {KmsPublicKey}");
-
-    //Update the target configuration files
-    foreach (var filename in targetConfigurationFiles.Select(t => t.Value))
-    {
-        Console.WriteLine($"Updating {filename}");
-        var fileInfo = new FileInfo(filename);
-        switch (fileInfo.Extension)
-        {
-            case ".json":
-                Helper.UpdateTargetPropertyJson(filename, KmsKeyId, KmsPublicKey);
-                break;
-
-            case ".xml":
-            case ".config":
-                Helper.UpdateTargetPropertyXml(filename, KmsKeyId, KmsPublicKey);
-                break;
-
-            default:
-                break;
-        }
-        Console.WriteLine($"{filename} has been updated");
-    }
+if (debugEnabled)
+{
+    Console.WriteLine("Running Tye in debug mode... do not forget to attach the debugger!");
+    Helper.RunPowerShellCommand(@"tye run --port 10000 --dashboard --debug *", tyeYmlFolder, false);
 }
 else
 {
-    Console.WriteLine("KMS container is not running");
+    Console.WriteLine("Running Tye...");
+    Helper.RunPowerShellCommand(@"tye run --port 10000 --dashboard", tyeYmlFolder, false);
 }
+
+Console.WriteLine("Spining up new docker containers...");
+var sourceJson = string.Empty;
+var cognitoDockerState = string.Empty;
+var dynamoDbDockerState = string.Empty;
+while (!cognitoDockerState.Equals("running") &&
+       !dynamoDbDockerState.Equals("running"))
+{
+    Thread.Sleep(60000);
+    sourceJson = Helper.RunCmdCommand(@"docker container ls --filter ""name = cognito*"" --format=""{{json .}}""");
+    cognitoDockerState = Helper.GetJsonPropertyValue("State", sourceJson);
+    cognitoContainerId = Helper.GetJsonPropertyValue("ID", sourceJson);
+    sourceJson = Helper.RunCmdCommand(@"docker container ls --filter ""name = dynamodb*"" --format=""{{json .}}""");
+    dynamoDbDockerState = Helper.GetJsonPropertyValue("State", sourceJson);
+}
+
+Console.WriteLine("Starting local environment configuration...");
 
 //DynamoDB
-sourceJson = Helper.RunCommand(@"docker container ls --filter ""name = dynamodb*"" --format=""{{json .}}""");
-var dynamoDbDockerState = Helper.GetJsonPropertyValue("State", sourceJson);
-if (dynamoDbDockerState.Equals("running"))
+Console.WriteLine("Configuring DynamoDB...");
+foreach (var dynamoDbTable in dynamoDbTables)
 {
-    Console.WriteLine("DynamoDB container is running");
-
-    foreach (var dynamoDbTable in dynamoDbTables)
+    if (!string.IsNullOrEmpty(dynamoDbTable.TableName))
     {
-        if (!string.IsNullOrEmpty(dynamoDbTable.TableName))
-        {
-            Console.WriteLine($"Creating DynamoDB table ({dynamoDbTable.TableName})");
-            Helper.RunCommand($"aws --endpoint-url={dynamoDbLocalUrl} dynamodb create-table --table-name {dynamoDbTable.TableName} --attribute-definitions {dynamoDbTable.AttributeDefinitions} --key-schema {dynamoDbTable.KeySchema} --billing-mode PAY_PER_REQUEST");
-            Console.WriteLine($"DynamoDB table ({dynamoDbTable.TableName}) has been created.");
-        }
+        Console.WriteLine($"Creating DynamoDB table ({dynamoDbTable.TableName})");
+        Helper.RunCmdCommand($"aws --endpoint-url={dynamoDbLocalUrl} dynamodb create-table --table-name {dynamoDbTable.TableName} --attribute-definitions {dynamoDbTable.AttributeDefinitions} --key-schema {dynamoDbTable.KeySchema} --billing-mode PAY_PER_REQUEST");
+        Console.WriteLine($"DynamoDB table ({dynamoDbTable.TableName}) has been created.");
     }
 }
-else
-{
-    Console.WriteLine("DynamoDB container is not running");
-}
 
-Console.WriteLine("Press any key to finish the application");
-Console.ReadLine();
+//Cognito
+Console.WriteLine("Configuring Cognito...");
+Directory.CreateDirectory(cognitoLocalDbFolder);
+File.Copy($@"{Directory.GetCurrentDirectory()}\CognitoLocalDb\clients.json", $@"{cognitoLocalDbFolder}\clients.json", true);
+File.Copy($@"{Directory.GetCurrentDirectory()}\CognitoLocalDb\user-pool-test.json", $@"{cognitoLocalDbFolder}\user-pool-test.json", true);
+Helper.RunCmdCommand($@"docker container restart {cognitoContainerId}");
+
+Console.WriteLine("Environment configuration is done.");

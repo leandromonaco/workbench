@@ -44,7 +44,12 @@ services:
       - port: 51003
         protocol: https
       #replicas: 2
-
+    - name: featureflag-api
+      project: src/FeatureFlag.API/FeatureFlag.API.csproj
+      bindings:
+      - port: 51004
+        protocol: https
+      #replicas: 2
     - name: SqlServer
       image: mcr.microsoft.com/mssql/server:2019-latest
       bindings:

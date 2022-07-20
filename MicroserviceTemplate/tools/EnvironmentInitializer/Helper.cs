@@ -3,62 +3,97 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Xml;
 
-namespace CmdRunner
+namespace EnvironmentInitializer
 {
-    public class Helper
+    public static class Helper
     {
-        public static void UpdateTargetPropertyJson(string targetJson, string newKmsKeyId, string newKmsPublicKey)
+        public static string RunCmdCommand(string command, string? directory = null, bool waitForExit = true)
         {
-            var targetConfiguration = File.ReadAllText(targetJson);
-            JsonNode jsonNode = JsonSerializer.Deserialize<JsonNode>(targetConfiguration);
-            jsonNode["ModuleConfiguration"]["Infrastructure"]["Kms"]["SigningKeyId"] = newKmsKeyId;
-            jsonNode["ModuleConfiguration"]["Infrastructure"]["Kms"]["PublicKey"] = newKmsPublicKey;
-            File.WriteAllText(targetJson, JsonSerializer.Serialize(jsonNode, new JsonSerializerOptions() { WriteIndented = true }));
+            try
+            {
+                var p = new Process();
+                if (!string.IsNullOrEmpty(directory))
+                {
+                    p.StartInfo.WorkingDirectory = directory;
+                }
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.FileName = "cmd.exe";
+                p.StartInfo.Arguments = $"/C {command}";
+                p.Start();
+                if (waitForExit)
+                {
+                    var output = p.StandardOutput.ReadToEnd();
+                    p.WaitForExit();
+                    return output;
+                }
+
+                return string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
-        public static void UpdateTargetPropertyXml(string targetXml, string newKmsKeyId, string newKmsPublicKey)
+        public static string RunPowerShellCommand(string command, string? directory = null, bool waitForExit = true)
         {
-            var xmlDocument = new XmlDocument
+            try
             {
-                PreserveWhitespace = true //to preserve formatting this must be done before loading so that the whitespace doesn't get thrown away at load time
-            };
+                var p = new Process();
+                if (!string.IsNullOrEmpty(directory))
+                {
+                    p.StartInfo.WorkingDirectory = directory;
+                }
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.FileName = "powershell.exe";
+                p.StartInfo.Arguments = $" -c {command}";
+                p.Start();
 
-            xmlDocument.Load(targetXml);
+                if (waitForExit)
+                {
+                    var output = p.StandardOutput.ReadToEnd();
+                    p.WaitForExit();
+                    return output;
+                }
 
-            XmlNode node = xmlDocument.SelectSingleNode("//add[@key='amazonKmsSigningKeyId']");
-            if (node != null)
-            {
-                node.Attributes["value"].Value = newKmsKeyId;
+                return string.Empty;
             }
-
-            node = xmlDocument.SelectSingleNode("//add[@key='amazonKmsPublicKey']");
-            if (node != null)
+            catch
             {
-                node.Attributes["value"].Value = newKmsPublicKey;
+                return string.Empty;
             }
-
-            xmlDocument.Save(targetXml);
-        }
-
-        public static string RunCommand(string command)
-        {
-            var p = new Process();
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.FileName = "cmd.exe";
-            p.StartInfo.Arguments = $"/C {command}";
-            p.Start();
-            var output = p.StandardOutput.ReadToEnd();
-            p.WaitForExit();
-            return output;
         }
 
         public static string GetJsonPropertyValue(string jsonKey, string output)
         {
-            //JsonDocumentPath package is required because SelectElement is not natively supported by .NET 6 (https://stackoverflow.com/questions/70678718/how-to-delete-and-update-based-on-a-path-in-system-text-json-net-6)
-            var jsonDocument = JsonDocument.Parse(output);
-            JsonElement? jsonElement = jsonDocument.RootElement.SelectElement($"$.{jsonKey}");
-            return jsonElement.Value.ToString();
+            try
+            {
+                //JsonDocumentPath package is required because SelectElement is not natively supported by .NET 6 (https://stackoverflow.com/questions/70678718/how-to-delete-and-update-based-on-a-path-in-system-text-json-net-6)
+                var jsonDocument = JsonDocument.Parse(output);
+                JsonElement? jsonElement = jsonDocument.RootElement.SelectElement($"$.{jsonKey}");
+                if (jsonElement == null)
+                {
+                    return string.Empty;
+                }
+                return jsonElement.Value.ToString();
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        public static void KillProcess(string name)
+        {
+            Process[] workers = Process.GetProcessesByName(name);
+            foreach (var worker in workers)
+            {
+                worker.Kill();
+                worker.WaitForExit();
+                worker.Dispose();
+            }
         }
     }
 }
