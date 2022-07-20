@@ -36,6 +36,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cdk", "aws\Cdk.csproj", "{F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mock.API", "src\Mock.API\Mock.API.csproj", "{FBEEAEA7-7A4E-4D97-9947-C3375A1F8217}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatureFlag.API", "src\FeatureFlag.API\FeatureFlag.API.csproj", "{02C79D99-4EFD-45E0-AB01-37B2A43FC2E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +80,10 @@ Global
 		{FBEEAEA7-7A4E-4D97-9947-C3375A1F8217}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBEEAEA7-7A4E-4D97-9947-C3375A1F8217}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBEEAEA7-7A4E-4D97-9947-C3375A1F8217}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02C79D99-4EFD-45E0-AB01-37B2A43FC2E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02C79D99-4EFD-45E0-AB01-37B2A43FC2E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02C79D99-4EFD-45E0-AB01-37B2A43FC2E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02C79D99-4EFD-45E0-AB01-37B2A43FC2E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +98,7 @@ Global
 		{A9FA5380-D9B1-4AA1-93FB-F805E22FC9B2} = {39870B6D-6682-4B08-8208-6C05B41930EC}
 		{F9885267-A919-4711-B9AF-9C6ADEC4DA21} = {462D80EC-4E6B-4B0F-8062-779007AB3A90}
 		{FBEEAEA7-7A4E-4D97-9947-C3375A1F8217} = {3FD41DDF-2B43-4372-9FB1-62597803431B}
+		{02C79D99-4EFD-45E0-AB01-37B2A43FC2E5} = {3FD41DDF-2B43-4372-9FB1-62597803431B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C9A3A709-C3C6-4654-AC2B-A92420A60DF5}
