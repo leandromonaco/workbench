@@ -1,3 +1,6 @@
+using Amazon.AppConfigData;
+using Amazon.AppConfigData.Model;
+using FeatureFlag.API;
 using Microsoft.FeatureManagement;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,14 +10,25 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//TODO: Get AppConfigApplicationId, AppConfigEnvironmentId and AppConfigConfigurationProfileId from configuration file
+var dataPollFrequencyInMinutes = 5;
+
 builder.Configuration.SetBasePath(Environment.CurrentDirectory)
                      .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                     .AddSystemsManager("/AppConfigApplicationId/", TimeSpan.FromMinutes(5))
-                     .AddAppConfigUsingLambdaExtension("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId")
+                     .AddSystemsManager($"/{builder.Configuration["AwsAppConfig:ApplicationId"]}/", TimeSpan.FromMinutes(dataPollFrequencyInMinutes))
+                     .AddAppConfigUsingLambdaExtension(builder.Configuration["AwsAppConfig:ApplicationId"], builder.Configuration["AwsAppConfig:EnvironmentId"], builder.Configuration["AwsAppConfig:FreeformConfigurationProfileId"])
+                     .AddAmazonFeatureFlags(c =>
+                     {
+                         //these can be the id and the name as well...
+                         c.ApplicationId = builder.Configuration["AwsAppConfig:ApplicationId"];
+                         c.EnvironmentId = builder.Configuration["AwsAppConfig:EnvironmentId"];
+                         c.ConfigurationProfileId = builder.Configuration["AwsAppConfig:FeatureFlagConfigurationProfileId"];
+                         c.DataPollFrequency = TimeSpan.FromMinutes(dataPollFrequencyInMinutes);
+                         c.ConfigSectionNaming = "FeatureFlags"; //this is what you should use when u add the feature management service (next line), also can be empty.
+                     })
                      .Build();
 
-builder.Services.AddFeatureManagement();
+
+builder.Services.AddFeatureManagement(builder.Configuration.GetSection("FeatureFlags"));
 
 var app = builder.Build();
 

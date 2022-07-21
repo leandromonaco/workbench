@@ -1,0 +1,24 @@
+{
+    "Clients": {
+        "39rt3ewwjkp3cu9xfwtut211e": {
+            "AllowedOAuthFlows": [
+                "client_credentials"
+            ],
+            "AllowedOAuthFlowsUserPoolClient": true,
+            "ClientId": "39rt3ewwjkp3cu9xfwtut211e",
+            "ClientName": "client-test2222",
+            "ClientSecret": "10qmi449suk91407f6xi1pkhr",
+            "CreationDate": "2022-07-14T00:32:32.311Z",
+            "ExplicitAuthFlows": [
+                "ALLOW_USER_PASSWORD_AUTH"
+            ],
+            "LastModifiedDate": "2022-07-14T00:32:32.311Z",
+            "TokenValidityUnits": {
+                "AccessToken": "hours",
+                "IdToken": "minutes",
+                "RefreshToken": "days"
+            },
+            "UserPoolId": "user-pool-test"
+        }
+    }
+}
