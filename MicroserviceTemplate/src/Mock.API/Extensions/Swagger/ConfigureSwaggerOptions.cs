@@ -1,4 +1,4 @@
-﻿namespace ServiceName.API.Extensions.Swagger
+﻿namespace Mock.API.Extensions.Swagger
 {
     using System;
     using Asp.Versioning.ApiExplorer;

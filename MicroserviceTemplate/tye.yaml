@@ -25,7 +25,7 @@ services:
     - name: servicename-api
       project: src/ServiceName.API/ServiceName.API.csproj
       bindings:
-      - port: 51002
+      - port: 51005
         protocol: https
       #replicas: 2
 
@@ -36,8 +36,8 @@ services:
         protocol: https
       #replicas: 2
 
-    - name: featureflag-api
-      project: src/FeatureFlag.API/FeatureFlag.API.csproj
+    - name: featuremanagement-api
+      project: src/FeatureManagement.API/FeatureManagement.API.csproj
       bindings:
       - port: 51004
         protocol: https
@@ -85,7 +85,7 @@ services:
       - name: KMS_REGION
         value: "ap-southeast-2"
       - name: KMS_SEED_PATH
-        value: "/mnt/c/Dev/HF-Services/local-kms-seed.yaml"
+        value: "/mnt/c/Dev/local-kms-seed.yaml"
 
     - name: Cognito
       image: jagregory/cognito-local:latest

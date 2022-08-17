@@ -8,7 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="Amazon.Extensions.Configuration.SystemsManager" Version="4.0.0" />
-    <PackageReference Include="AWSSDK.AppConfig" Version="3.7.2.3" />
+    <PackageReference Include="Asp.Versioning.Http" Version="6.0.0-preview.3" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="6.0.0-preview.3" />
     <PackageReference Include="Microsoft.FeatureManagement" Version="3.0.0-preview" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
