@@ -1,13 +1,13 @@
 ﻿using Amazon.AppConfigData;
 
-namespace FeatureFlag.API
+namespace FeatureFlag.API.Configuration
 {
-    public static class AmazonFeatureFlagExtension
+    public static class AwsConfigurationBuilderExtension
     {
         public static IConfigurationBuilder AddAmazonFeatureFlags(
             this IConfigurationBuilder builder,
             AmazonAppConfigDataClient client,
-            AmazonAppConfigSettings config)
+            AwsSettings config)
         {
             var cfg = config ?? throw new ArgumentNullException();
             if (string.IsNullOrEmpty(cfg.EnvironmentId))
@@ -23,25 +23,25 @@ namespace FeatureFlag.API
                 throw new ArgumentException("Configuration id (or name) missing from Amazon AppConfig settings");
             }
 
-            builder.Add(new AmazonFeatureFlagConfigSource(client, cfg));
+            builder.Add(new AwsFeatureFlagConfigurationSource(client, cfg));
 
             return builder;
         }
 
 
-        public static IConfigurationBuilder AddAmazonFeatureFlags(this IConfigurationBuilder builder, AmazonAppConfigSettings config)
+        public static IConfigurationBuilder AddAmazonFeatureFlags(this IConfigurationBuilder builder, AwsSettings config)
         {
             return builder.AddAmazonFeatureFlags(new AmazonAppConfigDataClient(), config);
         }
 
-        public static IConfigurationBuilder AddAmazonFeatureFlags(this IConfigurationBuilder builder, Action<AmazonAppConfigSettings> configAction)
+        public static IConfigurationBuilder AddAmazonFeatureFlags(this IConfigurationBuilder builder, Action<AwsSettings> configAction)
         {
-            var settings = new AmazonAppConfigSettings();
+            var settings = new AwsSettings();
             configAction(settings);
             return builder.AddAmazonFeatureFlags(new AmazonAppConfigDataClient(), settings);
         }
 
-        public static IConfigurationBuilder AddAmazonFeatureFlags(this IConfigurationBuilder builder, AmazonAppConfigSettings config, AmazonAppConfigDataClient client)
+        public static IConfigurationBuilder AddAmazonFeatureFlags(this IConfigurationBuilder builder, AwsSettings config, AmazonAppConfigDataClient client)
         {
             return builder.AddAmazonFeatureFlags(client, config);
         }

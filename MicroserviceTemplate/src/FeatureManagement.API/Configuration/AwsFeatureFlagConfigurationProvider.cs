@@ -3,11 +3,11 @@ using System.Text.Json;
 using Amazon.AppConfigData;
 using Amazon.AppConfigData.Model;
 
-namespace FeatureFlag.API
+namespace FeatureFlag.API.Configuration
 {
-    public class AmazonFeatureFlagProvider: ConfigurationProvider
+    public class AwsFeatureFlagConfigurationProvider : ConfigurationProvider
     {
-        private readonly AmazonAppConfigSettings _cfg;
+        private readonly AwsSettings _cfg;
         private readonly StartConfigurationSessionRequest _startRequest;
         private readonly AmazonAppConfigDataClient _client;
         private readonly TimeSpan? _frequency;
@@ -17,7 +17,7 @@ namespace FeatureFlag.API
         private string _token = string.Empty;
         private readonly string _configSections = string.Empty;
 
-        public AmazonFeatureFlagProvider(AmazonAppConfigDataClient client, AmazonAppConfigSettings cfg)
+        public AwsFeatureFlagConfigurationProvider(AmazonAppConfigDataClient client, AwsSettings cfg)
         {
 
             _cfg = cfg;

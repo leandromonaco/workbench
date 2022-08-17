@@ -19,7 +19,9 @@ var cognitoContainerId = string.Empty;
 Console.WriteLine("Cleaning up docker containers...");
 Helper.KillProcess("tye");
 //TODO: Add all processes here
-Helper.KillProcess("FeatureFlag.API");
+Helper.KillProcess("ServiceName.API");
+Helper.KillProcess("Authentication.API");
+Helper.KillProcess("FeatureManagement.API");
 Helper.KillProcess("Mock.API");
 Helper.RunPowerShellCommand(@"docker kill $(docker ps -q)");
 Helper.RunPowerShellCommand(@"docker rm --force $(docker ps -a -q)");

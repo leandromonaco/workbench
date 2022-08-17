@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 // package will act as the webserver translating request and responses between the Lambda event source and ASP.NET Core.
 // https://aws.amazon.com/blogs/compute/introducing-the-net-6-runtime-for-aws-lambda/
 
-builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
+builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
