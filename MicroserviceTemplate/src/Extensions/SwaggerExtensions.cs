@@ -1,9 +1,11 @@
-﻿using FeatureManagement.API.Extensions.Swagger;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using ServiceName.API.Extensions.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace FeatureManagement.API.Extensions
+namespace ServiceName.API.Extensions
 {
     public static class SwaggerExtensions
     {

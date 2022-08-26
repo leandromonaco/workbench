@@ -43,6 +43,13 @@ services:
         protocol: https
       #replicas: 2
 
+    - name: analytics-api
+      project: src/Analytics.API/Analytics.API.csproj
+      bindings:
+      - port: 51006
+        protocol: https
+      #replicas: 2
+
     - name: SqlServer
       image: mcr.microsoft.com/mssql/server:2019-latest
       bindings:

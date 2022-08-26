@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using ServiceName.Core.Common.Interfaces;
 using ServiceName.Core.Model;
 
-namespace ServiceName.API.Extensions
+namespace Authentication.API
 {
     public static class EndpointExtensions
     {

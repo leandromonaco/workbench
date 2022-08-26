@@ -1,8 +1,8 @@
 using FeatureFlag.API.Configuration;
-using FeatureManagement.API.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.FeatureFilters;
+using ServiceName.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

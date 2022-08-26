@@ -1,4 +1,6 @@
-﻿namespace Mock.API.Extensions
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace ServiceName.API.Extensions
 {
     public static class VersionExtension
     {

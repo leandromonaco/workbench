@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Mock.API.Model;
-using Mock.API.Extensions;
+using ServiceName.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
