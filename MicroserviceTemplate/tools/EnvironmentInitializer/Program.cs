@@ -22,6 +22,7 @@ Helper.KillProcess("tye");
 Helper.KillProcess("ServiceName.API");
 Helper.KillProcess("Authentication.API");
 Helper.KillProcess("FeatureManagement.API");
+Helper.KillProcess("Analytics.API"); 
 Helper.KillProcess("Mock.API");
 Helper.RunPowerShellCommand(@"docker kill $(docker ps -q)");
 Helper.RunPowerShellCommand(@"docker rm --force $(docker ps -a -q)");
