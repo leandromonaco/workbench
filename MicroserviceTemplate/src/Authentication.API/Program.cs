@@ -1,3 +1,4 @@
+using Authentication.API;
 using ServiceName.API.Extensions;
 using ServiceName.Core;
 using ServiceName.Infrastructure;
