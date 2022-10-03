@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\IntegrationConnectors\src\IntegrationConnectors.Common\IntegrationConnectors.Common.csproj" />
+    <ProjectReference Include="..\..\..\IntegrationConnectors\src\IntegrationConnectors.JIRA\IntegrationConnectors.JIRA.csproj" />
   </ItemGroup>
 
 </Project>
