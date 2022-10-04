@@ -2,5 +2,6 @@
 {
     public class BitBucketPullRequests
     {
+        public List<BitBucketPullRequest> Values { get; set; }
     }
 }
