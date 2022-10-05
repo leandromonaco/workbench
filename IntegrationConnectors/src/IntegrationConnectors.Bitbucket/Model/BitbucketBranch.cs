@@ -6,5 +6,7 @@
 
         public Target Target { get; set; }
 
+        public BitBucketLinks Links { get; set; }
+
     }
 }
