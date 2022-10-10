@@ -5,6 +5,12 @@
     },
     "Kata2_EncryptionUsingCertificate.cs": {
       "commandName": "Project"
+    },
+    "Kata3_Iteration_Benchmark.cs": {
+      "commandName": "Project"
+    },
+    "Kata4_AWS_SQS.cs": {
+      "commandName": "Project"
     }
   }
 }
