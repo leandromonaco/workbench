@@ -7,54 +7,82 @@ namespace EnvironmentInitializer
 {
     public static class Helper
     {
-        public static string RunCmdCommand(string command, string? directory = null, bool waitForExit = true)
+        public static void UpdateTargetPropertyJson(string targetJson, string newKmsKeyId, string newKmsPublicKey)
         {
-            try
-            {
-                var p = new Process();
-                if (!string.IsNullOrEmpty(directory))
-                {
-                    p.StartInfo.WorkingDirectory = directory;
-                }
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.StartInfo.FileName = "cmd.exe";
-                p.StartInfo.Arguments = $"/C {command}";
-                p.Start();
-                if (waitForExit)
-                {
-                    var output = p.StandardOutput.ReadToEnd();
-                    p.WaitForExit();
-                    return output;
-                }
-
-                return string.Empty;
-            }
-            catch
-            {
-                return string.Empty;
-            }
+            var targetConfiguration = File.ReadAllText(targetJson);
+            JsonNode? jsonNode = JsonSerializer.Deserialize<JsonNode?>(targetConfiguration);
+            jsonNode!["ModuleConfiguration"]!["Infrastructure"]!["Kms"]!["SigningKeyId"] = newKmsKeyId;
+            jsonNode!["ModuleConfiguration"]!["Infrastructure"]!["Kms"]!["PublicKey"] = newKmsPublicKey;
+            File.WriteAllText(targetJson, JsonSerializer.Serialize(jsonNode, new JsonSerializerOptions() { WriteIndented = true }));
         }
 
-        public static string RunPowerShellCommand(string command, string? directory = null, bool waitForExit = true)
+        public static void UpdateTargetPropertyXml(string targetXml, string newKmsKeyId, string newKmsPublicKey)
         {
+            var xmlDocument = new XmlDocument
+            {
+                PreserveWhitespace = true //to preserve formatting this must be done before loading so that the whitespace doesn't get thrown away at load time
+            };
+
+            xmlDocument.Load(targetXml);
+
+            XmlNode? node = xmlDocument.SelectSingleNode("//add[@key='amazonKmsSigningKeyId']");
+            if (node != null && node.Attributes != null)
+            {
+                node.Attributes["value"]!.Value = newKmsKeyId;
+            }
+
+            node = xmlDocument.SelectSingleNode("//add[@key='amazonKmsPublicKey']");
+            if (node != null && node.Attributes != null)
+            {
+                node.Attributes["value"]!.Value = newKmsPublicKey;
+            }
+
+            xmlDocument.Save(targetXml);
+        }
+
+        public static string? RunCommand(ConsoleMode consoleMode, string command, string? directory = null, bool waitForExit = true)
+        {
+            var fileName = string.Empty;
+            var arguments = string.Empty;
+
             try
             {
-                var p = new Process();
+                switch (consoleMode)
+                {
+                    case ConsoleMode.CommandPrompt:
+                        fileName = "cmd.exe";
+                        arguments = $"/C {command}";
+                        break;
+                    case ConsoleMode.Powershell:
+                        fileName = "powershell.exe";
+                        arguments = $" -c {command}";
+                        break;
+                    default:
+                        break;
+                }
+
+
+                var process = new Process();
                 if (!string.IsNullOrEmpty(directory))
                 {
-                    p.StartInfo.WorkingDirectory = directory;
+                    process.StartInfo.WorkingDirectory = directory;
                 }
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.StartInfo.FileName = "powershell.exe";
-                p.StartInfo.Arguments = $" -c {command}";
-                p.Start();
+                process.StartInfo.FileName = fileName;
+                process.StartInfo.Arguments = arguments;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.CreateNoWindow = true;
+                process.Start();
 
                 if (waitForExit)
                 {
-                    var output = p.StandardOutput.ReadToEnd();
-                    p.WaitForExit();
+                    var output = string.Empty;
+                    while (!process.StandardOutput.EndOfStream)
+                    {
+                        output = process.StandardOutput.ReadLine();
+                        Console.WriteLine(output);
+                    }
+
                     return output;
                 }
 
@@ -95,5 +123,11 @@ namespace EnvironmentInitializer
                 worker.Dispose();
             }
         }
+    }
+
+    public enum ConsoleMode
+    {
+        CommandPrompt,
+        Powershell
     }
 }
