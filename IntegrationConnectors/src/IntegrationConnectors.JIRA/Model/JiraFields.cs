@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace JiraReporting.Model
+namespace IntegrationConnectors.JIRA.Model
 {
     public class JiraFields
     {

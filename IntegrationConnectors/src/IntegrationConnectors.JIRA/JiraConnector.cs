@@ -1,7 +1,5 @@
 ﻿using IntegrationConnectors.Common;
 using IntegrationConnectors.JIRA.Model;
-using JiraReporting.Model;
-using JiraReporting.Report;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 

@@ -1,4 +1,4 @@
-﻿namespace JiraReporting.Model
+﻿namespace IntegrationConnectors.JIRA.Model
 {
     public class JiraParent
     {

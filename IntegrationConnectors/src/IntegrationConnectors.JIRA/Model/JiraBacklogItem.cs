@@ -1,12 +1,7 @@
-﻿namespace JiraReporting.Report
+﻿namespace IntegrationConnectors.JIRA.Model
 {
     public class JiraBacklogItem
     {
-        public JiraBacklogItem()
-        {
-        }
-
-
         public string EpicId { get; set; }
         public string EpicTitle { get; set; }
         public string IssueType { get; set; }
