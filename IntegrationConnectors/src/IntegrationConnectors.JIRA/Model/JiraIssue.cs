@@ -2,9 +2,9 @@
 
 namespace JiraReporting.Model
 {
-    public class Issue
+    public class JiraIssue
     {
-        public Fields Fields { get; set; }
+        public JiraFields Fields { get; set; }
         public string Key { get; set; }
     }
 }

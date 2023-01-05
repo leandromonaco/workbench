@@ -1,6 +1,6 @@
 ﻿namespace IntegrationConnectors.Bitbucket
 {
-    public class User
+    public class BitBucketUser
     {
         public string Uuid { get; set; }
     }

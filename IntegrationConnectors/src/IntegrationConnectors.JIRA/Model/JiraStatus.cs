@@ -1,6 +1,6 @@
 ﻿namespace JiraReporting.Model
 {
-    public class IssueType
+    public class JiraStatus
     {
         public string Name { get; set; }
     }

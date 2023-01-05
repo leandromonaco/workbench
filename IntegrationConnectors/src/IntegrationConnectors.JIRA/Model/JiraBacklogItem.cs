@@ -1,11 +1,8 @@
-﻿using System;
-using System.Text.Json.Serialization;
-
-namespace JiraReporting.Report
+﻿namespace JiraReporting.Report
 {
-    public class BacklogItem
+    public class JiraBacklogItem
     {
-        public BacklogItem()
+        public JiraBacklogItem()
         {
         }
 
@@ -22,6 +19,5 @@ namespace JiraReporting.Report
         public string IssueTitle { get; set; }
         public string Priority { get; set; }
         public string FixVersion { get; set; }
-
     }
 }

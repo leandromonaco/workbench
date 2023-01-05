@@ -2,11 +2,11 @@
 
 namespace IntegrationConnectors.Bitbucket
 {
-    public class Author
+    public class BitBucketAuthor
     {
         public string Raw { get; set; }
 
-        public User User { get; set; }
+        public BitBucketUser User { get; set; }
 
         public string UserEmail
         {

@@ -1,6 +1,6 @@
 ﻿namespace JiraReporting.Model
 {
-    public class Status
+    public class JiraFixVersion
     {
         public string Name { get; set; }
     }

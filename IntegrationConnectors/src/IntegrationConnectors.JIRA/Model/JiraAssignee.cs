@@ -1,6 +1,6 @@
 ﻿namespace JiraReporting.Model
 {
-    public class Assignee
+    public class JiraAssignee
     {
         public string DisplayName { get; set; }
     }

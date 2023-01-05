@@ -1,8 +1,8 @@
 ﻿namespace JiraReporting.Model
 {
-    public class Parent
+    public class JiraParent
     {
-        public Fields Fields { get; set; }
+        public JiraFields Fields { get; set; }
         public string Key { get; set; }
     }
 }

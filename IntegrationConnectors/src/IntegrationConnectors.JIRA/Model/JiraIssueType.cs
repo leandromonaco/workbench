@@ -1,6 +1,6 @@
 ﻿namespace JiraReporting.Model
 {
-    public class FixVersion
+    public class JiraIssueType
     {
         public string Name { get; set; }
     }

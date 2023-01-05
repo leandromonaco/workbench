@@ -1,6 +1,6 @@
 ﻿namespace JiraReporting.Model
 {
-    public class Sprint
+    public class JiraSprint
     {
         public string Name { get; set; }
         public string State { get; set; }

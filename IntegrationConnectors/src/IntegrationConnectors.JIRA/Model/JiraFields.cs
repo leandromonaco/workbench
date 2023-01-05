@@ -1,28 +1,26 @@
-﻿using JiraReporting.Model;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace JiraReporting.Model
 {
-    public class Fields
+    public class JiraFields
     {
         public string Summary { get; set; }
-        public Parent Parent { get; set; }
-        public Status Status { get; set; }
-        public IssueType IssueType { get; set; }
-        public Assignee Assignee { get; set; }
+        public JiraParent Parent { get; set; }
+        public JiraStatus Status { get; set; }
+        public JiraIssueType IssueType { get; set; }
+        public JiraAssignee Assignee { get; set; }
 
-        public Priority Priority { get; set; }
+        public JiraPriority Priority { get; set; }
         
         //TODO: Make this customizable
         [JsonPropertyName("customfield_10020")]
-        public List<Sprint> Sprints { get; set; }
+        public List<JiraSprint> Sprints { get; set; }
 
         [JsonPropertyName("customfield_10026")]
         public double? Points { get; set; }
 
         [JsonPropertyName("fixVersions")]
-        public List<FixVersion> FixVersions { get; set; }
+        public List<JiraFixVersion> FixVersions { get; set; }
 
         /*
          "fixVersions": [

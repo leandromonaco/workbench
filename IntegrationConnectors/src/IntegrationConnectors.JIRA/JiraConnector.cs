@@ -14,9 +14,9 @@ namespace IntegrationConnectors.JIRA
         {
         }
 
-        public async Task<List<BacklogItem>> GetBacklogItemsAsync(string jql)
+        public async Task<List<JiraBacklogItem>> GetBacklogItemsAsync(string jql)
         {
-            var latestBacklog = new List<BacklogItem>();
+            var latestBacklog = new List<JiraBacklogItem>();
 
             var jsonSerializerOptions = new JsonSerializerOptions()
             {
@@ -39,7 +39,7 @@ namespace IntegrationConnectors.JIRA
 
                 var response = await PostAsync($"{_url}/rest/api/2/search", query);
 
-                var jqlQueryResult = JsonSerializer.Deserialize<JqlQueryResult>(response, jsonSerializerOptions);
+                var jqlQueryResult = JsonSerializer.Deserialize<JiraQueryResult>(response, jsonSerializerOptions);
 
                 Console.WriteLine($"Processing {startAt} of {jqlQueryResult.Total} {DateTime.Now}");
 
@@ -50,7 +50,7 @@ namespace IntegrationConnectors.JIRA
                 {
                     var issueType = issue.Fields.IssueType.Name;
 
-                    var row = new BacklogItem
+                    var row = new JiraBacklogItem
                     {
                         Date = DateTime.Now.Date,
                         Sprint = issue.Fields.Sprints?.OrderByDescending(s => s.StartDate).FirstOrDefault().Name,
@@ -73,17 +73,17 @@ namespace IntegrationConnectors.JIRA
             return latestBacklog;
         }
 
-        public async Task<List<Sprint>> GetSprintsAsync(int boardId)
+        public async Task<List<JiraSprint>> GetSprintsAsync(int boardId)
         {
             var increment = 50;
             var startAt = 0;
             var isLast = false;
-            var result = new List<Sprint>();
+            var result = new List<JiraSprint>();
 
             while (!isLast)
             {
                 var response = await GetAsync($"{_url}/rest/agile/latest/board/{boardId}/sprint?startAt={startAt}&maxResults=50");
-                var sprintsResult = JsonSerializer.Deserialize<SprintsResult>(response, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                var sprintsResult = JsonSerializer.Deserialize<JiraSprintsResult>(response, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                 isLast = sprintsResult.IsLast;
                 result.AddRange(sprintsResult.Values);
                 startAt += increment;

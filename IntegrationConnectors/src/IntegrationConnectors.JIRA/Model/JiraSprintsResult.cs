@@ -7,9 +7,9 @@ using JiraReporting.Model;
 
 namespace IntegrationConnectors.JIRA.Model
 {
-    internal class SprintsResult
+    internal class JiraSprintsResult
     {
         public bool IsLast { get; set; }
-        public List<Sprint> Values { get; set; }
+        public List<JiraSprint> Values { get; set; }
     }
 }

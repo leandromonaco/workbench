@@ -4,7 +4,7 @@
     {
         public string Name { get; set; }
 
-        public Target Target { get; set; }
+        public BitBucketTarget Target { get; set; }
 
         public BitBucketLinks Links { get; set; }
 
