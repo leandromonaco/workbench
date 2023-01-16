@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationConnectors.Confl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfluenceKB", "src\ConfluenceKB\ConfluenceKB.csproj", "{16B2246B-5904-4A78-AC8F-7F3007DA3CCD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationConnectors.JIRA", "..\IntegrationConnectors\src\IntegrationConnectors.JIRA\IntegrationConnectors.JIRA.csproj", "{94B2ACBB-2E5E-45C2-96F6-48913DD85087}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{16B2246B-5904-4A78-AC8F-7F3007DA3CCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16B2246B-5904-4A78-AC8F-7F3007DA3CCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16B2246B-5904-4A78-AC8F-7F3007DA3CCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94B2ACBB-2E5E-45C2-96F6-48913DD85087}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94B2ACBB-2E5E-45C2-96F6-48913DD85087}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94B2ACBB-2E5E-45C2-96F6-48913DD85087}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94B2ACBB-2E5E-45C2-96F6-48913DD85087}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +87,7 @@ Global
 		{1648AE0F-67D2-4AF3-A7BE-373927316433} = {2A54E36A-9C75-4A5E-BE49-F6609643AF3A}
 		{A71D8EA2-D026-472F-A851-CE4F6FCB7683} = {2A54E36A-9C75-4A5E-BE49-F6609643AF3A}
 		{6410BDA1-C8E2-4E69-8C95-57D4109772D7} = {2A54E36A-9C75-4A5E-BE49-F6609643AF3A}
+		{94B2ACBB-2E5E-45C2-96F6-48913DD85087} = {2A54E36A-9C75-4A5E-BE49-F6609643AF3A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B7415CA-4F0A-426D-8452-EDF306CA90E3}

@@ -3,6 +3,7 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using IntegrationConnectors.Common;
 using IntegrationConnectors.JIRA;
+using IntegrationConnectors.JIRA.Model;
 using JiraReporting.Report;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace JiraReporting
 
             var jiraConnector = new JiraConnector(jiraEndpoint, credentials, AuthenticationType.Basic);
 
-            List<BacklogItem> latestBacklog = jiraConnector.GetBacklogItemsAsync(jql).Result;
+            List<JiraBacklogItem> latestBacklog = jiraConnector.GetBacklogItemsAsync(jql).Result;
             var outputFile = $"{Environment.CurrentDirectory}\\report_{DateTime.Now.Date.ToString(dateFormat)}";
             File.WriteAllText($"{outputFile}.json", JsonSerializer.Serialize(latestBacklog));
             ExcelHelper.Export(latestBacklog, null, $"{outputFile}.xlsx", jiraEndpoint);

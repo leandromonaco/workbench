@@ -1,4 +1,5 @@
-﻿using NPOI.HSSF.UserModel;
+﻿using IntegrationConnectors.JIRA.Model;
+using NPOI.HSSF.UserModel;
 using NPOI.HSSF.Util;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
@@ -12,7 +13,7 @@ namespace JiraReporting.Report
     public class ExcelHelper
     {
 
-        public static void Export(List<BacklogItem> backlogItems, List<BacklogItem> newBacklogItems, string outputFile, string jiraUrl)
+        public static void Export(List<JiraBacklogItem> backlogItems, List<JiraBacklogItem> newBacklogItems, string outputFile, string jiraUrl)
         {
             using (var fs = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
             {
