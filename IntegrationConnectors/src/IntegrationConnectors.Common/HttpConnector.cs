@@ -80,6 +80,7 @@ namespace IntegrationConnectors.Common
 
         public async Task<string> GetAsync(string requestUri)
         {
+            _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
             var result = await _httpClient.GetAsync(requestUri);
             return await result.Content.ReadAsStringAsync();
         }
