@@ -11,6 +11,9 @@
     },
     "Kata4_AWS_SQS.cs": {
       "commandName": "Project"
+    },
+    "Kata5_Redis.cs": {
+      "commandName": "Project"
     }
   }
 }
