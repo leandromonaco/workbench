@@ -1,10 +1,9 @@
-﻿using IntegrationConnectors.Common;
-using IntegrationConnectors.Confluence.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using IntegrationConnectors.Confluence.Model;
 
 namespace IntegrationConnectors.Confluence
 {
@@ -13,7 +12,7 @@ namespace IntegrationConnectors.Confluence
     /// </summary>
     public class ConfluenceConnector : HttpConnector
     {
-        public ConfluenceConnector(string baseUrl, string apiKey, AuthenticationType authType) : base(baseUrl, apiKey, authType)
+        public ConfluenceConnector(string baseUrl, string user, string key) : base(baseUrl, user, key)
         {
         }
 

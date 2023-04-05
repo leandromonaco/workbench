@@ -8,7 +8,7 @@ namespace IntegrationConnectors.JIRA
 
     public class JiraConnector : HttpConnector
     {
-        public JiraConnector(string baseUrl, string apiKey, AuthenticationType authType) : base(baseUrl, apiKey, authType)
+        public JiraConnector(string baseUrl, string user, string key) : base(baseUrl, user, key)
         {
         }
 
