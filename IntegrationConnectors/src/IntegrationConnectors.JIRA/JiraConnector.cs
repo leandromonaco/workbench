@@ -12,9 +12,9 @@ namespace IntegrationConnectors.JIRA
         {
         }
 
-        public async Task<List<JiraBacklogItem>> GetBacklogItemsAsync(string jql)
+        public async Task<List<JiraIssue>> GetIssuesAsync(string jql)
         {
-            var latestBacklog = new List<JiraBacklogItem>();
+            var allJiraIssues = new List<JiraIssue>();
 
             var jsonSerializerOptions = new JsonSerializerOptions()
             {
@@ -37,32 +37,10 @@ namespace IntegrationConnectors.JIRA
 
                 startAt += increment;
                 finishAt = jqlQueryResult.Total - 1;
-
-                foreach (var issue in jqlQueryResult.Issues)
-                {
-                    var issueType = issue.Fields.IssueType.Name;
-
-                    var row = new JiraBacklogItem
-                    {
-                        Date = DateTime.Now.Date,
-                        Sprint = issue.Fields.Sprints?.OrderByDescending(s => s.StartDate).FirstOrDefault().Name,
-                        IssueId = issue.Key,
-                        IssueTitle = issue.Fields.Summary,
-                        EpicId = issue.Fields.Parent?.Key,
-                        EpicTitle = issue.Fields.Parent?.Fields.Summary,
-                        IssueType = issueType,
-                        Priority = issue.Fields.Priority?.Value,
-                        Status = issue.Fields.Status.Name,
-                        Points = Convert.ToInt32(issue.Fields.Points),
-                        AssignedTo = issue.Fields.Assignee == null ? "Unassigned" : issue.Fields.Assignee.DisplayName,
-                        FixVersion = issue.Fields.FixVersions.LastOrDefault()?.Name
-                    };
-
-                    latestBacklog.Add(row);
-                }
+                allJiraIssues.AddRange(jqlQueryResult.Issues);
             }
 
-            return latestBacklog;
+            return allJiraIssues;
         }
 
         public async Task<List<JiraSprint>> GetSprintsAsync(int boardId)
