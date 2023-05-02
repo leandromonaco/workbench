@@ -29,13 +29,7 @@ namespace IntegrationConnectors.JIRA
 
             while (startAt <= finishAt)
             {
-                var query = $@"{{
-                                ""jql"": ""{jql}"",
-                                ""maxResults"": {increment},
-                                ""startAt"": {startAt}
-                            }}";
-
-                var response = await PostAsync($"{_url}/rest/api/2/search", query);
+                var response = await GetAsync($"{_url}/rest/api/2/search?jql={jql}&startAt={startAt}");
 
                 var jqlQueryResult = JsonSerializer.Deserialize<JiraQueryResult>(response, jsonSerializerOptions);
 
