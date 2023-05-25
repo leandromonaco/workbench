@@ -4,3 +4,6 @@
 [submodule "digital-knowledge-garden"]
 	path = digital-knowledge-garden
 	url = https://github.com/leandromonaco/digital-knowledge-garden
+[submodule "third-party-connectors"]
+	path = third-party-connectors
+	url = https://github.com/leandromonaco/third-party-connectors
