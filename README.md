@@ -6,4 +6,5 @@
 
 - `git submodule add https://github.com/leandromonaco/digital-knowledge-garden digital-knowledge-garden`
 - `git submodule add https://github.com/leandromonaco/awesome-team-building awesome-team-building`
+- `git submodule add https://github.com/leandromonaco/third-party-connectors`
 - `git submodule update --init --recursive`
