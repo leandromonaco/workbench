@@ -58,14 +58,14 @@ namespace NetworkCapture
             // Transparent endpoint is useful for reverse proxy (client is not aware of the existence of proxy)
             // A transparent endpoint usually requires a network router port forwarding HTTP(S) packets or DNS
             // to send data to this endPoint
-            var transparentEndPoint = new TransparentProxyEndPoint(IPAddress.Any, 8001, true)
-            {
-                // Generic Certificate hostname to use
-                // when SNI is disabled by client
-                GenericCertificateName = "google.com"
-            };
+            //var transparentEndPoint = new TransparentProxyEndPoint(IPAddress.Any, 8001, true)
+            //{
+            //    // Generic Certificate hostname to use
+            //    // when SNI is disabled by client
+            //    GenericCertificateName = "google.com"
+            //};
 
-            proxyServer.AddEndPoint(transparentEndPoint);
+            //proxyServer.AddEndPoint(transparentEndPoint);
 
             //proxyServer.UpStreamHttpProxy = new ExternalProxy() { HostName = "localhost", Port = 8888 };
             //proxyServer.UpStreamHttpsProxy = new ExternalProxy() { HostName = "localhost", Port = 8888 };
@@ -120,13 +120,13 @@ namespace NetworkCapture
             string bodyString = await e.GetRequestBodyAsString();
             e.SetRequestBodyString(bodyString);
 
-            if (e.HttpClient.Request.Url.Contains(_endpointFilter))
-            {
-                Console.WriteLine($"Request URL: {e.HttpClient.Request.Url}");
-                Console.WriteLine($"Request Method: {method}");
-                Console.WriteLine($"Request Body: {bodyString}");
-            }
-            
+            //if (e.HttpClient.Request.Url.Contains(_endpointFilter))
+            //{
+            Console.WriteLine($"Request URL: {e.HttpClient.Request.Url}");
+            Console.WriteLine($"Request Method: {method}");
+            Console.WriteLine($"Request Body: {bodyString}");
+            //}
+
 
             // store request 
             // so that you can find it from response handler 
