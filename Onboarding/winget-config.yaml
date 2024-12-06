@@ -174,8 +174,18 @@ PostInstallScript:
     npm install -g npm
     # Install Angular globally via npm
     npm install -g @angular/cli
-    # Install C# plugin for Visual Studio Code
+    # Install Visual Studio Code Extensions
     code --install-extension ms-dotnettools.csharp
+    code --install-extension ms-dotnettools.csdevkit
+    code --install-extension ms-dotnettools.vscodeintellicode-csharp
+    code --install-extension ms-mssql.mssql
+    code --install-extension ms-vscode-remote.remote-containers
+    code --install-extension ms-vscode-remote.remote-wsl
+    code --install-extension AmazonWebServices.aws-toolkit-vscode
+    code --install-extension GitHub.copilot-chat
+    code --install-extension ms-kubernetes-tools.vscode-kubernetes-tools
+    code --install-extension ms-playwright.playwright
+    code --install-extension ms-vscode.PowerShell
     # Install SonarLint for Visual Studio 2022
     "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\Extensions\Microsoft\VsixInstaller.exe" /quiet /q /skuName:Pro /skuVersion:17.0 "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/sonarsource/vsextensions/sonarlint/5.2.0/vsix"
     # Install AWS Toolkit for Visual Studio 2022
