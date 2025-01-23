@@ -92,7 +92,7 @@ services:
     ports:
       - "52006:4566"
     volumes:
-      - ./localstack:/var/lib/localstack
+      - local-localstack-volume:/var/lib/localstack
     environment:
       - DEBUG=1
       - SERVICES=s3,sns,kms,sqs,lambda,dynamodb,iam,serverless,ecr,sts,ssm,logs
@@ -122,4 +122,6 @@ volumes:
   local-moto-volume:
     driver: local
   local-grafana-volume:
+    driver: local
+  local-localstack-volume:
     driver: local
