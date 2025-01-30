@@ -1,0 +1,24 @@
+﻿[ req ]
+default_bits        = 2048
+prompt              = no
+default_md          = sha256
+distinguished_name  = req_distinguished_name
+req_extensions      = req_ext
+
+[ req_distinguished_name ]
+C= AU
+ST= QLD
+L= Brisbane
+O= DevExLead
+OU= IT
+CN= *.devexlead.local
+
+[ req_ext ]
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1   = *.devexlead.local
+DNS.2   = devexlead.local
+DNS.3   = mocks.devexlead.local

@@ -1,0 +1,139 @@
+﻿# docker-compose.yml
+name: DevExLead_CLI
+services:
+
+  #https://hub.docker.com/r/coredns/coredns/tags
+  coredns:
+    image: coredns/coredns:1.12.0
+    container_name: DevExLead_CoreDns
+    restart: unless-stopped
+    volumes:
+      - ./coredns/Corefile:/Corefile
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+    networks:
+      - my-network
+
+
+  #https://hub.docker.com/_/nginx
+  nginx:
+    image: nginx:1.27.3
+    container_name: DevExLead_Nginx
+    ports:
+      - "80:80"
+      - "443:443"
+      - "1433:1433"
+      - "6379:6379"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  Mount the Nginx config
+      # - ./certs:/etc/nginx/certs:ro  Mount the directory containing the SSL certificates
+    networks:
+      - my-network
+
+  #https://hub.docker.com/_/redis
+  redis:
+    image: redis:8.0-M03-alpine
+    container_name: DevExLead_Redis
+    ports:
+      - "52003:6379"
+    volumes:
+      - ./redis:/data
+    networks:
+      - my-network
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: DevExLead_SqlServer
+    ports:
+      - "52004:1433"
+    volumes:
+      - /var/opt/mssql
+      - ./sqlserver/backup:/var/opt/mssql/backup
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=D3v3x4dm1n
+    networks:
+      - my-network
+
+  # wiremock:
+  #   image: wiremock/wiremock:latest
+  #   container_name: WireMock
+  #   ports:
+  #     - "52000:8080"  # Official image uses port 8080 by default
+  #   volumes:
+  #     - ./wiremock:/home/wiremock/mappings/
+  #   command: ["--read-static-mappings"]
+
+  # moto:
+  #   image: motoserver/moto:latest
+  #   container_name: Moto
+  #   ports:
+  #     - "52001:5000"
+  #   environment:
+  #     - MOTO_COGNITO_IDP_USER_POOL_ID_STRATEGY=HASH
+  #     - MOTO_ENABLE_RECORDING=True
+  #     - AWS_ACCESS_KEY_ID='testing'
+  #     - AWS_SECRET_ACCESS_KEY='testing'
+  #     - AWS_SECURITY_TOKEN='testing'
+  #     - AWS_SESSION_TOKEN='testing'
+  #     - AWS_DEFAULT_REGION='us-east-1'
+  #   volumes:
+  #     - local-moto-volume:/home/moto_recording
+  #   networks:
+  #     - local-network
+
+  # seq:
+  #   image: datalust/seq:latest
+  #   container_name: SEQ
+  #   ports:
+  #     - "52004:80"
+  #   volumes:
+  #     - local-seq-volume:/data
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #   networks:
+  #     - local-network
+
+  # grafana:
+  #   image: grafana/grafana:latest 
+  #   container_name: Grafana 
+  #   ports:
+  #     - "52005:3000"
+  #   volumes:
+  #     - local-grafana-volume:/var/lib/grafana
+  #     - ./provisioning:/etc/grafana/provisioning
+  #   environment:
+  #     - GF_SECURITY_ADMIN_USER=admin
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin 
+  #     - GF_USERS_ALLOW_SIGN_UP=false
+  #     - GF_AUTH_ANONYMOUS_ENABLED=false
+  #   networks:
+  #     - local-network
+  #   restart: unless-stopped
+
+  # localstack:
+  #   image: localstack/localstack:latest
+  #   container_name: localstack
+  #   ports:
+  #     - "52006:4566"
+  #   volumes:
+  #     - local-localstack-volume:/var/lib/localstack
+  #   environment:
+  #     - DEBUG=1
+  #     - SERVICES=s3,sns,kms,sqs,lambda,dynamodb,iam,serverless,ecr,sts,ssm,logs
+  #     - AWS_ACCESS_KEY_ID=test
+  #     - AWS_SECRET_ACCESS_KEY=test
+  #     - DEFAULT_REGION=us-east-1
+  #   networks:
+  #     - local-network
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:4566/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+
+networks:
+  my-network:
+    driver: bridge

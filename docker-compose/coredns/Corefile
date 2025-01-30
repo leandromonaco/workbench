@@ -1,0 +1,11 @@
+. {
+    hosts {
+        127.0.0.1 sqlserver.local
+        127.0.0.1 redis.local
+        fallthrough
+    }
+    forward . 8.8.8.8 1.1.1.1
+    log
+    errors
+    bind 0.0.0.0
+}
