@@ -2,10 +2,12 @@
     hosts {
         127.0.0.1 sqlserver.local
         127.0.0.1 redis.local
-        fallthrough
+        ::1 sqlserver.local
+        ::1 redis.local
     }
-    forward . 8.8.8.8 1.1.1.1
+
+    forward . 8.8.8.8 2001:4860:4860::8888
     log
     errors
-    bind 0.0.0.0
+    bind 0.0.0.0 ::  # Binds to both IPv4 and IPv6
 }
